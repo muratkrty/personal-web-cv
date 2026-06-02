@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Service | Murat Kirtay </title>
+
+  <meta name="description" content="Murat Kirtay is an assistant professor at Tilburg University working on humanoid robotics, cognitive systems, human-robot interaction, developmental machine learning, robot trust, and multimodal learning.">
+
+<meta name="author" content="Murat Kirtay">
+
+<meta name="keywords" content="Murat Kirtay, Tilburg University, assistant professor, robotics, humanoid robotics, cognitive systems, cognitive robotics, developmental robotics, cognitive developmental robotics, CoDeRs, Cognitive Developmental Robotics Group, AI for Robotics Laboratory, AIR-LAB, human-robot interaction, HRI, robot trust, trustworthy robots, multimodal learning, multimodal machine learning, developmental machine learning, robot learning, autonomous systems, social robotics, neurorobotics, iCub robot, robot cognition, machine learning, artificial intelligence, embodied AI, robot-robot interaction, human-agent interaction, nonverbal communication, RoboCup SPL, Tilburg CoDeRs">
+
+<meta property="og:title" content="Murat Kirtay | Robotics, Cognitive Systems, Human-Robot Interaction">
+
+<meta property="og:description" content="Assistant professor at Tilburg University working on humanoid robotics, cognitive systems, developmental machine learning, human-robot interaction, robot trust, and multimodal learning.">
+
+<meta property="og:type" content="website">
+
+<meta property="og:site_name" content="Murat Kirtay">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Murat Kirtay | Robotics, Cognitive Systems, Human-Robot Interaction">
+<meta name="twitter:description" content="Research on humanoid robotics, cognitive systems, developmental machine learning, robot trust, and human-robot interaction.">
+
+  <style>
+    :root {
+      --bg: #f5f6f9;
+      --sidebar: #ffffff;
+      --text: #2d333b;
+      --muted: #555b63;
+      --light: #b6c1c6;
+      --sidebar-width: 360px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 300;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      min-height: 100vh;
+      padding: 48px 38px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand h1 {
+      margin: 0 0 30px;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      line-height: 1.05;
+      font-weight: 300;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .tagline {
+      margin: 0 0 36px;
+      max-width: 235px;
+      color: var(--muted);
+      font-size: 1.15rem;
+      line-height: 1.45;
+    }
+
+    nav ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    nav li + li { margin-top: 8px; }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.22rem;
+      line-height: 1.35;
+      transition: color 160ms ease;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      color: #000;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .content {
+      min-width: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6vh 5vw;
+    }
+
+    .teaching-page {
+      width: min(100%, 1120px);
+      color: #000;
+      font-weight: 400;
+    }
+
+    .teaching-page h2 {
+      margin: 0 0 32px;
+      font-size: 30px;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .supervision-list {
+      margin: 0;
+      padding-left: 28px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .supervision-list li {
+      margin-bottom: 6px;
+      padding-left: 8px;
+    }
+
+    .supervision-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 4px;
+    }
+
+    .supervision-name {
+      font-weight: 400;
+    }
+
+    .supervision-date {
+      flex: 0 0 auto;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .supervision-topic {
+      text-align: justify;
+    }
+
+    @media (max-width: 900px) {
+      :root { --sidebar-width: 300px; }
+      .sidebar { padding: 36px 30px 28px; }
+      .brand h1 { font-size: 2.35rem; }
+    }
+
+    @media (max-width: 720px) {
+      .page { display: block; }
+
+      .sidebar {
+        min-height: auto;
+        padding: 28px 24px 20px;
+      }
+
+      .brand h1 {
+        margin-bottom: 16px;
+        font-size: clamp(2rem, 10vw, 2.7rem);
+        white-space: normal;
+      }
+
+      .tagline {
+        margin-bottom: 22px;
+        max-width: none;
+        font-size: 1.05rem;
+      }
+
+      nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+      }
+
+      nav li + li { margin-top: 0; }
+      nav a { font-size: 1rem; }
+
+      .content { padding: 28px 18px 40px; }
+
+      .teaching-page h2 { font-size: 24px; }
+      .supervision-list { font-size: 17px; }
+
+      .supervision-topline {
+        display: block;
+      }
+
+      .supervision-date {
+        text-align: left;
+        white-space: normal;
+        margin-top: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <aside class="sidebar" aria-label="Site sidebar">
+      <div class="sidebar-top">
+        <header class="brand">
+          <h1>Murat Kirtay</h1>
+          <p class="tagline">Cognition, Design, and Robotics</p>
+        </header>
+
+
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="publications.html">Publications</a></li>
+            <li><a href="teaching.html">Teaching</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="people.html">Supervision</a></li>
+            <li><a href="service.html">Service</a></li>
+            <li><a href="coders.html">CoDeRs-group</a></li>
+            <li><a href="robocup.html">Robocup-SPL</a></li>
+            <li><a href="rtss.html">RTSS-workshop</a></li>
+            
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <section class="content" aria-label="Service">
+      <div class="teaching-page">
+        
+
+        <ul class="supervision-list">
+    <h4>Editorial roles</h4>
+          <li>Associate Editor, IEEE Robotics and Automation Letters (RA-L)</li>
+          <li>Review Editor, Frontiers in Neurorobotics</li>
+          <li>Area Chair for CoRL 2026</li>
+          <li>Associate Editor (Contributed Papers) for ICDL 2025</li>
+
+    <h4>Workshops organization</h4>
+          <li>Trust in Human-Robot Interaction, IEEE ROMAN 2025</li>
+          <li>Robot Trust in Symbiotic Societies (RTSS), IEEE ICRA 2024</li>
+          <li>AI for Robotics workshop, Mindlabs 2024</li>
+          <li>Robot Trust in Symbiotic Societies (RTSS), IEEE IROS 2022</li>
+
+    <h4>PhD Committee</h4>
+          <li>Quentin Houbre, Tampere University, 2026</li> 
+          <li>Gojko Perkovic, Scuola Superiore Sant’Anna / The BioRobotics Institute, 2025</li>
+          
+
+    <h4>Reviewing</h4>
+    <p>I regularly serve as a reviewer for journals and conferences in robotics, human-robot interaction,
+       cognitive systems, and machine learning, including:</p>
+        <li>IEEE Transactions on Cognitive and Developmental Systems (TCDS)</li>
+        <li>IEEE Robotics and Automation Letters (RA-L)</li>
+        <li>IEEE Robotics and Automation Magazine (RAM)</li>
+        <li>IEEE International Conference on Robotics and Automation (ICRA)</li>
+        <li>IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)</li>
+        <li>IEEE International Conference on Humanoid Robots (Humanoids)</li>
+        <li>IEEE International Conference on Robot and Human Interactive Communication (ROMAN)</li>
+        <li>IEEE International Conference on Development and Learning (ICDL)</li>
+        <li>ACM International Conference on Multimodal Interaction (ICMI)</li>
+       
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>

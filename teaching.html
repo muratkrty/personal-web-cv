@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teaching | Murat Kirtay</title>
+
+  <meta name="description" content="Murat Kirtay is an assistant professor at Tilburg University working on humanoid robotics, cognitive systems, human-robot interaction, developmental machine learning, robot trust, and multimodal learning.">
+
+<meta name="author" content="Murat Kirtay">
+
+<meta name="keywords" content="Murat Kirtay, Tilburg University, assistant professor, robotics, humanoid robotics, cognitive systems, cognitive robotics, developmental robotics, cognitive developmental robotics, CoDeRs, Cognitive Developmental Robotics Group, AI for Robotics Laboratory, AIR-LAB, human-robot interaction, HRI, robot trust, trustworthy robots, multimodal learning, multimodal machine learning, developmental machine learning, robot learning, autonomous systems, social robotics, neurorobotics, iCub robot, robot cognition, machine learning, artificial intelligence, embodied AI, robot-robot interaction, human-agent interaction, nonverbal communication, RoboCup SPL, Tilburg CoDeRs">
+
+<meta property="og:title" content="Murat Kirtay | Robotics, Cognitive Systems, Human-Robot Interaction">
+
+<meta property="og:description" content="Assistant professor at Tilburg University working on humanoid robotics, cognitive systems, developmental machine learning, human-robot interaction, robot trust, and multimodal learning.">
+
+<meta property="og:type" content="website">
+
+<meta property="og:site_name" content="Murat Kirtay">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Murat Kirtay | Robotics, Cognitive Systems, Human-Robot Interaction">
+<meta name="twitter:description" content="Research on humanoid robotics, cognitive systems, developmental machine learning, robot trust, and human-robot interaction.">
+
+  <style>
+    :root {
+      --bg: #f5f6f9;
+      --sidebar: #ffffff;
+      --text: #2d333b;
+      --muted: #555b63;
+      --light: #b6c1c6;
+      --sidebar-width: 360px;
+      --home-copy-font-size: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 300;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      min-height: 100vh;
+      padding: 48px 38px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand h1 {
+      margin: 0 0 30px;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      line-height: 1.05;
+      font-weight: 300;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .tagline {
+      margin: 0 0 36px;
+      max-width: 235px;
+      color: var(--muted);
+      font-size: 1.15rem;
+      line-height: 1.45;
+    }
+
+    nav ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    nav li + li {
+      margin-top: 8px;
+    }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.22rem;
+      line-height: 1.35;
+      transition: color 160ms ease;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      color: #000;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .github {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      margin-bottom: 26px;
+      border-radius: 50%;
+      background: var(--light);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .github svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    .footer {
+      color: var(--light);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .footer a {
+      color: inherit;
+      text-decoration: none;
+      margin-left: 18px;
+    }
+
+    .content {
+      min-width: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6vh 5vw;
+    }
+
+    .artwork-wrap {
+      width: min(100%, 860px);
+    }
+
+    .artwork {
+      display: block;
+      width: 100%;
+      height: auto;
+      box-shadow: none;
+    }
+
+    .credit {
+      margin: 6px 4px 0 0;
+      text-align: right;
+      color: #7f858b;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .home-intro {
+      width: min(100%, 1080px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 345px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .home-copy {
+    font-size: 20px;
+    line-height: 1.15;
+    font-weight: 400;
+    color: #000;
+    text-align: justify;
+    }
+
+    .home-copy p {
+      margin: 0 0 34px;
+    }
+
+    .profile-photo {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+
+    @media (max-width: 900px) {
+      :root {
+        --sidebar-width: 300px;
+      }
+
+      .sidebar {
+        padding: 36px 30px 28px;
+      }
+
+      .brand h1 {
+        font-size: 2.35rem;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .home-intro {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .profile-photo {
+        max-width: 360px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        display: block;
+      }
+
+      .sidebar {
+        min-height: auto;
+        padding: 28px 24px 20px;
+      }
+
+      .brand h1 {
+        margin-bottom: 16px;
+        font-size: clamp(2rem, 10vw, 2.7rem);
+        white-space: normal;
+      }
+
+      .tagline {
+        margin-bottom: 22px;
+        max-width: none;
+        font-size: 1.05rem;
+      }
+
+      nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+      }
+
+      nav li + li {
+        margin-top: 0;
+      }
+
+      nav a {
+        font-size: 1rem;
+      }
+
+      .sidebar-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .github {
+        margin-bottom: 0;
+        flex: 0 0 auto;
+      }
+
+      .footer {
+        text-align: right;
+        font-size: 0.78rem;
+      }
+
+      .footer a {
+        margin-left: 10px;
+      }
+
+      .content {
+        align-items: flex-start;
+        padding: 28px 18px 40px;
+      }
+
+      .home-copy {
+        font-size: clamp(0.68rem, 3vw, 0.95rem);
+      }
+
+      .home-copy p {
+        margin-bottom: 24px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .sidebar {
+        padding: 24px 18px 18px;
+      }
+
+      nav ul {
+        gap: 8px 14px;
+      }
+
+      .sidebar-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .footer {
+        text-align: left;
+      }
+
+      .footer a:first-of-type {
+        margin-left: 0;
+      }
+
+      .content {
+        padding: 22px 12px 32px;
+      }
+    }
+  
+    .teaching-page {
+      width: min(100%, 1120px);
+      color: #000;
+      font-weight: 400;
+    }
+
+    .teaching-list {
+      margin: 0;
+      padding-left: 28px;
+      font-size: 20px;
+      line-height: 1.35;
+    }
+
+    .teaching-list li + li {
+      margin-top: 22px;
+    }
+
+    .teaching-intro {
+      margin: 0 0 40px;
+      font-size: 22px;
+      line-height: 1.35;
+    }
+
+    .course {
+      padding: 0 0 32px;
+      margin: 0 0 42px;
+      border-bottom: none; /*  1px solid #9a9a9a; */
+    }
+
+    .course:last-child {
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    .course h2 {
+      margin: 0 0 26px;
+      font-size: 22px;
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .course-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 240px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .course p {
+      margin: 0;
+      font-size: 20px; /*  change this for the content */
+      line-height: 1.18;
+      text-align: justify;
+    }
+
+    .course-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-top: 2px;
+    }
+
+    .course-links {
+      margin-top: 28px;
+      font-size: 22px;
+    }
+
+    .course-links a {
+      color: #355bb4;
+      text-decoration: none;
+      font-weight: 400;
+    }
+
+    .course-links a:hover,
+    .course-links a:focus-visible {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 900px) {
+      .course-body {
+        grid-template-columns: 1fr;
+      }
+
+      .course-image {
+        max-width: 280px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .teaching-intro,
+      .course p,
+      .course-links {
+        font-size: 17px;
+      }
+
+      .course h2 {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <aside class="sidebar" aria-label="Site sidebar">
+      <div class="sidebar-top">
+        <header class="brand">
+          <h1>Murat Kirtay</h1>
+          <p class="tagline">Cognition, Design, and Robotics</p>
+        </header>
+
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="publications.html">Publications</a></li>
+            <li><a href="teaching.html">Teaching</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="people.html">Supervision</a></li>
+            <li><a href="service.html">Service</a></li>
+            <li><a href="coders.html">CoDeRs-group</a></li>
+            <li><a href="robocup.html">Robocup-SPL</a></li>
+            <li><a href="rtss.html">RTSS-workshop</a></li>
+            
+          </ul>
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <a class="github" href="#" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 .5A12 12 0 0 0 8.2 23.88c.6.1.82-.26.82-.58v-2.17c-3.34.73-4.04-1.42-4.04-1.42-.55-1.38-1.34-1.75-1.34-1.75-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.08 1.83 2.82 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 6.35c1.02 0 2.04.14 3 .41 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.62-5.48 5.92.43.37.82 1.1.82 2.22v3.23c0 .32.22.69.83.58A12 12 0 0 0 12 .5Z" />
+          </svg>
+        </a>
+
+
+      </div>
+    </aside>
+
+
+
+    <section id="teaching" class="content" aria-label="Teaching">
+      <div class="teaching-page">
+
+
+        <article class="course">
+          <h2>Autonomous Systems (CSAI, Tilburg University)<br>Spring 2023, Spring 2024, Spring 2025, Spring 2026</h2>
+
+          <div class="course-body">
+            <p>This course presents the fundamental principles of autonomous systems, exploring cognitive/developmental and social robotics perspectives. The course is structured into two main parts: theoretical and practical. In the theoretical section, we will introduce essential concepts such as multimodal integration, embodiment, control architectures, etc. In the practical section, students will have hands-on experience in building a simple autonomous hardware agent. Additionally, students will be able to develop a similar agent in a simulation environment, such as PyBullet or Gazebo. Through developing real and virtual autonomous agents, students make critical judgments and comparisons between two agent types.</p>
+            <img class="course-image" src="./assets/icub.png" alt="Humanoid robot waving">
+          </div>
+
+
+        </article>
+
+        <article class="course">
+          <h2>Human-Computer Interaction (CSAI, Tilburg University)<br>Fall 2022, Fall 2023, Fall 2024, Fall 2025</h2>
+
+          <div class="course-body">
+            <p>This course will explore the fundamental principles governing the interaction between humans and computers. Throughout this course, we will delve into the theoretical and practical aspects of HCI. The theoretical portion of the course will cover essential concepts such as affordances, usability, heuristics, and evaluation methods. We will discuss how these principles shape the design and development of interactive systems, enabling effective user experiences. In the practical segment, students will have the opportunity to design, develop, and deliver HCI projects in robotics, the Internet of Things (IoT), and virtual reality.</p>
+            <img class="course-image" src="./assets/hci.png" alt="Sketch of a robot wearing a virtual reality headset">
+          </div>
+
+        </article>
+
+
+
+        <article class="course">
+          <h2>Human-Robot Interaction (Informatik, Humboldt-Universität zu Berlin)<br>Summer 2021</h2>
+
+          <div class="course-body">
+            <p>In this seminar, the current research studies on human-robot interaction (HRI) will be introduced. The course content involves both theoretical (such as embodiment, anthropomorphism, and emotions) and practical (e.g., HRI experiment design, robot types and sensors, and programming machine learning pipeline) aspects of human-robot interaction. We will particularly focus on interdisciplinary studies at the intersection of psychology, neuroscience, and robotics. Additionally, the Pepper humanoid and Nao robots will be available – depending on the Covid regulations in HU-Berlin– for designing and performing HRI experiments.</p>
+            <img class="course-image" src="./assets/hri.jpeg" alt="Human-robot interaction experiment with Pepper robot">
+          </div>
+
+        </article>
+
+        <article class="course">
+          <h2>Machine Learning in Robotics (Informatik, Humboldt-Universität zu Berlin)<br>Winter 2020/2021</h2>
+
+          <div class="course-body">
+            <p>In this seminar, current topics and methods of machine learning with application in robotics are discussed. In particular, we focus on new developments in deep learning applications – namely robot vision, cognitive-developmental tasks, and multimodal learning– in humanoid robotics. To pass this course, the students should develop machine learning models with robot datasets, propose team projects, presents results in oral presentations and written reports.</p>
+            <img class="course-image" src="./assets/robot.png" alt="Pepper and Nao robots in a lab setting">
+          </div>
+
+
+        </article>
+
+         <article class="course">
+          <h2>Multimodal Machine Learning (Informatik, Humboldt-Universität zu Berlin)<br>Summer 2020</h2>
+        <div class="course-body">
+          
+          <p>
+            This seminar introduces the foundations of multimodal machine learning and applications on simulated and actual robot platforms.
+            It covers the basics of machine learning, preliminary concepts of sensors (e.g., depth and color cameras, IMU, position encoders, etc.),
+            multimodal sensor fusion techniques, specifications of robot platforms (e.g., Nao and the Pepper) and simulators.
+            Students will work in teams on a topic in (deep) multimodal learning for robotics and present their experimental results
+            in oral presentations and written reports.
+          </p>
+
+          <img
+            class="course-image"
+            src="./assets/mml.png"
+            alt="Multimodal machine learning diagram"
+          >
+        </div>
+      </article>
+
+ 
+
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>

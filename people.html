@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Supervision | Murat Kirtay</title>
+
+  <meta name="description" content="Murat Kirtay is an assistant professor at Tilburg University working on humanoid robotics, cognitive systems, human-robot interaction, developmental machine learning, robot trust, and multimodal learning.">
+
+<meta name="author" content="Murat Kirtay">
+
+<meta name="keywords" content="Murat Kirtay, Tilburg University, assistant professor, robotics, humanoid robotics, cognitive systems, cognitive robotics, developmental robotics, cognitive developmental robotics, CoDeRs, Cognitive Developmental Robotics Group, AI for Robotics Laboratory, AIR-LAB, human-robot interaction, HRI, robot trust, trustworthy robots, multimodal learning, multimodal machine learning, developmental machine learning, robot learning, autonomous systems, social robotics, neurorobotics, iCub robot, robot cognition, machine learning, artificial intelligence, embodied AI, robot-robot interaction, human-agent interaction, nonverbal communication, RoboCup SPL, Tilburg CoDeRs">
+
+<meta property="og:title" content="Murat Kirtay | Robotics, Cognitive Systems, Human-Robot Interaction">
+
+<meta property="og:description" content="Assistant professor at Tilburg University working on humanoid robotics, cognitive systems, developmental machine learning, human-robot interaction, robot trust, and multimodal learning.">
+
+<meta property="og:type" content="website">
+
+<meta property="og:site_name" content="Murat Kirtay">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Murat Kirtay | Robotics, Cognitive Systems, Human-Robot Interaction">
+<meta name="twitter:description" content="Research on humanoid robotics, cognitive systems, developmental machine learning, robot trust, and human-robot interaction.">
+  <style>
+    :root {
+      --bg: #f5f6f9;
+      --sidebar: #ffffff;
+      --text: #2d333b;
+      --muted: #555b63;
+      --light: #b6c1c6;
+      --sidebar-width: 360px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-weight: 300;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    .sidebar {
+      background: var(--sidebar);
+      min-height: 100vh;
+      padding: 48px 38px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand h1 {
+      margin: 0 0 30px;
+      font-size: clamp(2.1rem, 4vw, 3rem);
+      line-height: 1.05;
+      font-weight: 300;
+      letter-spacing: -0.05em;
+      white-space: nowrap;
+    }
+
+    .tagline {
+      margin: 0 0 36px;
+      max-width: 235px;
+      color: var(--muted);
+      font-size: 1.15rem;
+      line-height: 1.45;
+    }
+
+    nav ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    nav li + li { margin-top: 8px; }
+
+    nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 1.22rem;
+      line-height: 1.35;
+      transition: color 160ms ease;
+    }
+
+    nav a:hover,
+    nav a:focus-visible {
+      color: #000;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .content {
+      min-width: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6vh 5vw;
+    }
+
+    .teaching-page {
+      width: min(100%, 1120px);
+      color: #000;
+      font-weight: 400;
+    }
+
+    .teaching-page h2 {
+      margin: 0 0 32px;
+      font-size: 30px;
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .supervision-list {
+      margin: 0;
+      padding-left: 28px;
+      font-size: 20px;
+      line-height: 1.15;
+    }
+
+    .supervision-list li {
+      margin-bottom: 16px;
+      padding-left: 8px;
+    }
+
+    .supervision-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 4px;
+    }
+
+    .supervision-name {
+      font-weight: 400;
+    }
+
+    .supervision-date {
+      flex: 0 0 auto;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .supervision-topic {
+      text-align: justify;
+    }
+
+    @media (max-width: 900px) {
+      :root { --sidebar-width: 300px; }
+      .sidebar { padding: 36px 30px 28px; }
+      .brand h1 { font-size: 2.35rem; }
+    }
+
+    @media (max-width: 720px) {
+      .page { display: block; }
+
+      .sidebar {
+        min-height: auto;
+        padding: 28px 24px 20px;
+      }
+
+      .brand h1 {
+        margin-bottom: 16px;
+        font-size: clamp(2rem, 10vw, 2.7rem);
+        white-space: normal;
+      }
+
+      .tagline {
+        margin-bottom: 22px;
+        max-width: none;
+        font-size: 1.05rem;
+      }
+
+      nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+      }
+
+      nav li + li { margin-top: 0; }
+      nav a { font-size: 1rem; }
+
+      .content { padding: 28px 18px 40px; }
+
+      .teaching-page h2 { font-size: 24px; }
+      .supervision-list { font-size: 17px; }
+
+      .supervision-topline {
+        display: block;
+      }
+
+      .supervision-date {
+        text-align: left;
+        white-space: normal;
+        margin-top: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <aside class="sidebar" aria-label="Site sidebar">
+      <div class="sidebar-top">
+        <header class="brand">
+          <h1>Murat Kirtay</h1>
+          <p class="tagline">Cognition, Design, and Robotics</p>
+        </header>
+
+
+        <nav aria-label="Main navigation">
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="publications.html">Publications</a></li>
+            <li><a href="teaching.html">Teaching</a></li>
+            <li><a href="projects.html">Projects</a></li>
+            <li><a href="people.html">Supervision</a></li>
+            <li><a href="service.html">Service</a></li>
+            <li><a href="coders.html">CoDeRs-group</a></li>
+            <li><a href="robocup.html">Robocup-SPL</a></li>
+            <li><a href="rtss.html">RTSS-workshop</a></li>
+            
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <section class="content" aria-label="Supervision">
+      <div class="teaching-page">
+        <h2>Supervision</h2>
+        
+
+        <ul class="supervision-list">
+            <h4>PhD students</h4>
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Jos Prinsen, Tilburg University</span>
+              <span class="supervision-date">(2025 - ongoing)</span>
+            </div>
+            <div>Co-supervision with Marie Postma and Travis Wiltshire</div>
+            <div class="supervision-topic">Topic: Human performance and human-swarm teaming.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Sofia Mabrouk, Université Clermont Auvergne</span>
+              <span class="supervision-date">(2025 - ongoing)</span>
+            </div>
+            <div>Co-supervision with Johann Chevalere</div>
+            <div class="supervision-topic">Topic: The effectiveness and psychological processes underlying the use of teachable robots for human learning.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Matthijs de Koning, Tilburg University</span>
+              <span class="supervision-date">(2024 - ongoing)</span>
+            </div>
+            <div>Co-supervision with Marie Postma and Roy Lindelauf</div>
+            <div class="supervision-topic">Topic: Actionable and interpretable artificial intelligence in the context of drone swarming.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Bosong Ding, Tilburg University</span>
+              <span class="supervision-date">(2023 - ongoing)</span>
+            </div>
+            <div>Co-supervision with Giacomo Spigler and Pieter Spronck</div>
+            <div class="supervision-topic">Topic: Large non-verbal Language Models for human-agent interaction and cooperation.</div>
+          </li>
+
+   
+
+        
+        <h4>MSc students</h4>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Selma Ancel, CSAI, Tilburg University</span>
+              <span class="supervision-date">(2026)</span>
+            </div>
+            <div class="supervision-topic">Topic: Gesture style transfer for retrival augmented generation.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Joshua Janssen, CSAI, Tilburg University</span>
+              <span class="supervision-date">(2026)</span>
+            </div>
+            <div class="supervision-topic">Topic: Watching without waiting: Real-time work-state recognition for collaborative robots.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Christophe Friezas Gonçalves, CSAI, Tilburg University</span>
+              <span class="supervision-date">(2025)</span>
+            </div>
+            <div class="supervision-topic">Topic: Multi-agent systems in search and rescue missions.</div>
+          </li>
+        
+
+
+
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Franklin Willemen, DSS, Tilburg University</span>
+              <span class="supervision-date">(2024)</span>
+            </div>
+            <div class="supervision-topic">Topic: Unsupervised representation learning for human action and affordance recognition.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Mehmet Bakirci, DSS, Tilburg University</span>
+              <span class="supervision-date">(2024)</span>
+            </div>
+            <div class="supervision-topic">Topic: Instance segmentation on automatic self-checkout.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Giacomo Rusconi, DSS, Tilburg University</span>
+              <span class="supervision-date">(2024)</span>
+            </div>
+            <div class="supervision-topic">Topic: Predicting the popularity of spotify songs using a neural network.</div>
+          </li>
+
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Volha Taliaronak, Informatik, Humboldt-Universität zu Berlin</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Robot trust formation based on computational cognitive load 
+                and interaction partner’s nonverbal signals.</div>
+          </li>
+
+
+
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Evelyn Pomasqui, DSS, Tilburg University</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Deep reinforcement learning for object classification.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Diego Sanchez Perez, DSS, Tilburg University</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Prosperity at first sight? Estimating material well-being and development from daytime satellite imagery.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Robbie Werner, DSS, Tilburg University</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Vehicle classification using UAV imagery.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Elsbeh Nieuwkamp, DSS, Tilburg University</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Predicting job satisfaction using logistic regression, support vector machine, and random forest models.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Jara Manders, DSS, Tilburg University</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Analyzing gender and ethnicity pay gaps through salary prediction models.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Maeve Zweers, DSS, Tilburg University</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Predicting customers' willingness to pay for digital music.</div>
+          </li>
+
+          <li>
+            <div class="supervision-topline">
+              <span class="supervision-name">Martijn Wubbels, DSS, Tilburg University</span>
+              <span class="supervision-date">(2023)</span>
+            </div>
+            <div class="supervision-topic">Topic: Comparison of neural networkds and word embeddings for sentiment prediction.</div>
+          </li>
+
+
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Shifrah Goldblatt, DSS, Tilburg University</span>
+            <span class="supervision-date">(2022)</span>
+          </div>
+          <div class="supervision-topic">Topic: Deep learning for classifying object using the iCub robot dataset.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Tom Weerts, DSS, Tilburg University</span>
+            <span class="supervision-date">(2022)</span>
+          </div>
+          <div class="supervision-topic">Topic: The next member of your household might be a robot: A Multimodal Deep Learning approach in everyday-object recognition developed for robot implementation.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Isabella de Haan, DSS, Tilburg University</span>
+            <span class="supervision-date">(2022)</span>
+          </div>
+          <div class="supervision-topic">Topic: Predicting airline passenger satisfaction using feature selection techniques and classification algorithms.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Kas Kniesmeijer, DSS, Tilburg University</span>
+            <span class="supervision-date">(2022)</span>
+          </div>
+          <div class="supervision-topic">Topic: Ensemble learning to recognize human actions using the iCub robot multimodal dataset.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Kees Wagemans, DSS, Tilburg University</span>
+            <span class="supervision-date">(2022)</span>
+          </div>
+          <div class="supervision-topic">Topic: Deep learning based object recognition model for humanoid robot.</div>
+        </li>
+
+
+
+        <h4>Undergraduate students</h4>
+
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Alper Aras, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2025)</span>
+          </div>
+          <div class="supervision-topic">Topic: Predicting geometrical parameters of nanostructures using machine learning.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Ece Çevik, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2025)</span>
+          </div>
+          <div class="supervision-topic">Topic: Facial emotion recognition on distinct Japanese emotion "Ahegao".</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Fran Ogurlic, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2025)</span>
+          </div>
+          <div class="supervision-topic">Topic: Quantum support vector regression for predicting atomization energy.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Merve Şafak, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2025)</span>
+          </div>
+          <div class="supervision-topic">Topic: Supervised anomaly detection in Mars rover telemetry using machine learning and deep learning models.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Michal Stetina, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2025)</span>
+          </div>
+          <div class="supervision-topic">Topic: A comparative analysis of object detection methods in autonomous driving.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Mihnea Angheluta, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2025)</span>
+          </div>
+          <div class="supervision-topic">Topic: Particle swarm optimization for multimodal action recognition.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Farah Khabbaz, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2024)</span>
+          </div>
+          <div class="supervision-topic">Topic: Deep learning based semantic segmentation techniques on Carla dataset.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Kees Kamp, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2024)</span>
+          </div>
+          <div class="supervision-topic">Topic: Knowledge distillation applied to image emotion recognition models.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Juul van Kessel, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2024)</span>
+          </div>
+          <div class="supervision-topic">Topic: Exploring the frontier of collaborative intelligence: Multi-agent large language models in company problem solving.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Moniek Tummers, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2024)</span>
+          </div>
+          <div class="supervision-topic">Topic: Fall detection using machine learning: Finding the optimal positions for wearable inertial sensors.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Pramatya Jati, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2024)</span>
+          </div>
+          <div class="supervision-topic">Topic: Not specified.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Joshua Janssen, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2024)</span>
+          </div>
+          <div class="supervision-topic">Topic: Comparative analysis of machine learning algorithms for fake news detection.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Naz Kilicoglu, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2024)</span>
+          </div>
+          <div class="supervision-topic">Topic: Assessing visual design and explainability levels in healthcare chatbots on user trust, adherence and satisfaction.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Quint Smits, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2023)</span>
+          </div>
+          <div class="supervision-topic">Topic: Deep reinforcement learning approach to general game testing.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Christophe Friezas Gonçalves, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2023)</span>
+          </div>
+          <div class="supervision-topic">Topic: A deep learning approach on fusion technique comparison applied to affordance classification.</div>
+        </li>
+
+        <li>
+          <div class="supervision-topline">
+            <span class="supervision-name">Dominic Armand Stamatoiu, CSAI, Tilburg University</span>
+            <span class="supervision-date">(2023)</span>
+          </div>
+          <div class="supervision-topic">Topic: AI-oriented communication in a game engine with hybrid multi-agent systems using reinforcement learning.</div>
+        </li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
