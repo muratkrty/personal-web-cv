@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+  <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-162961681-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-162961681-1');
+    </script>
+
+    
+    <base href="..">
+    <meta name="description" content="Conference Template">
+    <link rel="shortcut icon" type="image/png" href="assets/favicon.png"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto%7CRoboto+Slab" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" media="all" href="assets/main.css"/>
+    <script src="assets/MathJax/MathJax.js?config=default"></script>
+    <meta name="resource-type" content="document">
+    <meta name="distribution" content="global">
+    <meta name="KeyWords" content="Conference">
+    <title>Syllabus</title>
+
+
+    <style>
+      #syl {
+      border-collapse: collapse;
+      width: 100%;
+
+      }
+
+      #syl td, #syl th {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      }
+
+      #syl th {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #f2f2f2;
+      color: black;
+      border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="banner">
+      <img src="assets/banner.jpg" alt="Seminar course on mulitmodal machine learning">
+    </div>
+
+    
+    <table class="navigation">
+      <tr>
+        <td class="navigation">
+          <a  title="Multimodal machine learning" href=".">Home</a>
+        </td>
+
+        <td class="navigation">
+          <a class="current" title="Syllabus" href="syllabus">Syllabus</a> 
+        </td>
+        <td class="navigation">
+          <a  title="Resources" href="resources">Resources</a>
+        </td>
+        <td class="navigation">
+          <a title="Assignments" href="assignments">Assignments</a>
+        </td>
+      </tr>
+    </table>
+
+
+    <h3>Syllabus</h3>
+    <p align="justify">
+      The <strong>tentative</strong> syllabus is given below. Please be informed that the timeline and lecture topics are
+      subject to change. For each week, we will regularly update the course material, assignments, and suggested readings.
+    </p>
+    <br>
+    <div align="justify">
+      <table id="syl">
+	<tr >
+	  <th><strong>Week</strong></th><th><strong>Date</strong></th><th><strong>Description</strong></th><th><strong>Readings</strong></th>
+	</tr>
+	<tr>
+	  <td>W1</td>
+	  <td>20/04</td>
+	  <td>
+	    <b> Course overview and logistics </b><br> 
+	    * The brief history of machine learning and Humanoid robotics <br>
+	    * Introduction to FOSS robot simulators <br>
+	    * Math and programming resources for multimodal machine learning <br>
+	  </td>
+	  <td>
+	    <a target="_blank" href="https://cs231n.github.io/python-numpy-tutorial/">Python/Numpy tutorial</a> <br>
+	    <a target="_blank" href="https://www.deeplearningbook.org/contents/part_basics.html">DL Book, Part 1</a> <br>
+	    <a target="_blank" href="https://scm.cms.hu-berlin.de/adapt/robot-programming-intro/-/wikis/Humanoid-robot-simulators">Robot
+	      simulators</a> <br>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td>W2</td>
+	  <td>27/04</td>
+	  <td>
+	    <b> Intro to machine learning and robotic sensors </b><br> 
+	    * ML terminology: targets, features, priors, models, hyperparameters, etc.<br>
+	    * Robotic sensors: camera, depth, position encoders, ultrasound, infrared, and lasers<br>
+	    * Fantastic mulitmodal datasets and where to find them <br>
+	  </td>
+	  <td>
+	    <a target="_blank" href="https://www.deeplearningbook.org/contents/part_basics.html">DL Book, Part 1</a> <br>
+	    <a target="_blank" href="https://datasetsearch.research.google.com/">Dataset search</a>, <br>
+	    <a target="_blank" href="https://www.kaggle.com/datasets?search=robotics">Kaggle datasets</a>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td>W3</td>
+	  <td>04/05</td>
+	  <td>
+	    <b> Intro to neural networks (NNs), multimodal fusion techniques and software stack</b><br> 
+	    * Challenges in multimodal learning: data representation and fusion<br>
+	    * NN basics: single and multilayer perceptron, parameter initialization, gradient descent, backpropagation,
+	    activation and loss functions, etc.<br>
+	    * Multimodal fusion techniques: data level, decision level, and intermediate level fusion <br>
+	  </td>
+	  <td>
+	    <a target="_blank" href="https://www.tensorflow.org/tutorials">TensorFlow/Keras tutorial</a> <br>
+	    <a target="_blank" href="https://www.deeplearningbook.org/contents/part_basics.html">DL Book, Ch 6</a> <br>
+	    <a target="_blank" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8409927">The pepper robot </a> <br>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td>W4</td>
+	  <td>11/05</td>
+	  <td>
+	    <b> Intro to Convolutional Neural Networks (CNNs)</b><br> 
+	    * CNNs concepts: convolution, pooling, stride, padding, etc. <br>
+	    * CNN architectures: Neocognitron, LeNet, AlexNet, VGGNet, ResNet, etc.<br>
+	    * Forming intermediate sensory representation with CNNs<br>
+	  </td>
+	  <td>
+	    <a target="_blank" href="https://www.deeplearningbook.org/contents/part_basics.html">DL Book, Ch 9</a> <br>
+	    <a target="_blank" href="https://poloclub.github.io/cnn-explainer/">CNN visualizer</a>
+	    <a target="_blank" href="https://distill.pub/2017/feature-visualization/">Feature visualization</a> <br>
+	  </td>
+	</tr>
+
+	<tr>
+	  <td>W5</td>
+	  <td>25/05</td>
+	  <td>
+	    <b> Reinforcement learning basics and deep reinforcement learning</b><br> 
+	    * RL concepts: Markov decision processes, exploration/exploitation, convergence requirements,
+	    model-free methods (e.g., Q learning, SARSA), etc. <br>
+	    * Challenges in RL: credit assignment, exploration/exploitation trade-off, etc. <br>
+	    * Deep Q Learning variations: DQN, Double DQN, Dueling DQN, DQN experience replay, etc. <br>
+	    
+	    
+	  </td>
+	  <td>
+	    <a target="_blank" href="http://incompleteideas.net/book/RLbook2018.pdf">RL Book, Ch 3, Ch 6 </a> <br>
+	    <a target="_blank" href="https://spinningup.openai.com/en/latest/spinningup/keypapers.html">Key papers in RL</a><br>
+	    <a target="_blank" href=" https://openai.com/resources/">OpenAI RL resources</a><br>
+	  </td>
+	</tr>
+
+
+	<tr>
+	  <td>W6</td>
+	  <td>18/05</td>
+	  <td>
+	    <b> Intro to unsupervised learning</b><br> 
+	    * Applications of unsupervised learning: vector quatization, clustering, feature extraction. <br>
+	    * Learning methods: K-Means, competitive learning and self-organizing maps <br>
+	    * Unsupervised learning robot architectures: PyEra and SOIMA <br>
+	  </td>
+	  <td>
+	    <a target="_blank" href="https://github.com/mpatacchiola/pyERA">PyEra</a> <br>
+	    <a target="_blank" href="https://scikit-learn.org/stable/modules/clustering.html#clustering">SciKit Clustering</a> <br>
+	    <a target="_blank" href="https://web.stanford.edu/~hastie/Papers/ESLII.pdf"> Elements of statistical learning Ch 14.3, 14.4</a><br>
+	  </td>
+	</tr>
+
+
+
+	<tr>
+	  <td>W7-W12</td>
+	  <td>01/06-18/07</td>
+	  <td>
+	    <b> Project presentations
+	    
+	  </td>
+	  <td>
+	  </td>
+	</tr>
+
+
+
+      </table>
+    </div>
+
+    <br> <br><br><br>
+
+    <table class="footer">
+      <tr>
+        <td class="footer">The template was modified by Murat Kirtay by using <br>
+	  <a target="_blank" href="http://math.ucr.edu/~mpierce/">Mike Pierce's</a></td> 
+        <td class="footer">&copy; Conference Organizers.</td> 
+      </tr>
+    </table>
+
+
+  </body>
+
+</html>
+
