@@ -1,0 +1,1097 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>/*__TITLE__*/</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --surface-2:#EAEEEC; --line:#D6DDD8; --line-strong:#B9C4BD; --grid:#E4E9E6;
+  --ink:#14231D; --ink-2:#4A5B53; --ink-3:#7A8A82;
+  --accent:#1B7F5E; --accent-ink:#FFFFFF; --accent-soft:#DDF0E7;
+  --lav:#6F6AC7; --lav-soft:#E7E6F8; --warn:#B45309; --warn-soft:#FDEBD3; --danger:#B42318;
+  /* segment palette: fixed order, validated (adjacent CVD dE 13.0) */
+  --s1:#1b7f5e; --s2:#2a78d6; --s3:#e87ba4; --s4:#eda100; --s5:#6f6ac7; --s6:#eb6834; --s7:#7a8a82; --s8:#b9c4bd;
+  /* sequential (green) */
+  --q1:#DDF0E7; --q2:#B6E0CC; --q3:#8CC9AF; --q4:#5FAE8E; --q5:#3A946F; --q6:#1B7F5E; --q7:#125C43;
+  /* diverging for agree/disagree: orange <-> blue, gray middle */
+  --dis2:#c9501a; --dis1:#f0a37c; --neu:#D9DEDB; --agr1:#8fbbee; --agr2:#1f5fb0;
+  --shadow:0 1px 2px rgba(20,35,29,.06),0 10px 30px -18px rgba(20,35,29,.25);
+  --radius:14px; --radius-s:8px;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1613; --surface:#172119; --surface-2:#1F2B24; --line:#2A3830; --line-strong:#3D4E45; --grid:#243129;
+    --ink:#E6ECE8; --ink-2:#AEBBB3; --ink-3:#7F8E86;
+    --accent:#5CC59A; --accent-ink:#0B1A13; --accent-soft:#17352A;
+    --lav:#B7B3F2; --lav-soft:#26254A; --warn:#F2B25C; --warn-soft:#3A2A12; --danger:#F08A80;
+    --s1:#2f9f78; --s2:#3987e5; --s3:#d55181; --s4:#c98500; --s5:#9085e9; --s6:#d95926; --s7:#7f8e86; --s8:#55655d;
+    --q1:#1B3A2D; --q2:#1F4D3A; --q3:#246147; --q4:#2C7856; --q5:#3A946F; --q6:#5CC59A; --q7:#8FDDBB;
+    --dis2:#e8743b; --dis1:#8a4a2a; --neu:#3A4741; --agr1:#2f5a8f; --agr2:#5fa2f2;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px -18px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1613; --surface:#172119; --surface-2:#1F2B24; --line:#2A3830; --line-strong:#3D4E45; --grid:#243129;
+  --ink:#E6ECE8; --ink-2:#AEBBB3; --ink-3:#7F8E86;
+  --accent:#5CC59A; --accent-ink:#0B1A13; --accent-soft:#17352A;
+  --lav:#B7B3F2; --lav-soft:#26254A; --warn:#F2B25C; --warn-soft:#3A2A12; --danger:#F08A80;
+  --s1:#2f9f78; --s2:#3987e5; --s3:#d55181; --s4:#c98500; --s5:#9085e9; --s6:#d95926; --s7:#7f8e86; --s8:#55655d;
+  --q1:#1B3A2D; --q2:#1F4D3A; --q3:#246147; --q4:#2C7856; --q5:#3A946F; --q6:#5CC59A; --q7:#8FDDBB;
+  --dis2:#e8743b; --dis1:#8a4a2a; --neu:#3A4741; --agr1:#2f5a8f; --agr2:#5fa2f2;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px -18px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);overflow-x:clip}
+body{font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-block:0 40px}
+h1,h2,h3,h4{font-family:var(--display);font-weight:700;letter-spacing:-.01em;text-wrap:balance;margin:0}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+.wrap{max-width:1320px;margin:0 auto;padding-inline:20px}
+/* header */
+.top{border-bottom:1px solid var(--line);background:var(--surface);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;padding-block:14px}
+.brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.brand h1{white-space:nowrap}
+.brand .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.brand h1{font-size:20px}
+.brand .sub{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-left:8px}
+.source{margin-left:auto;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--line-strong);background:var(--bg);font-size:13px;cursor:pointer}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:600}
+.chip[disabled]{opacity:.5;cursor:default}
+.chip .n{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.btn{appearance:none;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:600;font-size:13px;cursor:pointer}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.small{padding:4px 10px;font-size:12px}
+.btn:focus-visible,.chip:focus-visible,.tab:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);background:var(--surface)}
+.tabs .wrap{display:flex;gap:2px;overflow-x:auto}
+.tab{appearance:none;background:none;border:0;border-bottom:3px solid transparent;padding:12px 14px;font-weight:600;font-size:14px;color:var(--ink-2);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.tab .k{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:999px;background:var(--surface-2);color:var(--ink-3)}
+.tab.on{color:var(--ink);border-bottom-color:var(--accent)}
+.tab.on .k{background:var(--accent);color:var(--accent-ink)}
+/* live replay bar */
+.replay{background:var(--surface);border-bottom:1px solid var(--line)}
+.replay[hidden]{display:none}
+.replay .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-block:10px}
+.replay .lbl{font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px}
+.replay .lbl .live{width:9px;height:9px;border-radius:50%;background:var(--danger);box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 25%,transparent);animation:pulse 1.2s infinite}
+.replay .lbl .live.done{background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.replay .track{flex:1 1 160px;height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;min-width:120px}
+.replay .fill{height:100%;background:var(--accent);border-radius:4px;transition:width .15s linear}
+.replay .count{font-family:var(--mono);font-size:13px;color:var(--ink-2);white-space:nowrap;min-width:150px}
+.replay .just{flex:1 1 100%;font-size:13px;color:var(--ink-2);min-height:18px}
+.replay .just b{font-weight:600;color:var(--ink)}
+.replay .just .who{font-family:var(--mono);font-size:11px;color:var(--ink-3);margin-right:6px}
+.replay select{padding:4px 8px}
+.waiting{padding:26px;text-align:center;color:var(--ink-3);font-size:14px;border:1px dashed var(--line-strong);border-radius:var(--radius);background:var(--bg)}
+@media (prefers-reduced-motion: reduce){.replay .lbl .live{animation:none}}
+.start{max-width:760px;margin:8vh auto 0;padding:36px 32px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);text-align:center}
+.start h2{font-size:clamp(26px,4vw,38px);margin-top:10px}
+.start p{color:var(--ink-2);margin:14px auto 0;max-width:62ch;font-size:16px}
+.start-actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+.btn.big{padding:14px 26px;font-size:16px}
+.btn.ghost{border-color:transparent;color:var(--ink-2)}
+.btn[disabled]{opacity:.6;cursor:progress}
+.tabs[hidden],.source[hidden]{display:none}
+.view{display:none;padding-block:22px}
+.view.on{display:block}
+.view-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.view-head h2{font-size:26px}
+.view-head p{color:var(--ink-2);max-width:70ch;margin-top:4px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+/* grid & cards */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(12,1fr)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow);min-width:0}
+.card h3{font-size:16px;font-weight:600;font-family:var(--body);display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.card h3 .q{font-family:var(--mono);font-size:11px;color:var(--ink-3);font-weight:500}
+.card .sub{color:var(--ink-3);font-size:13px;margin-top:2px}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c6{grid-column:span 6}.c4{grid-column:span 4}.c3{grid-column:span 3}
+@media (max-width:1000px){.c8,.c6,.c4,.c3{grid-column:span 6}}
+@media (max-width:640px){.c8,.c6,.c4,.c3{grid-column:span 12}.wrap{padding-inline:16px}}
+/* KPI tiles */
+.kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.kpi .l{font-size:13px;color:var(--ink-2)}
+.kpi .v{font-family:var(--body);font-weight:600;font-size:32px;line-height:1.1;margin-top:4px}
+.kpi .d{font-size:12px;color:var(--ink-3);margin-top:4px}
+/* svg chart chrome */
+.chart{width:100%;height:auto;display:block;font-family:var(--body);margin-top:10px}
+.chart text{fill:var(--ink-2);font-size:12px}
+.chart .lbl{fill:var(--ink)}
+.chart .muted{fill:var(--ink-3)}
+.chart .val{fill:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.chart .mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.chart .grid line{stroke:var(--grid);stroke-width:1}
+.chart .axis line{stroke:var(--line-strong)}
+.chart .hit{fill:transparent;cursor:default}
+.chart .bar{fill:var(--accent)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.35;max-width:280px;opacity:0;transition:opacity .1s;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.tip b{font-weight:600}
+.tip.show{opacity:1}
+/* tables */
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--ink-2);font-size:12px;position:sticky;top:0;background:var(--surface)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:12px}
+.tablewrap{overflow-x:auto;margin-top:10px;max-height:520px;overflow-y:auto;border:1px solid var(--line);border-radius:var(--radius-s)}
+.heat td{padding:0}
+.heat .cell{display:block;padding:4px 6px;text-align:right;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.heat .rowl{white-space:nowrap;max-width:300px;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;font-size:12px;font-weight:600;background:var(--surface-2)}
+.pill i{width:9px;height:9px;border-radius:50%;display:inline-block}
+/* insights */
+.insights{display:grid;gap:10px}
+.insights li{list-style:none;padding:10px 12px;background:var(--bg);border-left:3px solid var(--accent);border-radius:6px;font-size:14px}
+.insights li b{color:var(--ink)}
+ul.insights{margin:10px 0 0;padding:0}
+/* segments */
+.seg-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.seg-controls label{font-size:13px;color:var(--ink-2)}
+select{padding:6px 10px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface)}
+.segcards{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.segcard{border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;background:var(--surface);border-top:4px solid var(--sc)}
+.segcard h4{font-size:15px;font-family:var(--body);font-weight:600;display:flex;align-items:center;gap:8px}
+.segcard .n{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+.segcard .tag{font-size:13px;color:var(--ink-2);margin-top:4px}
+.segcard dl{margin:8px 0 0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:12px}
+.segcard dt{color:var(--ink-3)} .segcard dd{margin:0;font-family:var(--mono)}
+/* persona */
+.persona{display:grid;grid-template-columns:200px 1.3fr 1fr 1fr .8fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.persona > div{padding:16px;border-right:1px solid var(--line);min-width:0}
+.persona > div:last-child{border-right:0}
+.persona .col{display:grid;grid-template-rows:auto auto}
+.pv-photo{background:#FFF4FA;min-height:190px;display:grid;place-items:center;text-align:center;color:var(--ink-3);font-size:12px;padding:12px;font-style:italic}
+:root[data-theme="dark"] .pv-photo,:root:not([data-theme="light"]) .pv-photo{background:var(--surface-2)}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]) .pv-photo{background:#FFF4FA}}
+.pv-id{background:var(--lav-soft);padding:16px}
+.pv-id h3{font-size:22px;color:var(--ink)}
+.pv-id .tag{font-style:italic;color:var(--lav);margin-top:2px;font-size:14px}
+.pv-id .facts{margin-top:14px;display:grid;gap:10px}
+.pv-id .facts div{font-size:13px}
+.pv-id .facts small{display:block;color:var(--ink-3);font-size:11px}
+.pv-id .facts b{font-weight:600}
+.pv-quote{background:color-mix(in srgb,var(--lav-soft) 60%,var(--surface));font-family:var(--display);font-weight:500;font-size:17px;line-height:1.4;color:var(--accent);padding:16px}
+.pv-quote::before{content:"“";font-size:40px;line-height:0;vertical-align:-14px;margin-right:4px;color:var(--lav)}
+.pv-bio{background:color-mix(in srgb,var(--lav-soft) 60%,var(--surface))}
+.pv h4{font-family:var(--display);font-size:16px;color:var(--accent);margin-bottom:8px}
+.pv p,.pv li{font-size:13.5px;line-height:1.45}
+.pv ul{margin:0;padding-left:16px}
+.pv li{margin:0 0 6px}
+.pv .sub{font-size:11px;color:var(--ink-3);font-style:italic;margin:-6px 0 8px}
+.bars{display:grid;gap:8px}
+.bars .row{display:grid;grid-template-columns:1fr auto;gap:4px 8px;font-size:12px}
+.bars .row .track{grid-column:1/3;height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+.bars .row .fill{height:100%;background:var(--warn);border-radius:3px}
+.bars .row .fill.dev{background:var(--s2)}
+.bars .row .v{font-family:var(--mono);color:var(--ink-2)}
+.pv-brands li{list-style:none;padding:6px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.pv-brands ul{padding:0}
+[contenteditable]{outline:none;border-radius:4px}
+[contenteditable]:hover{box-shadow:0 0 0 2px var(--lav-soft)}
+[contenteditable]:focus{box-shadow:0 0 0 2px var(--lav)}
+.evidence td:first-child{width:40%}
+.pov{display:grid;grid-template-columns:220px 1fr;gap:8px 16px;font-size:14px}
+.pov b{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.04em}
+.hmw li{margin-bottom:6px}
+.segpick{display:flex;flex-wrap:wrap;gap:8px}
+.note{font-size:12px;color:var(--ink-3);margin-top:8px}
+.drop{border:2px dashed var(--line-strong);border-radius:var(--radius);padding:16px;text-align:center;color:var(--ink-2);font-size:14px;background:var(--bg)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop input{display:none}
+.import-grid{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+@media (max-width:800px){.import-grid{grid-template-columns:1fr}.persona{grid-template-columns:1fr 1fr}.persona>div{border-right:0;border-bottom:1px solid var(--line)}.pov{grid-template-columns:1fr}}
+@media (max-width:560px){.persona{grid-template-columns:1fr}}
+textarea.paste{width:100%;min-height:90px;border:1px solid var(--line);border-radius:var(--radius-s);padding:10px;background:var(--surface);font-family:var(--mono);font-size:12px}
+.status{font-size:13px;color:var(--ink-2);margin-top:8px}
+.status.err{color:var(--danger)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media print{.top,.tabs,.view-head .actions,.source,.segpick,.note{display:none !important}.view{display:none}.view.on{display:block}body{padding:0}.card{box-shadow:none;break-inside:avoid}}
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="dot" aria-hidden="true"></span><h1>iCanvas needfinding analysis</h1><span class="sub" id="brandSub">HCI · Weeks 02–03 · from data to persona</span></div>
+    <div class="source" id="source" hidden>
+      <button class="chip on" id="srcSample" title="Replay the simulated users from the workbook">Simulated users <span class="n" id="srcSampleN"></span></button>
+      <button class="chip" id="srcImport">Load other data…</button>
+      <button class="btn small" id="dlCsv" title="Download the current dataset as CSV (paste into the Excel Responses sheet)">Download CSV</button>
+    </div>
+  </div>
+</header>
+<nav class="tabs" aria-label="Analysis steps" hidden><div class="wrap">
+  <button class="tab on" data-view="patterns"><span class="k">1</span>Find patterns</button>
+  <button class="tab" data-view="segments"><span class="k">2</span>Cluster segments</button>
+  <button class="tab" data-view="persona"><span class="k">3</span>Write a persona</button>
+  <button class="tab" data-view="data"><span class="k">≡</span>Data</button>
+  <button class="tab" data-view="import" id="tabImport"><span class="k">⇪</span>Load data</button>
+</div></nav>
+<div class="replay" id="replay" hidden>
+  <div class="wrap">
+    <span class="lbl"><span class="live" id="liveDot"></span><span id="liveTitle">Replaying the survey</span></span>
+    <span class="count" id="liveCount">0 / 0 responses received</span>
+    <div class="track"><div class="fill" id="liveFill" style="width:0%"></div></div>
+    <button class="btn small" id="livePause">Pause</button>
+    <label style="font-size:13px;color:var(--ink-2)">Speed <select id="liveSpeed"><option value="1">1×</option><option value="2" selected>2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
+    <button class="btn small primary" id="liveFinish">Load all now</button>
+    <button class="btn small" id="liveRestart">Replay again</button>
+    <div class="just" id="liveJust"></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <!-- ============================ START ============================ -->
+  <section class="view on" id="view-start">
+    <div class="start">
+      <div class="eyebrow">iCanvas needfinding · HCI Weeks 02–03</div>
+      <h2>From survey answers to a persona, in three steps</h2>
+      <p>This page takes the simulated users from the <b>Responses</b> sheet of <code>iCanvas_needfinding.xlsx</code>, replays their submissions as if the survey were running now, and builds the analysis as they arrive: patterns, k-means segments and a persona for each segment.</p>
+      <div class="start-actions">
+        <button class="btn primary big" id="simulateBtn">Simulate users</button>
+        <button class="btn big ghost" id="startImport">Load my own data instead</button>
+      </div>
+      <p class="note" id="startNote">Reads the workbook when this page is served next to it; opened as a local file it uses the embedded copy of the same simulated users.</p>
+    </div>
+  </section>
+  <!-- ============================ IMPORT ============================ -->
+  <section class="view" id="view-import">
+    <div class="view-head"><div><div class="eyebrow">Data source</div><h2>Load a workbook or other responses</h2><p>On opening, this page reads the <b>Responses</b> sheet of <code>iCanvas_needfinding.xlsx</code> (the simulated users) and replays their submissions. Drop another copy of the workbook, a CSV, or JSON files here to analyse those instead. Columns must match the codebook (id, A1_role, …, E3_more).</p></div></div>
+    <div class="import-grid">
+      <div class="card">
+        <h3>Files</h3>
+        <label class="drop" id="drop">Drop <b>iCanvas_needfinding.xlsx</b>, a CSV or JSON files here, or <u>choose files</u><input type="file" id="file" multiple accept=".xlsx,.xlsm,.csv,.json,.ndjson,.txt,text/csv,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label>
+        <div class="status" id="fileStatus"></div>
+      </div>
+      <div class="card">
+        <h3>Paste or fetch</h3>
+        <textarea class="paste" id="paste" placeholder='Paste CSV text, a JSON array, one JSON object per line… or a URL of a published Google Sheet (File → Share → Publish to web → CSV)'></textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          <button class="btn primary" id="pasteBtn">Load pasted text</button>
+          <button class="btn" id="urlBtn">Fetch URL</button>
+        </div>
+        <div class="status" id="pasteStatus"></div>
+      </div>
+      <div class="card c12" style="grid-column:1/-1">
+        <h3>Options</h3>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:8px;font-size:14px">
+          <label><input type="radio" name="mode" value="replace" checked> Replace the current dataset</label>
+          <label><input type="radio" name="mode" value="append"> Append to the current dataset</label>
+          <label><input type="checkbox" id="dedupe" checked> Skip rows whose id already exists</label>
+        </div>
+        <p class="note">Served from a web server next to the workbook, the page reads the .xlsx automatically. Opened as a local file, browsers block that read, so it falls back to the embedded copy of the same simulated users; drop the workbook above to read it directly.</p>
+        <div class="status" id="importSummary"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ PATTERNS ============================ -->
+  <section class="view" id="view-patterns">
+    <div class="view-head"><div><div class="eyebrow">Step 2 of the persona process</div><h2>Analyse data to find patterns</h2><p>Descriptive statistics over every question, cross-tabs by role and device, and the reliability of the inverted Likert pair. Hover any mark for exact values; the Data tab holds the full table.</p></div></div>
+    <div class="kpis" id="kpis"></div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card c4"><h3>Who answered <span class="q">A1</span></h3><div id="ch-role"></div></div>
+      <div class="card c4"><h3>How often they open Canvas <span class="q">B1</span></h3><div id="ch-freq"></div></div>
+      <div class="card c4"><h3>Most-used device <span class="q">B3</span></h3><div id="ch-primary"></div></div>
+      <div class="card c4"><h3>Parts of Canvas used last week <span class="q">B5</span></h3><div class="sub">multi-select, % of respondents</div><div id="ch-features"></div></div>
+      <div class="card c4"><h3>How they found out about the last deadline <span class="q">B6</span></h3><div class="sub">multi-select, % of respondents</div><div id="ch-deadline"></div></div>
+      <div class="card c4"><h3>Other tools they rely on <span class="q">B9</span></h3><div class="sub">multi-select, % of respondents</div><div id="ch-tools"></div></div>
+      <div class="card c8"><h3>Experience statements <span class="q">C1–C10</span></h3><div class="sub">share disagreeing (1–3, left) · neutral (4) · agreeing (5–7, right); mean on the right</div><div id="ch-likert"></div></div>
+      <div class="card c4"><h3>Overall satisfaction <span class="q">C11</span></h3><div class="sub">1 = extremely dissatisfied · 7 = extremely satisfied</div><div id="ch-sat"></div>
+        <h3 style="margin-top:14px">Difficulty of the last task <span class="q">C12</span></h3><div class="sub">1 = very difficult · 5 = very easy</div><div id="ch-ease"></div></div>
+      <div class="card c4"><h3>Priorities <span class="q">D1</span></h3><div class="sub">mean rank, 1 = most important; label = % ranked first</div><div id="ch-rank"></div></div>
+      <div class="card c4"><h3>Role × frequency <span class="q">A1 × B1</span></h3><div class="sub">respondents per cell; darker = more</div><div id="ch-rolefreq"></div></div>
+      <div class="card c4"><h3>Satisfaction by group <span class="q">C11 × A1 / B3 / B1</span></h3><div class="sub">mean 1–7 with n</div><div id="ch-satby"></div></div>
+      <div class="card c4"><h3>Reliability of the inverted pair <span class="q">C1 ↔ C2</span></h3><div class="sub">C2 reversed as 8 − C2 (slide: duplicate pair with inverted question)</div><div id="ch-pair"></div></div>
+      <div class="card c8"><h3>Correlations between experience items <span class="q">C1–C12</span></h3><div class="sub">Pearson r; orange negative, blue positive</div><div id="ch-corr" style="overflow-x:auto;margin-top:8px"></div></div>
+      <div class="card c12"><h3>Key patterns</h3><div class="sub">Generated from the current dataset; these are the observations to carry into clustering and the persona.</div><ul class="insights" id="insights"></ul></div>
+    </div>
+  </section>
+
+  <!-- ============================ SEGMENTS ============================ -->
+  <section class="view" id="view-segments">
+    <div class="view-head"><div><div class="eyebrow">Step 3 of the persona process</div><h2>Cluster user segments</h2><p>k-means on standardised behaviour and attitude features (frequency, visit length, phone as main device, tech comfort, outside commitments, times lost, the 12 experience items and the 6 ranks). Behaviour, not job title, defines a segment; roles are shown afterwards to check the overlap.</p></div>
+      <div class="seg-controls actions"><label for="kSel">k =</label><select id="kSel"></select><button class="btn" id="recluster">Recompute</button><span class="note" id="segNote"></span></div></div>
+    <div class="grid">
+      <div class="card c4"><h3>Choosing k</h3><div class="sub">inertia (within-cluster sum of squares) and silhouette for k = 2…8</div><div id="ch-elbow"></div><div id="ch-sil"></div></div>
+      <div class="card c8"><h3>Respondents on the first two principal components</h3><div class="sub" id="pcaSub"></div><div id="ch-pca"></div></div>
+      <div class="card c12"><h3>Segments</h3><div class="segcards" id="segcards"></div></div>
+      <div class="card c12"><h3>Segment profile matrix</h3><div class="sub">means or shares per segment; the shading compares segments within each row (darker = higher). Click a row label to sort segments by it.</div><div class="tablewrap" id="profile"></div></div>
+      <div class="card c6"><h3>Roles cut across segments</h3><div class="sub">respondents per role and segment</div><div class="tablewrap" id="rolexseg"></div></div>
+      <div class="card c6"><h3>Voices per segment</h3><div class="sub">the open answer (E1) of the respondent closest to each segment centre</div><div id="voices"></div></div>
+    </div>
+  </section>
+
+  <!-- ============================ PERSONA ============================ -->
+  <section class="view" id="view-persona">
+    <div class="view-head"><div><div class="eyebrow">Step 4 of the persona process</div><h2>Write a persona based on a segment</h2><p>A first draft generated from the segment’s statistics, laid out like the persona template. Every field is editable in place; the evidence table below shows where each claim comes from. Pick a segment, edit, then print or save as PDF.</p></div>
+      <div class="actions" style="display:flex;gap:8px;align-items:center"><button class="btn" id="printBtn">Print / save PDF</button></div></div>
+    <div class="segpick" id="segpick"></div>
+    <div class="persona pv" id="persona" style="margin-top:14px"></div>
+    <div class="grid" style="margin-top:14px">
+      <div class="card c7" style="grid-column:span 7"><h3>Evidence for every claim</h3><div class="sub">segment statistic vs. all respondents</div><div class="tablewrap evidence" id="evidence"></div></div>
+      <div class="card c5" style="grid-column:span 5"><h3>Point of view</h3><div class="sub">Week 03 formulation; the last line is yours to write</div><div class="pov" id="pov" style="margin-top:10px"></div>
+        <h3 style="margin-top:18px">How might we…</h3><ul class="hmw" id="hmw"></ul></div>
+    </div>
+  </section>
+
+  <!-- ============================ DATA ============================ -->
+  <section class="view" id="view-data">
+    <div class="view-head"><div><div class="eyebrow">Table view</div><h2>Responses</h2><p id="dataSub"></p></div><div class="actions"><button class="btn" id="dlCsv2">Download CSV</button></div></div>
+    <div class="card"><div class="tablewrap" style="max-height:70vh" id="datatable"></div></div>
+  </section>
+</main>
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>
+// =====================================================================================
+// data + codebook
+// =====================================================================================
+const Q = /*__QUESTIONS__*/;
+const SAMPLE = /*__DATA__*/;
+const QS = {}; Q.sections.forEach(s => s.questions.forEach(q => QS[q.id] = q));
+const col = id => `${QS[id].id}_${QS[id].key}`;
+const opts = id => QS[id].options;
+const label = (id, k) => { const o = opts(id).find(o => o.k === String(k)); return o ? o.label : String(k); };
+const vmap = id => Object.fromEntries(opts(id).map(o => [o.k, o.v]));
+const LIKERT = ["C1","C2","C3","C4","C5","C6","C7","C8","C9","C10"];
+const ITEMS = [...LIKERT, "C11", "C12"];
+const SHORT = {C1:"Find material quickly", C2:"Finding takes too long", C3:"Notifications keep me on top", C4:"Irrelevant notifications", C5:"Phone as good as computer", C6:"Courses organised alike", C7:"Grades up to date", C8:"Manage without help", C9:"Easy to read/see/hear", C10:"Working with others supported", C11:"Overall satisfaction", C12:"Ease of last task (1–5)"};
+const SHORT_B1 = {lt1:"<1×/wk", "1":"1×/wk", "2-3":"2–3×/wk", "4-6":"4–6×/wk", daily:"daily", several:"several/day"};
+const PHRASE_B6 = {canvas_cal:"the Canvas calendar or To-do list", email:"a Canvas e-mail", push:"a push notification on the phone", in_class:"an announcement in class", peer:"a classmate or colleague", syllabus:"the syllabus", own_cal:"their own calendar", late:"finding out late"};
+const PHRASE_B9 = {paper:"a paper planner", calendar:"their own calendar (Google, Outlook or Apple)", notes:"a notes app (Notion, Obsidian or OneNote)", chat:"a course chat group (WhatsApp, Signal or Discord)", email:"e-mail", none:"Canvas alone"};
+const SHORT_B9 = {paper:"Paper planner", calendar:"Own calendar", notes:"Notes app", chat:"Chat group", email:"E-mail", none:"Canvas only"};
+const SHORT_B6 = {canvas_cal:"Canvas calendar / To-do", email:"Canvas e-mail", push:"Push notification", in_class:"Announced in class", peer:"Classmate / colleague", syllabus:"Syllabus / course guide", own_cal:"Own calendar", late:"Found out late / missed"};
+const SEGCOL = ["--s1","--s2","--s3","--s4","--s5","--s6","--s7","--s8"];
+const SHAPES = ["circle","square","triangle","diamond","cross","star","hex","tri2"];
+
+let data = [];        // current rows (objects)
+let source = "sample";
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = (x, d=1) => (x === null || x === undefined || Number.isNaN(x)) ? "–" : Number(x).toFixed(d);
+const pct = (x, d=0) => (x === null || x === undefined || Number.isNaN(x)) ? "–" : (x*100).toFixed(d) + "%";
+const mean = a => { a = a.filter(Number.isFinite); return a.length ? a.reduce((s,x)=>s+x,0)/a.length : NaN; };
+const sd = a => { a = a.filter(Number.isFinite); if (a.length < 2) return NaN; const m = mean(a); return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/(a.length-1)); };
+const median = a => { a = a.filter(Number.isFinite).sort((x,y)=>x-y); const n=a.length; return n ? (n%2 ? a[(n-1)/2] : (a[n/2-1]+a[n/2])/2) : NaN; };
+const corr = (a, b) => { const idx = a.map((x,i)=>i).filter(i => Number.isFinite(a[i]) && Number.isFinite(b[i])); const x = idx.map(i=>a[i]), y = idx.map(i=>b[i]); const mx = mean(x), my = mean(y); let sxy=0,sxx=0,syy=0; for (let i=0;i<x.length;i++){sxy+=(x[i]-mx)*(y[i]-my);sxx+=(x[i]-mx)**2;syy+=(y[i]-my)**2;} return sxx&&syy ? sxy/Math.sqrt(sxx*syy) : NaN; };
+const share = (rows, f) => rows.length ? rows.filter(f).length / rows.length : NaN;
+
+// derive numeric helpers on each row
+function prepare(rows){
+  const vB1 = vmap("B1"), vB4 = vmap("B4"), vA7 = vmap("A7"), vB8 = vmap("B8"), vA6 = vmap("A6");
+  rows.forEach(r => {
+    ITEMS.forEach(id => { const c = col(id); r[c] = r[c] === "" || r[c] === undefined ? NaN : Number(r[c]); });
+    r[col("A9")] = Number(r[col("A9")]);
+    opts("D1").forEach(o => r[`D1_rank__${o.k}`] = Number(r[`D1_rank__${o.k}`]));
+    ["A8","B2","B5","B6","B9"].forEach(id => opts(id).forEach(o => { const c = `${col(id)}__${o.k}`; r[c] = Number(r[c]) === 1 ? 1 : 0; }));
+    r._freq = vB1[r[col("B1")]] ?? NaN; r._session = vB4[r[col("B4")]] ?? NaN; r._hours = vA7[r[col("A7")]] ?? NaN; r._lost = vB8[r[col("B8")]] ?? NaN; r._courses = vA6[r[col("A6")]] ?? NaN;
+    r._phone = r[col("B3")] === "phone" ? 1 : 0; r._c2rev = 8 - r[col("C2")];
+    r._access = (r["A8_access__none"] === 0 && r["A8_access__na"] === 0) ? 1 : 0;
+    r._instructor = ["lecturer","ta"].includes(r[col("A1")]) ? 1 : 0;
+  });
+  return rows;
+}
+
+// =====================================================================================
+// tooltip
+// =====================================================================================
+const tip = $("#tip");
+function showTip(e, html){ tip.innerHTML = html; tip.classList.add("show"); moveTip(e); }
+function moveTip(e){ const x = e.clientX + 14, y = e.clientY + 14; const r = tip.getBoundingClientRect(); tip.style.left = Math.min(x, innerWidth - r.width - 8) + "px"; tip.style.top = Math.min(y, innerHeight - r.height - 8) + "px"; }
+function hideTip(){ tip.classList.remove("show"); }
+document.addEventListener("mousemove", e => { if (tip.classList.contains("show")) moveTip(e); });
+function attachTips(svg){ svg.querySelectorAll("[data-tip]").forEach(el => { el.addEventListener("mouseenter", e => showTip(e, el.dataset.tip)); el.addEventListener("mouseleave", hideTip); el.addEventListener("focus", e => showTip({clientX: el.getBoundingClientRect().left, clientY: el.getBoundingClientRect().top}, el.dataset.tip)); el.addEventListener("blur", hideTip); }); }
+
+// =====================================================================================
+// chart helpers (inline SVG)
+// =====================================================================================
+function svgEl(w, h){ const s = document.createElementNS("http://www.w3.org/2000/svg","svg"); s.setAttribute("viewBox", `0 0 ${w} ${h}`); s.setAttribute("class","chart"); s.setAttribute("role","img"); return s; }
+function h(tag, attrs, text){ const e = document.createElementNS("http://www.w3.org/2000/svg", tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text !== undefined) e.textContent = text; return e; }
+function barPath(x, y, w, hgt, r, horizontal){ // rounded at the data end, square at the baseline
+  if (hgt <= 0 || w <= 0) return "";
+  r = Math.min(r, horizontal ? w : hgt, horizontal ? hgt/2 : w/2);
+  if (horizontal) return `M${x},${y} H${x+w-r} a${r},${r} 0 0 1 ${r},${r} V${y+hgt-r} a${r},${r} 0 0 1 -${r},${r} H${x} Z`;
+  return `M${x},${y+hgt} V${y+r} a${r},${r} 0 0 1 ${r},-${r} H${x+w-r} a${r},${r} 0 0 1 ${r},${r} V${y+hgt} Z`;
+}
+// horizontal bars: items [{label, value, n, sub}], value as fraction (isPct) or number
+function hbars(host, items, {isPct=true, max=null, color="var(--accent)", labelW=170, height=null, valueFmt=null, sort=false} = {}){
+  host.innerHTML = "";
+  if (sort) items = [...items].sort((a,b)=>b.value-a.value);
+  const W = 480, rowH = 26, top = 6, H = height || top + items.length*rowH + 8;
+  const svg = svgEl(W, H); const mx = max ?? (isPct ? Math.max(1e-9, Math.min(1, Math.max(...items.map(i=>i.value||0))*1.15)) : Math.max(...items.map(i=>i.value||0))*1.15 || 1);
+  const x0 = labelW, plotW = W - labelW - 56;
+  items.forEach((it, i) => {
+    const y = top + i*rowH; const w = Math.max(0, (it.value||0)/mx*plotW);
+    const maxc = Math.floor(labelW/6.4); svg.appendChild(h("text",{x:x0-8,y:y+17,"text-anchor":"end",class:"lbl"}, it.label.length>maxc ? it.label.slice(0,maxc-1)+"…" : it.label));
+    svg.appendChild(h("path",{d:barPath(x0, y+5, w, 16, 4, true), fill: it.color || color}));
+    const vt = valueFmt ? valueFmt(it) : (isPct ? pct(it.value) : fmt(it.value,2));
+    svg.appendChild(h("text",{x:x0+w+6,y:y+17,class:"val mono"}, vt));
+    const hit = h("rect",{x:0,y:y,width:W,height:rowH,class:"hit",tabindex:0}); hit.dataset.tip = `<b>${esc(it.label)}</b><br>${esc(vt)}${it.n!==undefined?` · n = ${it.n}`:""}${it.sub?`<br>${esc(it.sub)}`:""}`; svg.appendChild(hit);
+  });
+  svg.appendChild(h("line",{x1:x0,x2:x0,y1:top,y2:H-4,class:"axis",stroke:"var(--line-strong)"}));
+  host.appendChild(svg); attachTips(svg); return svg;
+}
+// vertical columns for ordinal distributions: items [{label, count}]
+function columns(host, items, {color="var(--accent)", H=170, note=null} = {}){
+  host.innerHTML = "";
+  const W = 480, left = 10, bottom = 34, top = 18, n = items.length, total = items.reduce((s,i)=>s+i.count,0) || 1;
+  const svg = svgEl(W, H); const mx = Math.max(...items.map(i=>i.count), 1);
+  const bw = Math.min(24, (W-left-10)/n - 10), slot = (W-left-10)/n;
+  items.forEach((it, i) => {
+    const x = left + i*slot + (slot-bw)/2; const hh = (it.count/mx)*(H-bottom-top); const y = H-bottom-hh;
+    svg.appendChild(h("path",{d:barPath(x, y, bw, hh, 4, false), fill: color}));
+    svg.appendChild(h("text",{x:x+bw/2,y:H-bottom+16,"text-anchor":"middle",class:"muted"}, it.label.length>10 ? it.label.slice(0,9)+"…" : it.label));
+    if (it.count === mx || i === 0 || i === n-1) svg.appendChild(h("text",{x:x+bw/2,y:y-5,"text-anchor":"middle",class:"val mono"}, String(it.count)));
+    const hit = h("rect",{x:left+i*slot,y:0,width:slot,height:H,class:"hit",tabindex:0}); hit.dataset.tip = `<b>${esc(it.full||it.label)}</b><br>${it.count} respondents · ${pct(it.count/total)}`; svg.appendChild(hit);
+  });
+  svg.appendChild(h("line",{x1:left,x2:W-10,y1:H-bottom,y2:H-bottom,class:"axis",stroke:"var(--line-strong)"}));
+  if (note) svg.appendChild(h("text",{x:W-10,y:12,"text-anchor":"end",class:"muted mono"}, note));
+  host.appendChild(svg); attachTips(svg); return svg;
+}
+// diverging stacked bars for Likert items
+function likertChart(host, rows){
+  host.innerHTML = "";
+  const W = 720, rowH = 30, labelW = 210, plotW = 380, top = 22, H = top + LIKERT.length*rowH + 10;
+  const svg = svgEl(W, H); const cx = labelW + plotW/2;
+  svg.appendChild(h("line",{x1:cx,x2:cx,y1:top-6,y2:H-6,stroke:"var(--line-strong)","stroke-width":1}));
+  [["disagree","end",cx-8],["agree","start",cx+8]].forEach(([t,a,x]) => svg.appendChild(h("text",{x,y:12,"text-anchor":a,class:"muted"}, t)));
+  LIKERT.forEach((id, i) => {
+    const v = rows.map(r => r[col(id)]).filter(Number.isFinite); const n = v.length || 1;
+    const c = k => v.filter(x=>x===k).length/n;
+    const sd2 = c(1)+c(2), sd1 = c(3), neu = c(4), ag1 = c(5), ag2 = c(6)+c(7); const m = mean(v);
+    const y = top + i*rowH + 6, hh = 18, half = plotW/2 - 4;
+    // left side
+    let x = cx - neu*half/2;
+    const segs = [[neu/2, "var(--neu)", "Neutral (4)", neu], [sd1, "var(--dis1)", "Moderately disagree (3)", sd1], [sd2, "var(--dis2)", "Disagree (1–2)", sd2]];
+    let cur = cx - (neu/2)*half;
+    svg.appendChild(h("rect",{x:cur, y, width:neu*half, height:hh, fill:"var(--neu)", rx:2}));
+    let xl = cur; [[sd1,"var(--dis1)"],[sd2,"var(--dis2)"]].forEach(([s,f]) => { const w = s*half; xl -= w; if (w>0) svg.appendChild(h("rect",{x:xl+1, y, width:Math.max(0,w-2), height:hh, fill:f, rx:2})); });
+    let xr = cur + neu*half; [[ag1,"var(--agr1)"],[ag2,"var(--agr2)"]].forEach(([s,f]) => { const w = s*half; if (w>0) svg.appendChild(h("rect",{x:xr+1, y, width:Math.max(0,w-2), height:hh, fill:f, rx:2})); xr += w; });
+    svg.appendChild(h("text",{x:labelW-10,y:y+14,"text-anchor":"end",class:"lbl"}, `${id} · ${SHORT[id]}`));
+    svg.appendChild(h("text",{x:labelW+plotW+10,y:y+14,class:"val mono"}, fmt(m,1)));
+    svg.appendChild(h("text",{x:xl-5,y:y+14,"text-anchor":"end",class:"muted mono"}, pct(sd1+sd2)));
+    svg.appendChild(h("text",{x:xr+5,y:y+14,class:"muted mono"}, pct(ag1+ag2)));
+    const hit = h("rect",{x:0,y:y-6,width:W,height:rowH,class:"hit",tabindex:0});
+    hit.dataset.tip = `<b>${esc(QS[id].text)}</b><br>disagree ${pct(sd1+sd2)} · neutral ${pct(neu)} · agree ${pct(ag1+ag2)}<br>mean ${fmt(m,2)} · SD ${fmt(sd(v),2)} · median ${fmt(median(v),0)} · n = ${n}`;
+    svg.appendChild(hit);
+  });
+  host.appendChild(svg); attachTips(svg);
+  const lg = document.createElement("div"); lg.className = "legend";
+  lg.innerHTML = [["var(--dis2)","Disagree (1–2)"],["var(--dis1)","Moderately disagree (3)"],["var(--neu)","Neutral (4)"],["var(--agr1)","Moderately agree (5)"],["var(--agr2)","Agree (6–7)"]].map(([c,t]) => `<span><i style="background:${c}"></i>${t}</span>`).join("");
+  host.appendChild(lg);
+}
+// heatmap table (sequential)
+function heat(host, rowLabels, colLabels, M, {fmtCell=(v)=>String(v), rowScale=false, diverging=false, tipFn=null, onRowClick=null} = {}){
+  host.innerHTML = "";
+  const t = document.createElement("table"); t.className = "heat";
+  const th = document.createElement("tr"); th.innerHTML = `<th></th>` + colLabels.map(c => `<th class="num" title="${esc(c)}">${esc(c.length>22 ? c.slice(0,21)+"…" : c)}</th>`).join(""); t.appendChild(th);
+  const flat = M.flat().filter(Number.isFinite); const gmin = Math.min(...flat), gmax = Math.max(...flat);
+  M.forEach((row, i) => {
+    const tr = document.createElement("tr"); const vals = row.filter(Number.isFinite); const mn = rowScale ? Math.min(...vals) : gmin, mx = rowScale ? Math.max(...vals) : gmax;
+    const lab = document.createElement("th"); lab.className = "rowl"; lab.textContent = rowLabels[i]; lab.title = rowLabels[i]; if (onRowClick) { lab.style.cursor = "pointer"; lab.addEventListener("click", () => onRowClick(i)); } tr.appendChild(lab);
+    row.forEach((v, j) => {
+      const td = document.createElement("td"); let bg = "transparent", fg = "var(--ink)";
+      if (Number.isFinite(v)) {
+        if (diverging) { const a = Math.min(1, Math.abs(v)); bg = v >= 0 ? `color-mix(in srgb, var(--agr2) ${Math.round(a*85)}%, var(--surface))` : `color-mix(in srgb, var(--dis2) ${Math.round(a*85)}%, var(--surface))`; if (a > .6) fg = "#fff"; }
+        else { const tnorm = mx > mn ? (v-mn)/(mx-mn) : .5; bg = `color-mix(in srgb, var(--q6) ${Math.round(tnorm*80)}%, var(--surface))`; if (tnorm > .7) fg = "var(--accent-ink)"; }
+      }
+      td.innerHTML = `<span class="cell" style="background:${bg};color:${fg}">${esc(fmtCell(v, i, j))}</span>`;
+      if (tipFn) { td.tabIndex = 0; td.dataset.tip = tipFn(i, j, v); }
+      tr.appendChild(td);
+    });
+    t.appendChild(tr);
+  });
+  host.appendChild(t); attachTips(host);
+}
+// scatter with hue x shape (all-pairs form -> composite encoding)
+function marker(x, y, shape, size, fill){
+  const s = size;
+  switch(shape){
+    case "square": return h("rect",{x:x-s,y:y-s,width:2*s,height:2*s,fill,stroke:"var(--surface)","stroke-width":2});
+    case "triangle": return h("path",{d:`M${x},${y-s*1.2} L${x+s*1.15},${y+s*0.8} L${x-s*1.15},${y+s*0.8} Z`,fill,stroke:"var(--surface)","stroke-width":2});
+    case "diamond": return h("path",{d:`M${x},${y-s*1.3} L${x+s*1.3},${y} L${x},${y+s*1.3} L${x-s*1.3},${y} Z`,fill,stroke:"var(--surface)","stroke-width":2});
+    case "cross": return h("path",{d:`M${x-s*1.2},${y-s*0.4} h${s*0.8} v-${s*0.8} h${s*0.8} v${s*0.8} h${s*0.8} v${s*0.8} h-${s*0.8} v${s*0.8} h-${s*0.8} v-${s*0.8} h-${s*0.8} Z`,fill,stroke:"var(--surface)","stroke-width":2});
+    case "star": { let d=""; for(let i=0;i<10;i++){const r=i%2?s*0.6:s*1.4; const a=-Math.PI/2+i*Math.PI/5; d+=(i?"L":"M")+(x+r*Math.cos(a))+","+(y+r*Math.sin(a));} return h("path",{d:d+"Z",fill,stroke:"var(--surface)","stroke-width":2}); }
+    case "hex": { let d=""; for(let i=0;i<6;i++){const a=Math.PI/6+i*Math.PI/3; d+=(i?"L":"M")+(x+s*1.2*Math.cos(a))+","+(y+s*1.2*Math.sin(a));} return h("path",{d:d+"Z",fill,stroke:"var(--surface)","stroke-width":2}); }
+    case "tri2": return h("path",{d:`M${x},${y+s*1.2} L${x+s*1.15},${y-s*0.8} L${x-s*1.15},${y-s*0.8} Z`,fill,stroke:"var(--surface)","stroke-width":2});
+    default: return h("circle",{cx:x,cy:y,r:s,fill,stroke:"var(--surface)","stroke-width":2});
+  }
+}
+function scatter(host, pts, segNames){
+  host.innerHTML = ""; if (!pts.length) return;
+  const W = 760, H = 420, m = {l:44,r:16,t:12,b:36}; const svg = svgEl(W, H);
+  const xs = pts.map(p=>p.x), ys = pts.map(p=>p.y); const pad = .4;
+  const xmin = Math.min(...xs)-pad, xmax = Math.max(...xs)+pad, ymin = Math.min(...ys)-pad, ymax = Math.max(...ys)+pad;
+  const X = v => m.l + (v-xmin)/(xmax-xmin)*(W-m.l-m.r), Y = v => H-m.b - (v-ymin)/(ymax-ymin)*(H-m.t-m.b);
+  const g = h("g",{class:"grid"});
+  for (let v = Math.ceil(xmin); v <= Math.floor(xmax); v++) { g.appendChild(h("line",{x1:X(v),x2:X(v),y1:m.t,y2:H-m.b})); svg.appendChild(h("text",{x:X(v),y:H-m.b+16,"text-anchor":"middle",class:"muted mono"}, String(v))); }
+  for (let v = Math.ceil(ymin); v <= Math.floor(ymax); v++) { g.appendChild(h("line",{x1:m.l,x2:W-m.r,y1:Y(v),y2:Y(v)})); svg.appendChild(h("text",{x:m.l-8,y:Y(v)+4,"text-anchor":"end",class:"muted mono"}, String(v))); }
+  svg.appendChild(g);
+  svg.appendChild(h("text",{x:W-m.r,y:H-6,"text-anchor":"end",class:"muted"}, "PC1"));
+  svg.appendChild(h("text",{x:m.l-30,y:m.t+8,class:"muted"}, "PC2"));
+  pts.forEach(p => { const mk = marker(X(p.x), Y(p.y), SHAPES[p.seg], 5.5, `var(${SEGCOL[p.seg]})`); mk.setAttribute("tabindex","0"); mk.dataset.tip = `<b>${esc(p.id)}</b> · ${esc(segNames[p.seg])}<br>${esc(p.role)} · ${esc(p.freq)} · ${esc(p.device)}<br>satisfaction ${p.sat}/7`; svg.appendChild(mk); });
+  host.appendChild(svg); attachTips(svg);
+  const lg = document.createElement("div"); lg.className = "legend";
+  segNames.forEach((nm, i) => { const s = document.createElement("span"); const sv = svgEl(16,16); sv.style.width="16px"; sv.style.height="16px"; sv.style.margin=0; sv.appendChild(marker(8,8,SHAPES[i],4.5,`var(${SEGCOL[i]})`)); s.appendChild(sv); s.appendChild(document.createTextNode(nm)); lg.appendChild(s); });
+  host.appendChild(lg);
+}
+function lineChart(host, xs, ys, {title="", mark=null, fmtY=(v)=>fmt(v,0)} = {}){
+  host.innerHTML = ""; if (xs.length < 2) return;
+  const W = 480, H = 150, m = {l:56,r:16,t:22,b:28}; const svg = svgEl(W, H);
+  const ymin = Math.min(...ys), ymax = Math.max(...ys), span = (ymax-ymin)||1;
+  const X = i => m.l + i/(xs.length-1)*(W-m.l-m.r), Y = v => H-m.b - (v-ymin)/span*(H-m.t-m.b);
+  svg.appendChild(h("text",{x:m.l,y:12,class:"lbl"}, title));
+  const g = h("g",{class:"grid"}); [ymin, (ymin+ymax)/2, ymax].forEach(v => { g.appendChild(h("line",{x1:m.l,x2:W-m.r,y1:Y(v),y2:Y(v)})); svg.appendChild(h("text",{x:m.l-6,y:Y(v)+4,"text-anchor":"end",class:"muted mono"}, fmtY(v))); }); svg.appendChild(g);
+  svg.appendChild(h("path",{d: ys.map((v,i)=>(i?"L":"M")+X(i)+","+Y(v)).join(" "), fill:"none", stroke:"var(--accent)", "stroke-width":2, "stroke-linejoin":"round", "stroke-linecap":"round"}));
+  ys.forEach((v,i) => { const c = h("circle",{cx:X(i),cy:Y(v),r: xs[i]===mark ? 6 : 4, fill: xs[i]===mark ? "var(--lav)" : "var(--accent)", stroke:"var(--surface)","stroke-width":2, tabindex:0}); c.dataset.tip = `<b>k = ${xs[i]}</b><br>${esc(title)}: ${fmtY(v)}`; svg.appendChild(c); svg.appendChild(h("text",{x:X(i),y:H-m.b+16,"text-anchor":"middle",class:"muted mono"}, String(xs[i]))); });
+  host.appendChild(svg); attachTips(svg);
+}
+
+// =====================================================================================
+// STEP 2: patterns
+// =====================================================================================
+function renderPatterns(rows){
+  const N = rows.length;
+  const sat = rows.map(r=>r[col("C11")]);
+  const alphaInfo = pairAlpha(rows);
+  const findability = mean(rows.map(r => (r[col("C1")] + r._c2rev)/2));
+  const daily = share(rows, r => ["daily","several"].includes(r[col("B1")]));
+  const missed = share(rows, r => r["B6_deadline__late"] === 1);
+  const lost2 = share(rows, r => ["2-3","4-6","7+"].includes(r[col("B8")]));
+  $("#kpis").innerHTML = [
+    ["Respondents", N, `${rows.filter(r=>["bsc","msc","phd"].includes(r[col("A1")])).length} students · ${rows.filter(r=>r._instructor).length} lecturers/TAs · ${rows.filter(r=>r[col("A1")]==="staff").length} staff`],
+    ["Open Canvas at least daily", pct(daily), "B1: once a day or several times a day"],
+    ["Overall satisfaction", fmt(mean(sat),1) + "<span style='font-size:16px;color:var(--ink-3)'> /7</span>", `SD ${fmt(sd(sat),1)} · ${pct(share(rows,r=>r[col("C11")]>=5))} satisfied (5–7)`],
+    ["Findability score", fmt(findability,1) + "<span style='font-size:16px;color:var(--ink-3)'> /7</span>", `mean of C1 and reversed C2 · α = ${fmt(alphaInfo.alpha,2)}`],
+    ["Failed to find something ≥2× last week", pct(lost2), "B8"],
+    ["Found out about last deadline late", pct(missed), "B6: 'I found out late or missed it'"],
+  ].map(([l,v,d]) => `<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="d">${d}</div></div>`).join("");
+
+  const dist = id => opts(id).map(o => ({label:o.label.replace(/ \(.*\)$/,""), full:o.label, count: rows.filter(r=>r[col(id)]===o.k).length}));
+  hbars($("#ch-role"), dist("A1").map(d => ({label:d.label, value:d.count/N, n:d.count})), {labelW:150});
+  columns($("#ch-freq"), opts("B1").map(o=>({label:SHORT_B1[o.k], full:o.label, count: rows.filter(r=>r[col("B1")]===o.k).length})), {note:`mean ${fmt(mean(rows.map(r=>r._freq)),2)} on 1–6`});
+  hbars($("#ch-primary"), dist("B3").map(d => ({label:d.label, value:d.count/N, n:d.count})), {labelW:130});
+  const shortLab = (id,o) => id==="B6" ? SHORT_B6[o.k] : id==="B9" ? SHORT_B9[o.k] : o.label.replace(/ \(.*\)$/,"");
+  const multi = id => opts(id).filter(o=>!o.exclusive).map(o => ({label:shortLab(id,o), value: share(rows, r => r[`${col(id)}__${o.k}`]===1), n: rows.filter(r=>r[`${col(id)}__${o.k}`]===1).length}));
+  hbars($("#ch-features"), multi("B5"), {sort:true, labelW:150});
+  hbars($("#ch-deadline"), multi("B6").map(m => m.label.startsWith("Found out late") ? {...m, color:"var(--warn)"} : m), {sort:true, labelW:165});
+  hbars($("#ch-tools"), multi("B9"), {sort:true, labelW:120});
+  likertChart($("#ch-likert"), rows);
+  columns($("#ch-sat"), [1,2,3,4,5,6,7].map(k => ({label:String(k), full:`${k} · ${QS.C11.labels[k-1]}`, count: rows.filter(r=>r[col("C11")]===k).length})), {H:150, note:`mean ${fmt(mean(sat),2)} · median ${fmt(median(sat),0)}`});
+  columns($("#ch-ease"), [1,2,3,4,5].map(k => ({label:String(k), full:`${k} · ${QS.C12.labels[k-1]}`, count: rows.filter(r=>r[col("C12")]===k).length})), {H:130, note:`mean ${fmt(mean(rows.map(r=>r[col("C12")])),2)}`});
+  // ranking: mean rank (lower = more important) -> show as bars of (7 - mean) with label
+  const rk = opts("D1").map(o => { const v = rows.map(r=>r[`D1_rank__${o.k}`]); const m = mean(v); return {label:o.label, value: 7-m, meanRank:m, first: share(rows, r=>r[`D1_rank__${o.k}`]===1)}; });
+  hbars($("#ch-rank"), rk, {isPct:false, max:6.5, sort:true, labelW:200, valueFmt: it => `${fmt(it.meanRank,2)} · ${pct(it.first)} first`});
+  // role x freq heatmap
+  const roles = opts("A1"), freqs = opts("B1");
+  heat($("#ch-rolefreq"), roles.map(o=>o.label.replace(/ \(.*\)$/,"")), freqs.map(o=>SHORT_B1[o.k]), roles.map(ro => freqs.map(fo => rows.filter(r=>r[col("A1")]===ro.k && r[col("B1")]===fo.k).length)), {fmtCell:v=>v||"", tipFn:(i,j,v)=>`<b>${esc(roles[i].label)}</b> × ${esc(freqs[j].label)}<br>${v} respondents`});
+  // satisfaction by group
+  const by = (id) => opts(id).map(o => { const sub = rows.filter(r=>r[col(id)]===o.k); return sub.length ? {label:o.label.replace(/ \(.*\)$/,""), value: mean(sub.map(r=>r[col("C11")])), n: sub.length} : null; }).filter(Boolean);
+  const satby = [...by("A1"), ...by("B3").map(x=>({...x, color:"var(--s2)"})), ...by("B1").map(x=>({...x, color:"var(--lav)"}))];
+  hbars($("#ch-satby"), satby, {isPct:false, max:7, labelW:150, valueFmt: it => `${fmt(it.value,2)} (n=${it.n})`});
+  const lg = document.createElement("div"); lg.className="legend"; lg.innerHTML = `<span><i style="background:var(--accent)"></i>by role</span><span><i style="background:var(--s2)"></i>by most-used device</span><span><i style="background:var(--lav)"></i>by frequency</span>`; $("#ch-satby").appendChild(lg);
+  // pair
+  $("#ch-pair").innerHTML = `<div class="kpis" style="margin-top:10px"><div class="kpi"><div class="l">Pearson r, C1 vs 8 − C2</div><div class="v">${fmt(alphaInfo.r,2)}</div><div class="d">should be strongly positive</div></div><div class="kpi"><div class="l">Cronbach’s α (2 items)</div><div class="v">${fmt(alphaInfo.alpha,2)}</div><div class="d">2r / (1 + r) · ≥ 0.7 = consistent</div></div><div class="kpi"><div class="l">Inconsistent respondents</div><div class="v">${alphaInfo.inconsistent}</div><div class="d">agree (≥5) with both C1 and C2 · candidate straight-liners</div></div></div>`;
+  // corr heatmap
+  const M = ITEMS.map(a => ITEMS.map(b => corr(rows.map(r=>r[col(a)]), rows.map(r=>r[col(b)]))));
+  heat($("#ch-corr"), ITEMS.map(i=>`${i} ${SHORT[i]}`), ITEMS, M, {diverging:true, fmtCell:(v,i,j)=> i===j ? "" : fmt(v,2), tipFn:(i,j,v)=>`<b>${ITEMS[i]}</b> × <b>${ITEMS[j]}</b><br>r = ${fmt(v,2)}<br>${esc(SHORT[ITEMS[i]])} / ${esc(SHORT[ITEMS[j]])}`});
+  // insights
+  $("#insights").innerHTML = insights(rows).map(s => `<li>${s}</li>`).join("");
+}
+function pairAlpha(rows){
+  const a = rows.map(r=>r[col("C1")]), b = rows.map(r=>r._c2rev); const r = corr(a,b);
+  return {r, alpha: 2*r/(1+r), inconsistent: rows.filter(x => x[col("C1")]>=5 && x[col("C2")]>=5).length};
+}
+function insights(rows){
+  const N = rows.length, out = [];
+  const m = id => mean(rows.map(r=>r[col(id)]));
+  const daily = share(rows, r => ["daily","several"].includes(r[col("B1")])), short = share(rows, r => ["lt2","2-5"].includes(r[col("B4")]));
+  const satBy = k => { const s = rows.filter(r=>r[col("B1")]===k); return s.length ? mean(s.map(r=>r[col("C11")])) : NaN; };
+  out.push(`<b>Canvas is a daily habit for ${pct(daily)}</b> of respondents, but ${pct(short)} keep visits under five minutes. Heavy users are the most satisfied (several times a day: ${fmt(satBy("several"),1)}/7; about once a week: ${fmt(satBy("1"),1)}/7).`);
+  const lows = ITEMS.slice(0,10).map(id => [id, m(id)]).sort((a,b)=>a[1]-b[1]).slice(0,2);
+  out.push(`<b>Weakest experience items:</b> ${lows.map(([id,v]) => `${id} “${SHORT[id]}” (${fmt(v,1)}/7)`).join(" and ")}. ${pct(share(rows, r => ["2-3","4-6","7+"].includes(r[col("B8")])))} failed to find something at least twice last week.`);
+  const cs = ITEMS.slice(0,10).map(id => [id, corr(rows.map(r=>r[col(id)]), rows.map(r=>r[col("C11")]))]).sort((a,b)=>Math.abs(b[1])-Math.abs(a[1]))[0];
+  out.push(`<b>What travels with satisfaction:</b> ${cs[0]} “${SHORT[cs[0]]}” has the strongest correlation with overall satisfaction (r = ${fmt(cs[1],2)}).`);
+  const dl = k => share(rows, r => r[`B6_deadline__${k}`]===1);
+  out.push(`<b>Notifications are noise, not signal:</b> “irrelevant notifications” averages ${fmt(m("C4"),1)}/7 against ${fmt(m("C3"),1)}/7 for “notifications keep me on top”. Peers told ${pct(dl("peer"))} about their last deadline, own calendars ${pct(dl("own_cal"))}, the Canvas calendar ${pct(dl("canvas_cal"))}; ${pct(dl("late"))} found out late or missed it.`);
+  const phone = rows.filter(r=>r._phone===1);
+  if (phone.length) out.push(`<b>Mobile is second-class:</b> “phone works as well as a computer” scores ${fmt(m("C5"),1)}/7 overall and ${fmt(mean(phone.map(r=>r[col("C5")])),1)}/7 among the ${phone.length} people whose main device is a smartphone, who are nevertheless ${mean(phone.map(r=>r[col("C11")])) > m("C11") ? "more" : "less"} satisfied than average (${fmt(mean(phone.map(r=>r[col("C11")])),1)} vs ${fmt(m("C11"),1)}).`);
+  const rk = opts("D1").map(o => [o.label, mean(rows.map(r=>r[`D1_rank__${o.k}`]))]).sort((a,b)=>a[1]-b[1]);
+  out.push(`<b>Priorities:</b> ${rk[0][0].toLowerCase()} (mean rank ${fmt(rk[0][1],1)}) and ${rk[1][0].toLowerCase()} (${fmt(rk[1][1],1)}) lead; ${rk[rk.length-1][0].toLowerCase()} comes last (${fmt(rk[rk.length-1][1],1)}) although “working with others is supported” scores only ${fmt(m("C10"),1)}/7.`);
+  const heavy = rows.filter(r => ["17-24","25+"].includes(r[col("A7")])), acc = rows.filter(r=>r._access===1);
+  if (heavy.length) out.push(`<b>Extreme users surface real barriers:</b> the ${heavy.length} respondents with 17+ hours of outside commitments open Canvas less (${fmt(mean(heavy.map(r=>r._freq)),1)} vs ${fmt(mean(rows.map(r=>r._freq)),1)} on 1–6) and ${pct(share(heavy, r=>r["B6_deadline__late"]===1))} of them found out about a deadline late${acc.length ? `; the ${acc.length} with accessibility needs rate “easy to read, see and hear” ${fmt(mean(acc.map(r=>r[col("C9")])),1)}/7 vs ${fmt(m("C9"),1)} overall` : ""}.`);
+  const tools = k => share(rows, r=>r[`B9_tools__${k}`]===1);
+  out.push(`<b>Everyone works around the system:</b> ${pct(tools("calendar"))} use their own calendar, ${pct(tools("chat"))} a chat group, ${pct(tools("notes"))} a notes app; ${pct(tools("none"))} rely on Canvas alone.`);
+  return out;
+}
+
+// =====================================================================================
+// STEP 3: clustering
+// =====================================================================================
+function features(rows){
+  const F = rows.map(r => [r._freq, r._session, r._phone, r[col("A9")], r._hours, r._lost, ...ITEMS.map(id=>r[col(id)]), ...opts("D1").map(o=>r[`D1_rank__${o.k}`])].map(v => Number.isFinite(v) ? v : 0));
+  const d = F[0].length, mu = Array(d).fill(0), sg = Array(d).fill(0);
+  F.forEach(x => x.forEach((v,j) => mu[j]+=v/F.length));
+  F.forEach(x => x.forEach((v,j) => sg[j]+=(v-mu[j])**2/F.length));
+  return F.map(x => x.map((v,j) => sg[j] ? (v-mu[j])/Math.sqrt(sg[j]) : 0));
+}
+function rng(seed){ let s = seed>>>0; return () => { s = (s*1664525 + 1013904223)>>>0; return s/4294967296; }; }
+const d2 = (a,b) => { let s=0; for (let i=0;i<a.length;i++) s+=(a[i]-b[i])**2; return s; };
+function kmeans(X, k, seed=2026, nInit=10){
+  let best = null;
+  for (let t=0;t<nInit;t++){
+    const rand = rng(seed + t*7919);
+    // k-means++
+    const C = [X[Math.floor(rand()*X.length)].slice()];
+    while (C.length < k){ const D = X.map(x => Math.min(...C.map(c=>d2(x,c)))); const tot = D.reduce((s,v)=>s+v,0); let r = rand()*tot, i=0; while (r > D[i] && i < D.length-1){ r -= D[i]; i++; } C.push(X[i].slice()); }
+    let lab = new Array(X.length).fill(-1);
+    for (let it=0; it<100; it++){
+      let changed = false;
+      X.forEach((x,i) => { let bi=0, bd=Infinity; C.forEach((c,j) => { const dd=d2(x,c); if (dd<bd){bd=dd;bi=j;} }); if (lab[i]!==bi){lab[i]=bi;changed=true;} });
+      const sums = C.map(()=>Array(X[0].length).fill(0)), cnt = C.map(()=>0);
+      X.forEach((x,i) => { cnt[lab[i]]++; x.forEach((v,j)=>sums[lab[i]][j]+=v); });
+      C.forEach((c,j) => { if (cnt[j]) c.forEach((_,d)=>c[d]=sums[j][d]/cnt[j]); });
+      if (!changed) break;
+    }
+    const inertia = X.reduce((s,x,i)=>s+d2(x,C[lab[i]]),0);
+    if (!best || inertia < best.inertia) best = {labels:lab, centers:C, inertia};
+  }
+  return best;
+}
+function silhouette(X, lab, k){
+  const n = X.length; if (k < 2 || n < 3) return NaN;
+  const D = X.map(a => X.map(b => Math.sqrt(d2(a,b))));
+  let tot = 0, cnt = 0;
+  for (let i=0;i<n;i++){
+    const own = []; const other = Array(k).fill(0).map(()=>[]);
+    for (let j=0;j<n;j++){ if (i===j) continue; if (lab[j]===lab[i]) own.push(D[i][j]); else other[lab[j]].push(D[i][j]); }
+    if (!own.length) continue;
+    const a = mean(own); const b = Math.min(...other.filter(o=>o.length).map(o=>mean(o)));
+    tot += (b-a)/Math.max(a,b); cnt++;
+  }
+  return cnt ? tot/cnt : NaN;
+}
+function pca2(X){
+  const n = X.length, d = X[0].length;
+  const C = Array(d).fill(0).map(()=>Array(d).fill(0));
+  X.forEach(x => { for (let i=0;i<d;i++) for (let j=i;j<d;j++) C[i][j] += x[i]*x[j]/(n-1); });
+  for (let i=0;i<d;i++) for (let j=0;j<i;j++) C[i][j] = C[j][i];
+  const comps = [], vals = [];
+  const A = C.map(r=>r.slice());
+  for (let c=0;c<2;c++){
+    let v = Array(d).fill(0).map((_,i)=>Math.sin(i+1+c)); let lam = 0;
+    for (let it=0; it<300; it++){ const w = A.map(row => row.reduce((s,a,j)=>s+a*v[j],0)); lam = Math.sqrt(w.reduce((s,x)=>s+x*x,0)); v = w.map(x=>x/lam); }
+    comps.push(v); vals.push(lam);
+    for (let i=0;i<d;i++) for (let j=0;j<d;j++) A[i][j] -= lam*v[i]*v[j];
+  }
+  const total = C.reduce((s,r,i)=>s+r[i],0);
+  // sign convention: make the loading on frequency (feature 0) positive on PC1 for readability
+  comps.forEach(v => { const idx = v.reduce((bi,x,i)=>Math.abs(x)>Math.abs(v[bi])?i:bi,0); if (v[idx] < 0) for (let i=0;i<d;i++) v[i] = -v[i]; });
+  return {scores: X.map(x => comps.map(v => v.reduce((s,a,i)=>s+a*x[i],0))), explained: vals.map(l=>l/total)};
+}
+const ARCHETYPES = {
+  sprinter:  {name:"Deadline Sprinters",  tag:"Phone-first students who open Canvas several times a day for seconds: deadlines, grades, room changes.", persona:{name:"Sanne de Vries", age:"21", gender:"Female", loc:"Student house in Tilburg (grew up in Eindhoven)", occ:"2nd-year BSc Cognitive Science & AI; 10 h/week at a supermarket", fam:"Single, four housemates, no kids", quote:"If it is not in my To-do list or in the WhatsApp group, it does not exist. I check Canvas on the bus, in the queue, in bed – but I only ever have thirty seconds.", brands:["WhatsApp (course groups)","Canvas Student app","Google Calendar","Instagram / TikTok","Spotify","NS app (train)","Albert Heijn (side job)"]}},
+  scholar:   {name:"Structured Scholars",  tag:"Master/PhD students on a laptop, long sessions in Modules and recordings; want consistency and search.", persona:{name:"Tomasz Nowak", age:"24", gender:"Male", loc:"Studio in Tilburg (from Kraków)", occ:"1st-year MSc Data Science & Society; research assistant 8 h/week", fam:"In a relationship, lives alone", quote:"Every course is organised differently, so I rebuild each one in Notion. Canvas is just where the files happen to live.", brands:["Notion / Obsidian","Google Calendar","Zotero","Canvas (laptop only)","Google Drive","Spotify"]}},
+  juggler:   {name:"Overloaded Jugglers",  tag:"Students with 17+ hours of work or care a week; check 2–3 times a week, run on e-mail, catch up in batches.", persona:{name:"Fatima el Amrani", age:"31", gender:"Female", loc:"Apartment in Tilburg-Noord", occ:"Part-time BSc Psychology (3rd year); 24 h/week in home care", fam:"Married, one child (4)", quote:"I have Sunday evening and Wednesday evening. Tell me in one minute what changed and what I have to do before the tutorial.", brands:["E-mail (Outlook)","Paper planner","WhatsApp","Lecture recordings","Google Calendar","Albert Heijn delivery"]}},
+  power:     {name:"Power Instructors",    tag:"Lecturers and TAs in Canvas all day: grading, announcements, groups; want bulk actions and fewer clicks.", persona:{name:"Dr. Eva Janssen", age:"38", gender:"Female", loc:"Tilburg (commutes from Breda)", occ:"Assistant professor, 2 courses, 180 students, 3 TAs", fam:"Partner, two kids", quote:"I spend more time on course admin than on teaching content. Every fix that takes two clicks per student costs me an afternoon.", brands:["Outlook + calendar","Excel","SpeedGrader","Zoom / Teams","Canvas (desktop)","Slack with TAs"]}},
+  reluctant: {name:"Reluctant Instructors",tag:"Senior lecturers who open Canvas about once a week on a desktop; low confidence, delegate to TAs and e-mail.", persona:{name:"Prof. Henk van der Berg", age:"57", gender:"Male", loc:"Goirle", occ:"Full professor; teaches one BSc and one MSc course", fam:"Married, adult children", quote:"I upload the slides after the lecture and hope they land in the right place. For everything else I ask my TA or the education office.", brands:["E-mail","Paper agenda","Word / PowerPoint","Desktop PC in the office","Education office helpdesk"]}},
+  access:    {name:"Access-First Learners",tag:"Students using screen readers, captions or reading support; blocked by unstructured pages and media.", persona:{name:"Lars Pedersen", age:"23", gender:"Male", loc:"Campus housing, Tilburg", occ:"BSc Data Science (2nd year); screen-reader and dyslexia support user", fam:"Single", quote:"Every page is work. Headings, real text and captions are not a favour to me, they are the difference between studying and giving up.", brands:["NVDA / VoiceOver","Immersive Reader","Notion / OneNote","Google Calendar","Captioned recordings","WhatsApp"]}},
+};
+function nameCluster(prof, used){
+  // rule-based archetype match on the profile, then a generic fallback
+  const cand = [];
+  if (prof.access >= .5) cand.push("access");
+  if (prof.instructor >= .5 && prof.freq >= 4.5) cand.push("power");
+  if (prof.instructor >= .5 && prof.freq < 4.5) cand.push("reluctant");
+  if (prof.instructor < .5 && prof.hours >= 2.5) cand.push("juggler");
+  if (prof.instructor < .5 && prof.phone >= .5) cand.push("sprinter");
+  if (prof.instructor < .5) cand.push("scholar");
+  cand.push("power","reluctant","juggler","sprinter","scholar","access");
+  const key = cand.find(k => !used.has(k)); used.add(key); return key;
+}
+let SEG = null;   // {k, labels, order, names, keys, profiles, pcs, ks, inertia, sil}
+function profileOf(rows){
+  return {n: rows.length, freq: mean(rows.map(r=>r._freq)), session: mean(rows.map(r=>r._session)), phone: share(rows,r=>r._phone===1), app: share(rows,r=>r["B2_devices__phone_app"]===1), tech: mean(rows.map(r=>r[col("A9")])), hours: mean(rows.map(r=>r._hours)), heavy: share(rows,r=>["17-24","25+"].includes(r[col("A7")])), access: share(rows,r=>r._access===1), lost: mean(rows.map(r=>r._lost)), missed: share(rows,r=>r["B6_deadline__late"]===1), instructor: share(rows,r=>r._instructor===1), daily: share(rows,r=>["daily","several"].includes(r[col("B1")])), short: share(rows,r=>["lt2","2-5"].includes(r[col("B4")])), sat: mean(rows.map(r=>r[col("C11")]))};
+}
+function runClustering(rows, k, nInit=10){
+  const ks = [2,3,4,5,6,7,8].filter(kk => kk < rows.length/3);
+  if (rows.length < 12 || !ks.length) { SEG = null; rows.forEach(r => r.Segment = ""); return null; }
+  const X = features(rows);
+  const fits = ks.map(kk => kmeans(X, kk, 2026, nInit)); const inertia = fits.map(f=>f.inertia); const sil = fits.map((f,i)=>silhouette(X, f.labels, ks[i]));
+  if (!ks.includes(k)) k = ks.includes(6) ? 6 : ks[ks.length-1];
+  const fit = fits[ks.indexOf(k)];
+  // order clusters by size
+  const sizes = Array(k).fill(0); fit.labels.forEach(l=>sizes[l]++);
+  const order = sizes.map((s,i)=>i).sort((a,b)=>sizes[b]-sizes[a]);
+  const remap = {}; order.forEach((c,i)=>remap[c]=i);
+  const labels = fit.labels.map(l=>remap[l]);
+  const groups = Array(k).fill(0).map((_,i)=>rows.filter((r,j)=>labels[j]===i));
+  const profiles = groups.map(profileOf);
+  const used = new Set(); const keys = profiles.map(p => nameCluster(p, used));
+  const names = keys.map((key,i) => `S${i+1} ${ARCHETYPES[key].name}`);
+  const pcs = pca2(X);
+  // medoid per cluster (closest to centre) for the voice
+  const centers = order.map(c => fit.centers[c]);
+  const medoid = groups.map((g,i) => { let bi=-1, bd=Infinity; rows.forEach((r,j)=>{ if (labels[j]!==i) return; const dd=d2(X[j], centers[i]); if (dd<bd){bd=dd;bi=j;} }); return rows[bi]; });
+  SEG = {k, labels, names, keys, profiles, groups, pcs, ks, inertia, sil, medoid};
+  rows.forEach((r,i) => r.Segment = names[labels[i]]);
+  return SEG;
+}
+function renderWaiting(n){
+  const msg = `<div class="waiting">Clustering needs at least 12 responses; ${n} received so far. The patterns tab already updates with every response.</div>`;
+  ["#ch-elbow","#ch-sil","#ch-pca","#profile","#rolexseg","#voices"].forEach(sel => $(sel).innerHTML = "");
+  $("#segcards").innerHTML = msg; $("#segNote").textContent = ""; $("#pcaSub").textContent = "";
+  $("#segpick").innerHTML = ""; $("#persona").innerHTML = msg; $("#evidence").innerHTML = ""; $("#pov").innerHTML = ""; $("#hmw").innerHTML = "";
+}
+function renderSegments(rows){
+  const S = SEG; if (!S) { renderWaiting(rows.length); return; }
+  $("#segNote").textContent = `${S.k} segments · silhouette ${fmt(S.sil[S.ks.indexOf(S.k)],3)} · seeded k-means++, 10 restarts`;
+  lineChart($("#ch-elbow"), S.ks, S.inertia, {title:"Inertia (lower is tighter)", mark:S.k});
+  lineChart($("#ch-sil"), S.ks, S.sil, {title:"Silhouette (higher is better separated)", mark:S.k, fmtY:v=>fmt(v,3)});
+  $("#pcaSub").textContent = `PC1 explains ${pct(S.pcs.explained[0])} and PC2 ${pct(S.pcs.explained[1])} of the variance of the standardised features; colour and shape both encode the segment.`;
+  scatter($("#ch-pca"), rows.map((r,i) => ({x:S.pcs.scores[i][0], y:S.pcs.scores[i][1], seg:S.labels[i], id:r.id, role:label("A1", r[col("A1")]).replace(/ \(.*\)$/,""), freq:label("B1", r[col("B1")]), device:label("B3", r[col("B3")]), sat:r[col("C11")]})), S.names);
+  $("#segcards").innerHTML = S.names.map((nm,i) => { const p = S.profiles[i]; return `<div class="segcard" style="--sc:var(${SEGCOL[i]})"><h4><span class="pill"><i style="background:var(${SEGCOL[i]})"></i>${esc(nm)}</span></h4><div class="n">n = ${p.n} · ${pct(p.n/rows.length)} of respondents</div><div class="tag">${esc(ARCHETYPES[S.keys[i]].tag)}</div><dl><dt>daily users</dt><dd>${pct(p.daily)}</dd><dt>phone main device</dt><dd>${pct(p.phone)}</dd><dt>visits &lt; 5 min</dt><dd>${pct(p.short)}</dd><dt>17+ h outside</dt><dd>${pct(p.heavy)}</dd><dt>accessibility need</dt><dd>${pct(p.access)}</dd><dt>lecturers/TAs</dt><dd>${pct(p.instructor)}</dd><dt>satisfaction</dt><dd>${fmt(p.sat,1)}/7</dd></dl></div>`; }).join("");
+  renderProfile(rows);
+  // role x segment
+  const roles = opts("A1");
+  const T = document.createElement("table"); T.innerHTML = `<tr><th>Role</th>${S.names.map((n,i)=>`<th class="num"><span class="pill"><i style="background:var(${SEGCOL[i]})"></i>S${i+1}</span></th>`).join("")}<th class="num">Total</th></tr>` +
+    roles.map(ro => { const cells = S.groups.map(g => g.filter(r=>r[col("A1")]===ro.k).length); const tot = cells.reduce((s,v)=>s+v,0); return tot ? `<tr><td>${esc(ro.label.replace(/ \(.*\)$/,""))}</td>${cells.map(c=>`<td class="num">${c||""}</td>`).join("")}<td class="num"><b>${tot}</b></td></tr>` : ""; }).join("");
+  $("#rolexseg").innerHTML = ""; $("#rolexseg").appendChild(T);
+  $("#voices").innerHTML = S.medoid.map((r,i) => `<div style="padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px"><span class="pill" style="margin-right:6px"><i style="background:var(${SEGCOL[i]})"></i>S${i+1}</span><span style="color:var(--ink-3);font-family:var(--mono);font-size:11px">${esc(r.id)} · ${esc(label("A1", r[col("A1")]).replace(/ \(.*\)$/,""))}</span><br>“${esc(r[col("E1")] || "(no answer)")}”</div>`).join("");
+  renderSegPick();
+}
+let sortBy = null;
+function profileRows(rows){
+  const g = SEG.groups; const all = rows;
+  const rowsDef = [];
+  const push = (label, fn, fmtF) => rowsDef.push({label, vals:[...g.map(fn), fn(all)], fmt: fmtF});
+  const pc = f => grp => share(grp, f), mn = f => grp => mean(grp.map(f));
+  push("Opens Canvas (1 = <1×/week … 6 = several/day)", mn(r=>r._freq), v=>fmt(v,2));
+  push("% at least once a day", pc(r=>["daily","several"].includes(r[col("B1")])), v=>pct(v));
+  push("Visit length (1 = <2 min … 5 = >30 min)", mn(r=>r._session), v=>fmt(v,2));
+  push("% smartphone is the most-used device", pc(r=>r._phone===1), v=>pct(v));
+  push("% used the Canvas app last week", pc(r=>r["B2_devices__phone_app"]===1), v=>pct(v));
+  push("Comfort learning software alone (1–7)", mn(r=>r[col("A9")]), v=>fmt(v,2));
+  push("Outside commitments (0 = none … 4 = >24 h)", mn(r=>r._hours), v=>fmt(v,2));
+  push("% with an accessibility need", pc(r=>r._access===1), v=>pct(v));
+  push("Times failed to find something (0–4)", mn(r=>r._lost), v=>fmt(v,2));
+  push("% found out about last deadline late", pc(r=>r["B6_deadline__late"]===1), v=>pct(v));
+  opts("B5").filter(o=>!o.exclusive).forEach(o => push(`Used: ${o.label.replace(/ \(.*\)$/,"")}`, pc(r=>r[`B5_features__${o.k}`]===1), v=>pct(v)));
+  opts("B6").forEach(o => push(`Deadline via: ${o.label.replace(/ \(.*\)$/,"")}`, pc(r=>r[`B6_deadline__${o.k}`]===1), v=>pct(v)));
+  opts("B9").forEach(o => push(`Tool: ${o.label.replace(/ \(.*\)$/,"")}`, pc(r=>r[`B9_tools__${o.k}`]===1), v=>pct(v)));
+  ITEMS.forEach(id => push(`${id} ${SHORT[id]}`, mn(r=>r[col(id)]), v=>fmt(v,2)));
+  opts("D1").forEach(o => push(`Rank: ${o.label}`, mn(r=>r[`D1_rank__${o.k}`]), v=>fmt(v,2)));
+  opts("A1").forEach(o => push(`Role: ${o.label.replace(/ \(.*\)$/,"")}`, pc(r=>r[col("A1")]===o.k), v=>pct(v)));
+  return rowsDef;
+}
+function renderProfile(rows){
+  const R = profileRows(rows); const k = SEG.k;
+  let order = SEG.names.map((_,i)=>i);
+  if (sortBy !== null) { const v = R[sortBy].vals; order = order.sort((a,b)=>v[b]-v[a]); }
+  const colLabels = [...order.map(i=>`S${i+1}`), "All"];
+  const M = R.map(r => [...order.map(i=>r.vals[i]), r.vals[k]]);
+  heat($("#profile"), R.map(r=>r.label), colLabels, M, {rowScale:true, fmtCell:(v,i,j)=>R[i].fmt(v), tipFn:(i,j,v)=>`<b>${esc(R[i].label)}</b><br>${j<k ? esc(SEG.names[order[j]]) : "All respondents"}: ${R[i].fmt(v)}`, onRowClick:(i)=>{ sortBy = sortBy===i ? null : i; renderProfile(rows); }});
+  // recolour the "All" column neutral and header pills
+  const table = $("#profile table"); const heads = table.querySelectorAll("tr:first-child th");
+  heads.forEach((th,j) => { if (j>=1 && j<=k) th.innerHTML = `<span class="pill"><i style="background:var(${SEGCOL[order[j-1]]})"></i>S${order[j-1]+1}</span>`; });
+  table.querySelectorAll("tr").forEach((tr,i) => { if (i===0) return; const last = tr.lastElementChild.querySelector(".cell"); last.style.background = "var(--surface-2)"; last.style.color = "var(--ink)"; });
+}
+
+// =====================================================================================
+// STEP 4: persona
+// =====================================================================================
+let personaSeg = 0;
+function renderSegPick(){
+  if (!SEG) return;
+  $("#segpick").innerHTML = SEG.names.map((nm,i) => `<button class="chip ${i===personaSeg?"on":""}" data-i="${i}"><i style="width:10px;height:10px;border-radius:50%;background:var(${SEGCOL[i]});display:inline-block"></i>${esc(nm)} <span class="n">n=${SEG.profiles[i].n}</span></button>`).join("");
+  $("#segpick").querySelectorAll("button").forEach(b => b.addEventListener("click", () => { personaSeg = Number(b.dataset.i); renderSegPick(); renderPersona(data); }));
+}
+const modal = (rows, id) => { const c = {}; rows.forEach(r => { const v = r[col(id)]; if (v && v !== "na") c[v] = (c[v]||0)+1; }); const k = Object.keys(c).sort((a,b)=>c[b]-c[a])[0]; return k ? {k, label: label(id,k), share: c[k]/rows.length} : {k:null,label:"–",share:0}; };
+function renderPersona(rows){
+  if (!SEG) return;
+  const i = personaSeg, g = SEG.groups[i], p = SEG.profiles[i], key = SEG.keys[i], A = ARCHETYPES[key].persona, N = rows.length;
+  const m = id => mean(g.map(r=>r[col(id)])), mAll = id => mean(rows.map(r=>r[col(id)]));
+  const s = f => share(g, f), sAll = f => share(rows, f);
+  const role = modal(g,"A1"), age = modal(g,"A2"), gender = modal(g,"A3"), freq = modal(g,"B1"), dev = modal(g,"B3"), sess = modal(g,"B4"), notif = modal(g,"B7");
+  const feat = opts("B5").filter(o=>!o.exclusive).map(o=>({o, v:s(r=>r[`B5_features__${o.k}`]===1)})).sort((a,b)=>b.v-a.v);
+  const dl = opts("B6").map(o=>({o, v:s(r=>r[`B6_deadline__${o.k}`]===1)})).sort((a,b)=>b.v-a.v);
+  const tools = opts("B9").filter(o=>!o.exclusive).map(o=>({o, v:s(r=>r[`B9_tools__${o.k}`]===1)})).sort((a,b)=>b.v-a.v);
+  const rk = opts("D1").map(o=>({o, v:mean(g.map(r=>r[`D1_rank__${o.k}`]))})).sort((a,b)=>a.v-b.v);
+  const lik = LIKERT.filter(id=>id!=="C2"&&id!=="C4").map(id=>({id, v:m(id), all:mAll(id)})).sort((a,b)=>a.v-b.v);   // lowest = pains
+  const noise = m("C4");
+  const isInstr = p.instructor >= .5;
+  const who = isInstr ? "teaches" : "studies";
+  // bio
+  const bio = `${A.name.split(" ")[0]} is a ${role.label.toLowerCase().replace(/ \(.*\)$/,"")} (${pct(role.share)} of this segment) aged ${age.label} (${pct(age.share)}). ` +
+    `${isInstr ? "In Canvas" : "In a teaching week"} ${A.name.split(" ")[0]} opens the system ${freq.label.toLowerCase()} (${pct(freq.share)} of the segment; ${pct(p.daily)} at least daily), mostly on a ${dev.label.toLowerCase()} (${pct(dev.share)}), for ${sess.label.toLowerCase()} at a time (${pct(sess.share)}). ` +
+    `Last week the segment mainly used ${feat.slice(0,3).map(f=>`${f.o.label.replace(/ \(.*\)$/,"").toLowerCase()} (${pct(f.v)})`).join(", ")}. ` +
+    `The most recent deadline reached them through ${dl.slice(0,2).map(d=>`${PHRASE_B6[d.o.k]} (${pct(d.v)})`).join(" and ")}${p.missed >= .15 ? `, and ${pct(p.missed)} found out late or missed it` : ""}. ` +
+    `Alongside Canvas they rely on ${tools.slice(0,2).map(t=>PHRASE_B9[t.o.k]).join(" and ")}. ` +
+    `${p.heavy >= .5 ? `${pct(p.heavy)} spend 17 or more hours a week on work or care outside their studies. ` : ""}${p.access >= .5 ? `${pct(p.access)} use assistive technology or reading support. ` : ""}` +
+    `Comfort with new software is ${fmt(p.tech,1)}/7 and overall satisfaction ${fmt(p.sat,1)}/7 (all respondents: ${fmt(mAll("C11"),1)}).`;
+  const goals = [
+    `${rk[0].o.label} without effort (ranked #1, mean rank ${fmt(rk[0].v,1)})`,
+    `${rk[1].o.label} (ranked #2, ${fmt(rk[1].v,1)})`,
+    `Get the job done in ${sess.label.toLowerCase()} on a ${dev.label.toLowerCase()}`,
+    isInstr ? "Reach every student once, in one place" : "Know immediately when something changed or was published",
+  ];
+  const pains = [
+    ...lik.slice(0,3).map(l => `“${SHORT[l.id]}” scores only ${fmt(l.v,1)}/7 (all respondents ${fmt(l.all,1)})`),
+    `Irrelevant notifications: ${fmt(noise,1)}/7`,
+    p.lost >= 1.5 ? `Failed to find something ${fmt(p.lost,1)} times (0–4 scale) last week` : null,
+    p.missed >= .15 ? `${pct(p.missed)} found out about a deadline late` : null,
+  ].filter(Boolean).slice(0,5);
+  const motiv = [
+    ["Not missing a deadline", s(r=>r["D1_rank__deadlines"]<=2)],
+    [isInstr ? "Grading and feedback done" : "Knowing where I stand (grades)", s(r=>r["B5_features__grades"]===1)],
+    ["Speed: in and out in under 5 minutes", p.short],
+    ["Staying in sync with others (chat group)", s(r=>r["B9_tools__chat"]===1)],
+    ["Deep work with materials / recordings", s(r=>r["B5_features__recordings"]===1)],
+  ];
+  const devices = opts("B3").map(o => [o.label, s(r=>r[col("B3")]===o.k)]).sort((a,b)=>b[1]-a[1]);
+  $("#persona").innerHTML = `
+    <div class="col" style="padding:0"><div class="pv-photo">[ photo ]<br><br>Generate a face for the persona (e.g. thispersondoesnotexist.com). Never a real student’s photo.</div>
+      <div class="pv-id"><h3 contenteditable>${esc(A.name)}</h3><div class="tag" contenteditable>The ${esc(ARCHETYPES[key].name.replace(/s$/,""))}</div>
+      <div class="facts"><div><small>Age / identifying gender</small><b contenteditable>${esc(A.age)} / ${esc(A.gender)}</b></div><div><small>Location</small><b contenteditable>${esc(A.loc)}</b></div><div><small>Occupation</small><b contenteditable>${esc(A.occ)}</b></div><div><small>Family status</small><b contenteditable>${esc(A.fam)}</b></div></div></div></div>
+    <div class="col" style="padding:0"><div class="pv-quote" contenteditable>${esc(A.quote)}</div><div class="pv-bio" style="padding:16px"><h4>Bio</h4><p contenteditable>${esc(bio)}</p></div></div>
+    <div class="col" style="padding:0"><div style="padding:16px"><h4>Goals</h4><ul contenteditable>${goals.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div style="padding:16px;border-top:1px solid var(--line)"><h4>Motivations</h4><div class="sub">for managing courses · share of the segment</div><div class="bars">${motiv.map(([l,v])=>`<div class="row"><span>${esc(l)}</span><span class="v">${pct(v)}</span><div class="track"><div class="fill" style="width:${Math.round((v||0)*100)}%"></div></div></div>`).join("")}</div></div></div>
+    <div class="col" style="padding:0"><div style="padding:16px"><h4>Pains</h4><ul contenteditable>${pains.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div style="padding:16px;border-top:1px solid var(--line)"><h4>Devices</h4><div class="sub">most-used device in the segment</div><div class="bars">${devices.map(([l,v])=>`<div class="row"><span>${esc(l)}</span><span class="v">${pct(v)}</span><div class="track"><div class="fill dev" style="width:${Math.round((v||0)*100)}%"></div></div></div>`).join("")}</div><p class="note">App used last week: ${pct(p.app)}</p></div></div>
+    <div class="pv-brands"><h4>Brand affiliations</h4><ul contenteditable>${A.brands.map(b=>`<li>${esc(b)}</li>`).join("")}${tools.filter(t=>t.v>=.3).slice(0,3).map(t=>`<li>${esc(SHORT_B9[t.o.k])} <span style="color:var(--ink-3);font-family:var(--mono);font-size:11px">${pct(t.v)}</span></li>`).join("")}</ul></div>`;
+  // evidence
+  const ev = [
+    [`${role.label}`, "share of segment with this role", pct(role.share), pct(sAll(r=>r[col("A1")]===role.k)), "A1"],
+    [`Aged ${age.label}`, "share in this age band", pct(age.share), pct(sAll(r=>r[col("A2")]===age.k)), "A2"],
+    [`Opens Canvas ${freq.label.toLowerCase()}`, "share at least once a day", pct(p.daily), pct(sAll(r=>["daily","several"].includes(r[col("B1")]))), "B1"],
+    [`Uses a ${dev.label.toLowerCase()} most`, "share with this most-used device", pct(dev.share), pct(sAll(r=>r[col("B3")]===dev.k)), "B3"],
+    [`Visits last ${sess.label.toLowerCase()}`, "share with visits under 5 minutes", pct(p.short), pct(sAll(r=>["lt2","2-5"].includes(r[col("B4")]))), "B4"],
+    [`Cares most about ${rk[0].o.label.toLowerCase()}`, "mean rank (1 = top)", fmt(rk[0].v,1), fmt(mean(rows.map(r=>r[`D1_rank__${rk[0].o.k}`])),1), "D1"],
+    [`Learns about deadlines via ${PHRASE_B6[dl[0].o.k]}`, "share naming this channel", pct(dl[0].v), pct(sAll(r=>r[`B6_deadline__${dl[0].o.k}`]===1)), "B6"],
+    [`Relies on ${PHRASE_B9[tools[0].o.k]}`, "share using this tool", pct(tools[0].v), pct(sAll(r=>r[`B9_tools__${tools[0].o.k}`]===1)), "B9"],
+    ...lik.slice(0,3).map(l => [`Pain: ${SHORT[l.id].toLowerCase()}`, QS[l.id].text, fmt(l.v,1), fmt(l.all,1), l.id]),
+    ["Irrelevant notifications", QS.C4.text, fmt(noise,1), fmt(mAll("C4"),1), "C4"],
+    ["Confidence without help", QS.C8.text, fmt(m("C8"),1), fmt(mAll("C8"),1), "C8"],
+    ["Overall satisfaction", QS.C11.text, fmt(p.sat,1), fmt(mAll("C11"),1), "C11"],
+    ["Outside commitments 17+ h/week", "share of segment", pct(p.heavy), pct(sAll(r=>["17-24","25+"].includes(r[col("A7")]))), "A7"],
+    ["Accessibility need", "share of segment", pct(p.access), pct(sAll(r=>r._access===1)), "A8"],
+  ];
+  $("#evidence").innerHTML = `<table><tr><th>Persona claim</th><th>Statistic</th><th class="num">Segment</th><th class="num">All</th><th>Item</th></tr>${ev.map(e=>`<tr><td>${esc(e[0])}</td><td style="color:var(--ink-2)">${esc(e[1])}</td><td class="num" style="background:var(--lav-soft);font-weight:600">${esc(e[2])}</td><td class="num">${esc(e[3])}</td><td class="num">${esc(e[4])}</td></tr>`).join("")}</table>`;
+  // POV: pick the most distinctive fact (largest standardised gap vs all)
+  const gaps = [
+    [p.phone - sAll(r=>r._phone===1), `${pct(p.phone)} of the segment use a smartphone as their main device, against ${pct(sAll(r=>r._phone===1))} overall`],
+    [(sAll(r=>r["B6_deadline__peer"]===1) - s(r=>r["B6_deadline__peer"]===1)) * -1, `${pct(s(r=>r["B6_deadline__peer"]===1))} learned about their last deadline from a classmate or colleague rather than from the system`],
+    [p.missed - sAll(r=>r["B6_deadline__late"]===1), `${pct(p.missed)} found out about their last deadline late or missed it (${pct(sAll(r=>r["B6_deadline__late"]===1))} overall)`],
+    [(mAll("C8") - m("C8"))/3, `they rate “I can complete my tasks without asking for help” only ${fmt(m("C8"),1)}/7 (${fmt(mAll("C8"),1)} overall)`],
+    [(mAll("C9") - m("C9"))/3, `they rate “easy to read, see and hear” only ${fmt(m("C9"),1)}/7 (${fmt(mAll("C9"),1)} overall)`],
+    [(mAll("C6") - m("C6"))/3, `they rate “course pages are organised alike” only ${fmt(m("C6"),1)}/7 and still spend ${sess.label.toLowerCase()} per visit`],
+    [(m("C4") - mAll("C4"))/3, `they receive many irrelevant notifications (${fmt(m("C4"),1)}/7) yet turned to ${PHRASE_B6[dl[0].o.k]} for their last deadline`],
+  ].sort((a,b)=>b[0]-a[0]);
+  $("#pov").innerHTML = [
+    ["WE MET", `${A.name}, a ${role.label.toLowerCase().replace(/ \(.*\)$/,"")} in Tilburg who opens Canvas ${freq.label.toLowerCase()} on a ${dev.label.toLowerCase()}.`],
+    ["WE WERE SURPRISED TO NOTICE", `that ${gaps[0][1]}.`],
+    ["WE WONDER IF THIS MEANS", `that … <span style="color:var(--ink-3)">(your inference about why)</span>`],
+    ["IT WOULD BE GAME-CHANGING TO", `… <span style="color:var(--ink-3)">(a more informed problem, not a solution)</span>`],
+  ].map(([a,b]) => `<b>${a}</b><div contenteditable>${b}</div>`).join("");
+  $("#hmw").innerHTML = [
+    `make ${rk[0].o.label.toLowerCase()} effortless for someone who has ${sess.label.toLowerCase()} on a ${dev.label.toLowerCase()}?`,
+    `turn the one notification that matters into a signal ${A.name.split(" ")[0]} trusts more than ${PHRASE_B6[dl[0].o.k]}?`,
+    `fix “${SHORT[lik[0].id].toLowerCase()}” (${fmt(lik[0].v,1)}/7) without adding a single click?`,
+    `let ${A.name.split(" ")[0]} stop needing ${PHRASE_B9[tools[0].o.k]} as a workaround?`,
+  ].map(x=>`<li contenteditable>${x}</li>`).join("");
+}
+
+// =====================================================================================
+// DATA tab
+// =====================================================================================
+const COLS = (() => { const c = ["id","submitted"]; Q.sections.forEach(s=>s.questions.forEach(q=>{ const base = `${q.id}_${q.key}`; if (q.type==="multi"||q.type==="rank") q.options.forEach(o=>c.push(`${base}__${o.k}`)); else c.push(base); })); return c; })();
+function renderData(rows){
+  $("#dataSub").textContent = `${rows.length} responses · ${COLS.length} survey columns + Segment · source: ${sourceLabel}`;
+  const cols = [...COLS, "Segment"];
+  let html = `<table><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr>`;
+  rows.forEach(r => { html += `<tr>${cols.map(c => `<td${typeof r[c]==="number"?' class="num"':''}>${esc(Number.isNaN(r[c]) ? "" : (r[c] ?? ""))}</td>`).join("")}</tr>`; });
+  $("#datatable").innerHTML = html + "</table>";
+}
+function toCSV(rows){
+  const cols = [...COLS, "Segment"]; const q = v => { v = v === undefined || v === null || Number.isNaN(v) ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; };
+  return cols.join(",") + "\n" + rows.map(r => cols.map(c => q(r[c])).join(",")).join("\n");
+}
+function download(name, text, type="text/csv"){ const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([text],{type})); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+$("#dlCsv").addEventListener("click", () => download("icanvas_responses.csv", toCSV(data)));
+$("#dlCsv2").addEventListener("click", () => download("icanvas_responses.csv", toCSV(data)));
+
+// =====================================================================================
+// import
+// =====================================================================================
+function parseCSV(text){
+  const rows = []; let row = [], field = "", inQ = false;
+  for (let i=0;i<text.length;i++){ const c = text[i];
+    if (inQ){ if (c === '"'){ if (text[i+1] === '"'){ field += '"'; i++; } else inQ = false; } else field += c; }
+    else if (c === '"') inQ = true; else if (c === ","){ row.push(field); field = ""; } else if (c === "\n" || c === "\r"){ if (c === "\r" && text[i+1] === "\n") i++; row.push(field); rows.push(row); row = []; field = ""; } else field += c; }
+  if (field.length || row.length){ row.push(field); rows.push(row); }
+  const head = rows.shift().map(s=>s.trim()); return rows.filter(r=>r.length>1 || (r[0]||"").trim()).map(r => Object.fromEntries(head.map((hh,i)=>[hh, r[i] ?? ""])));
+}
+function parseAny(text){
+  const t = text.trim(); if (!t) return [];
+  if (t[0] === "[") return JSON.parse(t);
+  if (t[0] === "{") { try { return [JSON.parse(t)]; } catch (e) { return t.split(/\n+/).map(l=>l.trim()).filter(Boolean).map(l=>JSON.parse(l)); } }
+  return parseCSV(t);
+}
+function normalise(objs){
+  const out = []; const problems = [];
+  objs.forEach((o, i) => {
+    if (!o || typeof o !== "object") return;
+    if (!o[col("A1")] && !o[col("B1")]) { problems.push(`row ${i+1}: no A1_role/B1_freq column`); return; }
+    const r = {}; COLS.forEach(c => r[c] = o[c] === undefined || o[c] === null ? "" : o[c]);
+    r.id = r.id || ("X-" + (i+1)); r.submitted = r.submitted || "";
+    // numeric coercion
+    Object.keys(r).forEach(c => { if (typeof r[c] === "string" && /^-?\d+(\.\d+)?$/.test(r[c]) && !["id","submitted"].includes(c) && !c.startsWith("E")) r[c] = Number(r[c]); });
+    out.push(r);
+  });
+  return {rows: prepare(out), problems};
+}
+let sourceLabel = "simulated users"; let BASE = null;   // BASE = the workbook's simulated users (or the embedded copy)
+function workbookRows(buf){
+  if (!window.XLSX) throw new Error("the spreadsheet reader (SheetJS from cdnjs) did not load; check the connection or drop a CSV instead");
+  const wb = XLSX.read(buf, {type:"array"});
+  const ws = wb.Sheets["Responses"] || wb.Sheets[wb.SheetNames[0]];
+  return XLSX.utils.sheet_to_json(ws, {defval:""}).filter(o => o.id !== "" && o.id !== undefined);
+}
+function ingest(objs, from){
+  stopReplay();
+  const {rows, problems} = normalise(objs);
+  const mode = document.querySelector('input[name=mode]:checked').value; const dedupe = $("#dedupe").checked;
+  let base = mode === "append" ? data.slice() : []; const ids = new Set(base.map(r=>r.id)); let skipped = 0;
+  rows.forEach(r => { if (dedupe && ids.has(r.id)) { skipped++; return; } ids.add(r.id); base.push(r); });
+  if (base.length < 3) { $("#importSummary").className = "status err"; $("#importSummary").textContent = `Only ${base.length} valid rows found in ${from}; need at least 3 for the analysis.` + (problems.length ? " " + problems.slice(0,3).join("; ") : ""); return; }
+  stopReplay();
+  data = base; source = "import"; sourceLabel = `loaded from ${from}`; $("#srcSample").classList.remove("on"); $("#srcImport").classList.add("on"); $("#srcImport").innerHTML = `Loaded <span class="n">N = ${data.length}</span>`;
+  $("#importSummary").className = "status"; $("#importSummary").textContent = `Loaded ${rows.length} rows from ${from}${skipped ? `, skipped ${skipped} duplicate id(s)` : ""}${problems.length ? `, ignored ${problems.length} row(s) without survey columns` : ""}. Dataset now has ${data.length} responses.`;
+  analyse(); go("patterns");
+}
+const drop = $("#drop"), fileIn = $("#file");
+["dragenter","dragover"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => handleFiles(e.dataTransfer.files));
+fileIn.addEventListener("change", e => handleFiles(e.target.files));
+async function handleFiles(files){
+  const all = []; const names = [];
+  for (const f of files){ try { const objs = /\.xls[xm]$/i.test(f.name) ? workbookRows(await f.arrayBuffer()) : parseAny(await f.text()); all.push(...objs); names.push(f.name); } catch (e) { $("#fileStatus").className = "status err"; $("#fileStatus").textContent = `Could not read ${f.name}: ${e.message}`; return; } }
+  $("#fileStatus").className = "status"; $("#fileStatus").textContent = `${files.length} file(s): ${names.slice(0,4).join(", ")}${names.length>4?"…":""}`;
+  ingest(all, `${files.length} file(s)`);
+}
+$("#pasteBtn").addEventListener("click", () => { try { ingest(parseAny($("#paste").value), "pasted text"); $("#pasteStatus").textContent = ""; } catch (e) { $("#pasteStatus").className = "status err"; $("#pasteStatus").textContent = "Could not parse: " + e.message; } });
+$("#urlBtn").addEventListener("click", async () => {
+  const url = $("#paste").value.trim(); if (!/^https?:\/\//.test(url)) { $("#pasteStatus").className = "status err"; $("#pasteStatus").textContent = "Paste a URL first (published Google Sheet CSV, or a JSON file)."; return; }
+  try { const res = await fetch(url); const txt = await res.text(); ingest(parseAny(txt), url); $("#pasteStatus").className = "status"; $("#pasteStatus").textContent = "Fetched."; }
+  catch (e) { $("#pasteStatus").className = "status err"; $("#pasteStatus").textContent = "Fetch failed (the server must allow cross-origin requests; download the CSV and drop it instead): " + e.message; }
+});
+$("#srcSample").addEventListener("click", () => { if (!BASE) { boot(); return; } loadSample(); go("patterns"); });
+$("#srcImport").addEventListener("click", () => go("import"));
+
+// =====================================================================================
+// navigation + boot
+// =====================================================================================
+function go(view){ document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.view === view)); document.querySelectorAll(".view").forEach(v => v.classList.toggle("on", v.id === "view-" + view)); if (view !== "import") window.scrollTo(0,0); }
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => go(t.dataset.view)));
+$("#printBtn").addEventListener("click", () => window.print());
+let userK = null;   // k chosen by hand; otherwise 6 (or the largest k the sample size allows)
+$("#kSel").addEventListener("change", () => { userK = Number($("#kSel").value); });
+$("#recluster").addEventListener("click", () => { userK = Number($("#kSel").value); runClustering(data, userK); if (SEG && personaSeg >= SEG.k) personaSeg = 0; renderSegments(data); renderPersona(data); renderData(data); });
+function analyse({cluster=true, nInit=10} = {}){
+  renderPatterns(data);
+  const kSel = $("#kSel"); const ks = [2,3,4,5,6,7,8].filter(k => k < data.length/3);
+  const pick = (userK && ks.includes(userK)) ? userK : (ks.includes(6) ? 6 : ks[ks.length-1]);
+  kSel.innerHTML = ks.map(k => `<option value="${k}" ${k===pick?"selected":""}>${k}</option>`).join("");
+  if (cluster) { runClustering(data, Number(kSel.value) || 6, nInit); if (SEG && personaSeg >= SEG.k) personaSeg = 0; renderSegments(data); renderPersona(data); }
+  renderData(data);
+}
+function loadSample(){
+  stopReplay();
+  source = "sample"; $("#srcSample").classList.add("on"); $("#srcImport").classList.remove("on"); $("#srcImport").textContent = "Load other data…";
+  startReplay();
+}
+
+// =====================================================================================
+// live replay: the simulated submissions arrive one by one, in the order they were submitted
+// =====================================================================================
+const replay = {timer:null, queue:[], total:0, paused:false, done:false};
+const MS_PER_RESPONSE = 420;          // at 1x; the default 2x gives ~26 s for 124 responses
+function startReplay(){
+  replay.queue = prepare(BASE.map(r => ({...r}))).sort((a,b) => String(a.submitted).localeCompare(String(b.submitted)));
+  replay.total = replay.queue.length; replay.paused = false; replay.done = false; data = []; personaSeg = 0; SEG = null;
+  $("#replay").hidden = false; $("#liveDot").classList.remove("done"); $("#liveTitle").textContent = `Replaying the simulated survey (${sourceLabel})`;
+  $("#livePause").textContent = "Pause"; $("#liveJust").innerHTML = "";
+  analyse(); go("patterns"); scheduleTick();
+}
+function scheduleTick(){ clearTimeout(replay.timer); if (replay.paused || replay.done) return; replay.timer = setTimeout(tick, MS_PER_RESPONSE / Number($("#liveSpeed").value)); }
+function tick(){
+  if (!replay.queue.length) { finishReplay(); return; }
+  const r = replay.queue.shift(); data.push(r);
+  const n = data.length;
+  // light clustering while streaming (every 8 responses), full run at the end
+  analyse({cluster: n >= 12 && (n % 8 === 0), nInit: 3});
+  if (n < 12 && $("#view-segments").classList.contains("on")) renderWaiting(n);
+  updateReplayBar(r);
+  scheduleTick();
+}
+function updateReplayBar(r){
+  const n = data.length;
+  $("#liveCount").textContent = `${n} / ${replay.total} responses received`;
+  $("#liveFill").style.width = (n / replay.total * 100) + "%";
+  if (r) { const q = r[col("E1")] ? String(r[col("E1")]) : ""; $("#liveJust").innerHTML = `<span class="who">${esc(r.id)} · ${esc(r.submitted)}</span><b>${esc(label("A1", r[col("A1")]).replace(/ \(.*\)$/,""))}</b>, ${esc(label("B1", r[col("B1")]).toLowerCase())}, mostly on a ${esc(label("B3", r[col("B3")]).toLowerCase())}${q ? ` — “${esc(q.length > 140 ? q.slice(0,139) + "…" : q)}”` : ""}`; }
+}
+function finishReplay(){
+  while (replay.queue.length) data.push(replay.queue.shift());
+  replay.done = true; clearTimeout(replay.timer);
+  analyse({cluster:true, nInit:10}); updateReplayBar(null);
+  $("#liveDot").classList.add("done"); $("#liveTitle").textContent = "All simulated responses received"; $("#livePause").textContent = "Pause";
+  $("#liveJust").innerHTML = `<b>${data.length} responses.</b> Segments and the persona are now computed on the complete sample. Switch to step 2 and 3.`;
+}
+function stopReplay(){ clearTimeout(replay.timer); replay.done = true; replay.queue = []; $("#replay").hidden = true; }
+$("#livePause").addEventListener("click", () => { if (replay.done) return; replay.paused = !replay.paused; $("#livePause").textContent = replay.paused ? "Resume" : "Pause"; scheduleTick(); });
+$("#liveSpeed").addEventListener("change", scheduleTick);
+$("#liveFinish").addEventListener("click", () => { if (!replay.done) finishReplay(); });
+$("#liveRestart").addEventListener("click", () => { source = "sample"; $("#srcSample").classList.add("on"); $("#srcImport").classList.remove("on"); startReplay(); });
+document.addEventListener("keydown", e => { if (replay.done) return; if (e.key === " " && !e.target.closest("input,textarea,select,[contenteditable]")) { e.preventDefault(); $("#livePause").click(); } if (e.key === "Enter" && e.target === document.body) $("#liveFinish").click(); });
+
+const XLSX_FILE = "iCanvas_needfinding.xlsx";
+let started = false;
+async function boot(){
+  const btn = $("#simulateBtn"); btn.disabled = true; btn.textContent = "Reading the workbook…";
+  $("#srcSampleN").textContent = "reading workbook…";
+  try {
+    if (location.protocol === "file:") throw new Error("opened as a local file");
+    const res = await fetch(XLSX_FILE, {cache:"no-store"}); if (!res.ok) throw new Error("HTTP " + res.status);
+    const objs = workbookRows(await res.arrayBuffer());
+    const {rows, problems} = normalise(objs); if (rows.length < 3) throw new Error("no survey rows in the Responses sheet");
+    BASE = rows; sourceLabel = `Responses sheet of ${XLSX_FILE}`;
+    $("#importSummary").className = "status"; $("#importSummary").textContent = `Read ${rows.length} simulated users from the Responses sheet of ${XLSX_FILE}${problems.length ? ` (${problems.length} non-data rows ignored)` : ""}.`;
+  } catch (e) {
+    BASE = SAMPLE; sourceLabel = "embedded copy of the workbook";
+    $("#importSummary").className = "status"; $("#importSummary").textContent = `Could not read ${XLSX_FILE} next to this page (${e.message}); using the embedded copy of the same simulated users. Drop the workbook above to read it directly.`;
+  }
+  $("#srcSampleN").textContent = `N = ${BASE.length} · ${sourceLabel}`;
+  started = true; $(".tabs").hidden = false; $("#source").hidden = false; btn.disabled = false; btn.textContent = "Simulate users";
+  loadSample();
+}
+$("#simulateBtn").addEventListener("click", boot);
+$("#startImport").addEventListener("click", () => { started = true; $(".tabs").hidden = false; $("#source").hidden = false; $("#srcSample").classList.remove("on"); $("#srcSampleN").textContent = "not started"; go("import"); });
+</script>
+</body>
+</html>

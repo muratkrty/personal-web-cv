@@ -1,0 +1,221 @@
+{
+  "title": "iCanvas needfinding survey",
+  "subtitle": "How do you manage your courses today? (Tilburg University, HCI course)",
+  "intro": "We are a design team from the Human-Computer Interaction course studying how students and staff manage their courses today, before we design a new lecture management system called iCanvas. There are no right or wrong answers; we just want to hear about your experience with the current system (Canvas).",
+  "privacy": "Anonymous and voluntary. We do not ask for your name, student number or e-mail. You can skip any question you prefer not to answer and stop at any time. Answers are used only for the needfinding exercise of the HCI course. Takes about 7 minutes.",
+  "likert7": ["Strongly disagree", "Disagree", "Moderately disagree", "Neutral", "Moderately agree", "Agree", "Strongly agree"],
+  "sections": [
+    {
+      "id": "A",
+      "title": "About you",
+      "help": "A few questions so we can see whether different kinds of users have different needs.",
+      "questions": [
+        {"id": "A1", "key": "role", "type": "single", "required": true,
+         "text": "What is your main role at the university?",
+         "options": [
+           {"k": "bsc", "label": "Bachelor student"},
+           {"k": "msc", "label": "Master student"},
+           {"k": "phd", "label": "PhD candidate"},
+           {"k": "lecturer", "label": "Lecturer / professor"},
+           {"k": "ta", "label": "Teaching assistant"},
+           {"k": "staff", "label": "Support / admin staff (education office, IT, library)"}
+         ]},
+        {"id": "A2", "key": "age", "type": "single", "required": false,
+         "text": "What is your age?",
+         "options": [
+           {"k": "17-20", "label": "17-20"}, {"k": "21-24", "label": "21-24"}, {"k": "25-29", "label": "25-29"},
+           {"k": "30-39", "label": "30-39"}, {"k": "40-49", "label": "40-49"}, {"k": "50+", "label": "50 or older"},
+           {"k": "na", "label": "Prefer not to say"}
+         ]},
+        {"id": "A3", "key": "gender", "type": "single", "required": false,
+         "text": "How do you identify?",
+         "options": [
+           {"k": "female", "label": "Female"}, {"k": "male", "label": "Male"},
+           {"k": "nonbinary", "label": "Non-binary / other"}, {"k": "na", "label": "Prefer not to say"}
+         ]},
+        {"id": "A4", "key": "school", "type": "single", "required": false,
+         "text": "Which school are you mainly affiliated with?",
+         "options": [
+           {"k": "tshd", "label": "Humanities & Digital Sciences (TSHD, e.g. CSAI, DSS)"},
+           {"k": "tisem", "label": "Economics & Management (TiSEM)"},
+           {"k": "tsb", "label": "Social & Behavioural Sciences (TSB)"},
+           {"k": "tls", "label": "Law (TLS)"},
+           {"k": "tst", "label": "Catholic Theology (TST)"},
+           {"k": "other", "label": "Other / more than one"}
+         ]},
+        {"id": "A5", "key": "origin", "type": "single", "required": false,
+         "text": "Where did you complete most of your secondary education?",
+         "options": [
+           {"k": "nl", "label": "In the Netherlands"}, {"k": "eu", "label": "Elsewhere in Europe"},
+           {"k": "noneu", "label": "Outside Europe"}, {"k": "na", "label": "Prefer not to say"}
+         ]},
+        {"id": "A6", "key": "courses", "type": "single", "required": true,
+         "text": "How many courses are you currently enrolled in or teaching?",
+         "options": [
+           {"k": "1", "label": "1", "v": 1}, {"k": "2", "label": "2", "v": 2}, {"k": "3", "label": "3", "v": 3},
+           {"k": "4", "label": "4", "v": 4}, {"k": "5", "label": "5", "v": 5}, {"k": "6+", "label": "6 or more", "v": 6}
+         ]},
+        {"id": "A7", "key": "hours", "type": "single", "required": false,
+         "text": "Roughly how many hours per week do you spend on commitments outside your study or job (for example a paid side job, or caring for family)?",
+         "options": [
+           {"k": "0", "label": "None", "v": 0}, {"k": "1-8", "label": "1-8 hours", "v": 1}, {"k": "9-16", "label": "9-16 hours", "v": 2},
+           {"k": "17-24", "label": "17-24 hours", "v": 3}, {"k": "25+", "label": "More than 24 hours", "v": 4}
+         ]},
+        {"id": "A8", "key": "access", "type": "multi", "required": false,
+         "text": "Do any of the following apply to you when you use digital tools? (select all that apply)",
+         "options": [
+           {"k": "none", "label": "None of these", "exclusive": true},
+           {"k": "screenreader", "label": "I use a screen reader or screen magnification"},
+           {"k": "captions", "label": "I rely on captions or transcripts for audio and video"},
+           {"k": "dyslexia", "label": "I have dyslexia or another reading-related difference"},
+           {"k": "motor", "label": "Fine mouse or touch control is difficult for me"},
+           {"k": "contrast", "label": "I prefer high contrast or reduced motion"},
+           {"k": "na", "label": "Prefer not to say", "exclusive": true}
+         ]},
+        {"id": "A9", "key": "tech", "type": "scale", "required": true, "min": 1, "max": 7,
+         "text": "How comfortable are you learning a new piece of software on your own?",
+         "anchors": ["Not at all comfortable", "Extremely comfortable"]}
+      ]
+    },
+    {
+      "id": "B",
+      "title": "How you use the current system today",
+      "help": "Think about Canvas as you actually use it in a normal teaching week, not how you think you should use it.",
+      "questions": [
+        {"id": "B1", "key": "freq", "type": "single", "required": true,
+         "text": "In a typical teaching week, how often do you open Canvas?",
+         "options": [
+           {"k": "lt1", "label": "Less than once a week", "v": 1}, {"k": "1", "label": "About once a week", "v": 2},
+           {"k": "2-3", "label": "2-3 times a week", "v": 3}, {"k": "4-6", "label": "4-6 times a week", "v": 4},
+           {"k": "daily", "label": "About once a day", "v": 5}, {"k": "several", "label": "Several times a day", "v": 6}
+         ]},
+        {"id": "B2", "key": "devices", "type": "multi", "required": true,
+         "text": "Which devices have you used to open Canvas in the last 7 days? (select all that apply)",
+         "options": [
+           {"k": "laptop", "label": "Laptop"}, {"k": "desktop", "label": "Desktop computer"},
+           {"k": "phone_browser", "label": "Smartphone, in the browser"}, {"k": "phone_app", "label": "Smartphone, in the Canvas app"},
+           {"k": "tablet", "label": "Tablet"}
+         ]},
+        {"id": "B3", "key": "primary", "type": "single", "required": true,
+         "text": "Which one device do you use most often for Canvas?",
+         "options": [
+           {"k": "laptop", "label": "Laptop"}, {"k": "desktop", "label": "Desktop computer"},
+           {"k": "phone", "label": "Smartphone"}, {"k": "tablet", "label": "Tablet"}
+         ]},
+        {"id": "B4", "key": "session", "type": "single", "required": true,
+         "text": "When you open Canvas, how long does a typical visit last?",
+         "options": [
+           {"k": "lt2", "label": "Under 2 minutes", "v": 1}, {"k": "2-5", "label": "2-5 minutes", "v": 2},
+           {"k": "5-15", "label": "5-15 minutes", "v": 3}, {"k": "15-30", "label": "15-30 minutes", "v": 4},
+           {"k": "gt30", "label": "More than 30 minutes", "v": 5}
+         ]},
+        {"id": "B5", "key": "features", "type": "multi", "required": true,
+         "text": "Which parts of Canvas did you use in the last 7 days? (select all that apply)",
+         "options": [
+           {"k": "announcements", "label": "Announcements"},
+           {"k": "assignments", "label": "Assignments (submitting or grading)"},
+           {"k": "grades", "label": "Grades / feedback"},
+           {"k": "modules", "label": "Modules or Files (course materials)"},
+           {"k": "calendar", "label": "Calendar / To-do list"},
+           {"k": "inbox", "label": "Inbox (messages)"},
+           {"k": "discussions", "label": "Discussions"},
+           {"k": "quizzes", "label": "Quizzes"},
+           {"k": "recordings", "label": "Lecture recordings (video)"},
+           {"k": "groups", "label": "Groups / People"},
+           {"k": "syllabus", "label": "Syllabus page"},
+           {"k": "none", "label": "None of these", "exclusive": true}
+         ]},
+        {"id": "B6", "key": "deadline", "type": "multi", "required": true,
+         "text": "Think of the most recent deadline you dealt with. How did you first find out about it? (select all that apply)",
+         "options": [
+           {"k": "canvas_cal", "label": "Canvas calendar or To-do list"},
+           {"k": "email", "label": "Canvas e-mail notification"},
+           {"k": "push", "label": "Canvas push notification on my phone"},
+           {"k": "in_class", "label": "It was announced in class"},
+           {"k": "peer", "label": "A classmate or colleague told me (e.g. WhatsApp)"},
+           {"k": "syllabus", "label": "The syllabus or course guide"},
+           {"k": "own_cal", "label": "My own calendar or planner"},
+           {"k": "late", "label": "I found out late or missed it"}
+         ]},
+        {"id": "B7", "key": "notif", "type": "single", "required": true,
+         "text": "Where do you usually notice Canvas notifications?",
+         "options": [
+           {"k": "email", "label": "In my e-mail inbox"}, {"k": "push", "label": "As push notifications on my phone"},
+           {"k": "inapp", "label": "Only when I open Canvas"}, {"k": "off", "label": "I have turned notifications off"},
+           {"k": "dontknow", "label": "I don't know"}
+         ]},
+        {"id": "B8", "key": "lost", "type": "single", "required": true,
+         "text": "In the last 7 days, how many times did you fail to find something you were looking for in Canvas?",
+         "options": [
+           {"k": "0", "label": "Never", "v": 0}, {"k": "1", "label": "Once", "v": 1}, {"k": "2-3", "label": "2-3 times", "v": 2},
+           {"k": "4-6", "label": "4-6 times", "v": 3}, {"k": "7+", "label": "More than 6 times", "v": 4}
+         ]},
+        {"id": "B9", "key": "tools", "type": "multi", "required": true,
+         "text": "Which other tools do you use to keep track of your courses? (select all that apply)",
+         "options": [
+           {"k": "paper", "label": "Paper planner or notebook"},
+           {"k": "calendar", "label": "Phone or computer calendar (Google, Outlook, Apple)"},
+           {"k": "notes", "label": "Notion, Obsidian or OneNote"},
+           {"k": "chat", "label": "WhatsApp, Signal or Discord group"},
+           {"k": "email", "label": "E-mail"},
+           {"k": "none", "label": "None, I rely on Canvas only", "exclusive": true}
+         ]}
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Your experience",
+      "help": "How much do you agree or disagree with each statement about the current system?",
+      "questions": [
+        {"id": "C1", "key": "find_fast", "type": "likert", "required": true, "text": "I can quickly find the course material I need."},
+        {"id": "C2", "key": "find_slow", "type": "likert", "required": true, "text": "Finding what I need takes longer than it should.", "reverse_of": "C1"},
+        {"id": "C3", "key": "notif_useful", "type": "likert", "required": true, "text": "Notifications help me stay on top of what is due."},
+        {"id": "C4", "key": "notif_noise", "type": "likert", "required": true, "text": "I receive notifications that are not relevant to me."},
+        {"id": "C5", "key": "mobile", "type": "likert", "required": true, "text": "Using the system on my phone works as well as on a computer."},
+        {"id": "C6", "key": "consistent", "type": "likert", "required": true, "text": "Course pages are organised in a similar way across my courses."},
+        {"id": "C7", "key": "uptodate", "type": "likert", "required": true, "text": "I trust that the grades and feedback I see are up to date."},
+        {"id": "C8", "key": "confident", "type": "likert", "required": true, "text": "I can complete my tasks in the system without asking anyone for help."},
+        {"id": "C9", "key": "accessible", "type": "likert", "required": true, "text": "Text, colours and videos in the system are easy for me to read, see and hear."},
+        {"id": "C10", "key": "group", "type": "likert", "required": true, "text": "Working with others (groups, peer feedback, messaging) is well supported."},
+        {"id": "C11", "key": "satisfaction", "type": "scale", "required": true, "min": 1, "max": 7,
+         "text": "Overall, how satisfied or dissatisfied are you with the current system?",
+         "anchors": ["Extremely dissatisfied", "Extremely satisfied"],
+         "labels": ["Extremely dissatisfied", "Very dissatisfied", "Slightly dissatisfied", "Neither", "Slightly satisfied", "Very satisfied", "Extremely satisfied"]},
+        {"id": "C12", "key": "ease", "type": "scale", "required": true, "min": 1, "max": 5,
+         "text": "How easy or difficult was the last thing you tried to do in Canvas (for example submitting or grading an assignment, or uploading a file)?",
+         "anchors": ["Very difficult", "Very easy"],
+         "labels": ["Very difficult", "Difficult", "Not difficult", "Easy", "Very easy"]}
+      ]
+    },
+    {
+      "id": "D",
+      "title": "Your priorities",
+      "help": "Rank the following by how important they are to you in a typical week. 1 = most important, 6 = least important. Each number can be used once.",
+      "questions": [
+        {"id": "D1", "key": "rank", "type": "rank", "required": true,
+         "text": "Rank these activities by importance to you in a typical week.",
+         "options": [
+           {"k": "materials", "label": "Finding course materials"},
+           {"k": "deadlines", "label": "Keeping track of deadlines"},
+           {"k": "grades", "label": "Seeing grades and feedback"},
+           {"k": "communication", "label": "Communicating with instructors or students"},
+           {"k": "recordings", "label": "Watching lecture recordings"},
+           {"k": "groupwork", "label": "Organising group work"}
+         ]}
+      ]
+    },
+    {
+      "id": "E",
+      "title": "In your own words",
+      "help": "Stories are the most useful thing you can give us. A few sentences are plenty.",
+      "questions": [
+        {"id": "E1", "key": "frustrate", "type": "text", "required": true,
+         "text": "Think about the last time Canvas frustrated you. What were you trying to do, and what happened?"},
+        {"id": "E2", "key": "helped", "type": "text", "required": false,
+         "text": "Think about the last time Canvas really helped you. What were you trying to do, and what happened?"},
+        {"id": "E3", "key": "more", "type": "text", "required": false,
+         "text": "Is there anything about how you manage your courses that we haven't asked about, but you think we should know?"}
+      ]
+    }
+  ]
+}

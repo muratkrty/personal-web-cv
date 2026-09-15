@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iCanvas Needfinding Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --surface-2:#E9EEEB; --line:#D6DDD8; --line-strong:#B9C4BD;
+  --ink:#14231D; --ink-2:#4A5B53; --ink-3:#7A8A82;
+  --accent:#1B7F5E; --accent-ink:#FFFFFF; --accent-soft:#DDF0E7; --accent-line:#8CC9AF;
+  --lav:#6F6AC7; --lav-soft:#E7E6F8; --warn:#B45309; --warn-soft:#FDEBD3; --danger:#B42318;
+  --shadow:0 1px 2px rgba(20,35,29,.06),0 8px 24px -12px rgba(20,35,29,.18);
+  --radius:14px; --radius-s:9px;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1613; --surface:#172119; --surface-2:#1F2B24; --line:#2A3830; --line-strong:#3D4E45;
+    --ink:#E6ECE8; --ink-2:#AEBBB3; --ink-3:#7F8E86;
+    --accent:#5CC59A; --accent-ink:#0B1A13; --accent-soft:#17352A; --accent-line:#2E6E55;
+    --lav:#B7B3F2; --lav-soft:#26254A; --warn:#F2B25C; --warn-soft:#3A2A12; --danger:#F08A80;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1613; --surface:#172119; --surface-2:#1F2B24; --line:#2A3830; --line-strong:#3D4E45;
+  --ink:#E6ECE8; --ink-2:#AEBBB3; --ink-3:#7F8E86;
+  --accent:#5CC59A; --accent-ink:#0B1A13; --accent-soft:#17352A; --accent-line:#2E6E55;
+  --lav:#B7B3F2; --lav-soft:#26254A; --warn:#F2B25C; --warn-soft:#3A2A12; --danger:#F08A80;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);overflow-x:clip}
+body{font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-block:0 calc(96px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.01em;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px}
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:56px}
+.brand{font-family:var(--display);font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.stepword{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap}
+.timeleft{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--accent);white-space:nowrap;font-weight:500}
+.progress{position:relative;height:6px;background:var(--line);overflow:hidden}
+.progress .fill{position:absolute;inset:0 auto 0 0;width:0%;background:var(--accent);transition:width .3s ease}
+.progress .marks{position:absolute;inset:0;pointer-events:none}
+.progress .marks span{position:absolute;top:0;bottom:0;width:2px;background:var(--bg);opacity:.9}
+.progress.done .fill{background:var(--lav)}
+/* intro */
+.intro{padding-block:28px 8px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.intro h1{font-size:clamp(28px,7vw,38px);line-height:1.08;margin-top:8px}
+.intro .lead{margin-top:14px;color:var(--ink-2);font-size:17px}
+.privacy{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--lav);border-radius:var(--radius-s);padding:12px 14px;font-size:14px;color:var(--ink-2)}
+.privacy b{color:var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+/* sections */
+.step{display:none;padding-block:20px 8px}
+.step.active{display:block;animation:rise .25s ease}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.section-head{margin-bottom:12px}
+.section-head .eyebrow{color:var(--lav)}
+.section-head h2{font-size:22px;margin-top:4px}
+.section-head p{color:var(--ink-2);margin-top:6px;font-size:15px}
+.step .qno{font-family:var(--mono);font-size:12px;color:var(--ink-3);margin-bottom:8px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);scroll-margin-top:80px}
+.q .qid{font-family:var(--mono);font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:baseline}
+.q legend,.q .qtext{font-weight:600;font-size:17px;line-height:1.35;margin:6px 0 0;padding:0;text-wrap:pretty}
+.q .hint{color:var(--ink-3);font-size:13px;margin-top:4px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{position:relative;display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--line-strong)}
+.opt input{appearance:none;-webkit-appearance:none;width:20px;height:20px;margin:0;border:2px solid var(--line-strong);border-radius:50%;background:var(--surface);flex:none;display:grid;place-items:center;transition:border-color .15s}
+.opt input[type=checkbox]{border-radius:5px}
+.opt input::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent-ink);transform:scale(0);transition:transform .12s}
+.opt input[type=checkbox]::after{border-radius:2px;width:10px;height:10px}
+.opt input:checked{border-color:var(--accent);background:var(--accent)}
+.opt input:checked::after{transform:scale(1)}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt input:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.opt span{font-size:15px}
+/* scale */
+.scale{margin-top:12px}
+.scale .row{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:6px}
+.scale label{position:relative;display:block}
+.scale input{position:absolute;inset:0;opacity:0;margin:0}
+.scale .pt{display:grid;place-items:center;height:44px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);font-family:var(--mono);font-weight:500;font-size:15px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.scale input:checked + .pt{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.scale input:focus-visible + .pt{outline:3px solid var(--lav);outline-offset:2px}
+.scale .anchors{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--ink-3)}
+.scale .anchors span:last-child{text-align:right}
+.scale .chosen{margin-top:6px;min-height:18px;font-size:13px;color:var(--accent);font-weight:500}
+/* rank */
+.rank{margin-top:12px;display:grid;gap:8px}
+.rank button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}
+.rank button .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-weight:500;background:var(--surface);border:1px solid var(--line-strong);flex:none;color:var(--ink-3)}
+.rank button.set{border-color:var(--lav);background:var(--lav-soft)}
+.rank button.set .n{background:var(--lav);border-color:var(--lav);color:#fff}
+.rank button:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.rank-tools{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--ink-3)}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+textarea{width:100%;margin-top:12px;min-height:110px;resize:vertical;padding:12px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);color:var(--ink);font:inherit;font-size:15px}
+textarea:focus-visible{outline:3px solid var(--lav);outline-offset:1px;border-color:var(--lav)}
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px))}
+.bar .wrap{display:flex;gap:10px;align-items:center}
+.btn{appearance:none;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:12px 18px;font-weight:600;font-size:15px;cursor:pointer;transition:transform .08s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);margin-left:auto;min-width:130px}
+.btn.ghost{border-color:transparent;color:var(--ink-2)}
+.btn[disabled]{opacity:.5;cursor:default}
+.bar .count{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap}
+/* done */
+.finish{display:none;padding-block:32px}
+.finish.active{display:block}
+.finish .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.finish h2{font-size:28px}
+.finish .status{margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:14px;font-weight:500;background:var(--accent-soft);color:var(--accent)}
+.finish .status.warn{background:var(--warn-soft);color:var(--warn)}
+.finish .code{font-family:var(--mono);font-size:22px;letter-spacing:.06em;margin-top:16px;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:var(--radius-s);background:var(--bg);display:inline-block}
+.finish p{color:var(--ink-2);margin-top:12px;font-size:15px}
+.finish .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.finish details{margin-top:18px;font-size:13px;color:var(--ink-3)}
+.finish pre{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-s);padding:12px;max-height:240px;overflow:auto}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+@media (min-width:720px){.q{padding:20px 22px}.intro h1{font-size:40px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="dot" aria-hidden="true"></span>iCanvas survey</div>
+    <span class="stepword" id="stepword"></span>
+    <span class="timeleft" id="timeleft"></span>
+  </div>
+  <div class="progress" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Survey progress"><div class="fill" id="progressFill"></div><div class="marks" id="progressMarks"></div></div>
+</header>
+
+<main class="wrap">
+  <section class="intro" id="intro">
+    <div class="eyebrow" id="courseTag">HCI · Week 02 · Needfinding</div>
+    <h1 id="title"></h1>
+    <p class="lead" id="lead"></p>
+    <div class="privacy" id="privacy"></div>
+    <div class="meta"><span id="metaCount"></span><span id="metaTime"></span><span>anonymous</span><span>every question can be skipped</span><span id="endpointNote"></span></div>
+  </section>
+
+  <div id="questions"></div>
+
+  <section class="finish" id="done">
+    <div class="card">
+      <div class="eyebrow">Thank you</div>
+      <h2>Your experience is now part of the data.</h2>
+      <div class="status" id="status"></div>
+      <div class="code" id="code"></div>
+      <p id="doneText"></p>
+      <div class="actions">
+        <button class="btn" id="dl">Download my answers (JSON)</button>
+        <button class="btn" id="cp">Copy answers</button>
+        <button class="btn ghost" id="again">Start over</button>
+      </div>
+      <details><summary>What was recorded</summary><pre id="raw"></pre></details>
+    </div>
+  </section>
+</main>
+
+<div class="bar" id="bar">
+  <div class="wrap">
+    <button class="btn ghost" id="back">Back</button>
+    <span class="count" id="count"></span>
+    <button class="btn primary" id="next">Start</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ---------------------------------------------------------------- configuration
+// Paste the URL of your Google Apps Script web app (see README) or any endpoint that accepts a POST
+// with a JSON body. Leave empty to run offline: students then download or copy their answers.
+const CONFIG = {
+  SUBMIT_ENDPOINT: "",
+  COURSE_TAG: "HCI · Week 02 · Needfinding",
+  STORAGE_KEY: "icanvas-survey-draft-v1"
+};
+const params = new URLSearchParams(location.search);
+if (params.get("endpoint")) CONFIG.SUBMIT_ENDPOINT = params.get("endpoint");
+if (params.get("tag")) CONFIG.COURSE_TAG = params.get("tag");
+
+const Q = {"title":"iCanvas needfinding survey","subtitle":"How do you manage your courses today? (Tilburg University, HCI course)","intro":"We are a design team from the Human-Computer Interaction course studying how students and staff manage their courses today, before we design a new lecture management system called iCanvas. There are no right or wrong answers; we just want to hear about your experience with the current system (Canvas).","privacy":"Anonymous and voluntary. We do not ask for your name, student number or e-mail. You can skip any question you prefer not to answer and stop at any time. Answers are used only for the needfinding exercise of the HCI course. Takes about 7 minutes.","likert7":["Strongly disagree","Disagree","Moderately disagree","Neutral","Moderately agree","Agree","Strongly agree"],"sections":[{"id":"A","title":"About you","help":"A few questions so we can see whether different kinds of users have different needs.","questions":[{"id":"A1","key":"role","type":"single","required":true,"text":"What is your main role at the university?","options":[{"k":"bsc","label":"Bachelor student"},{"k":"msc","label":"Master student"},{"k":"phd","label":"PhD candidate"},{"k":"lecturer","label":"Lecturer / professor"},{"k":"ta","label":"Teaching assistant"},{"k":"staff","label":"Support / admin staff (education office, IT, library)"}]},{"id":"A2","key":"age","type":"single","required":false,"text":"What is your age?","options":[{"k":"17-20","label":"17-20"},{"k":"21-24","label":"21-24"},{"k":"25-29","label":"25-29"},{"k":"30-39","label":"30-39"},{"k":"40-49","label":"40-49"},{"k":"50+","label":"50 or older"},{"k":"na","label":"Prefer not to say"}]},{"id":"A3","key":"gender","type":"single","required":false,"text":"How do you identify?","options":[{"k":"female","label":"Female"},{"k":"male","label":"Male"},{"k":"nonbinary","label":"Non-binary / other"},{"k":"na","label":"Prefer not to say"}]},{"id":"A4","key":"school","type":"single","required":false,"text":"Which school are you mainly affiliated with?","options":[{"k":"tshd","label":"Humanities & Digital Sciences (TSHD, e.g. CSAI, DSS)"},{"k":"tisem","label":"Economics & Management (TiSEM)"},{"k":"tsb","label":"Social & Behavioural Sciences (TSB)"},{"k":"tls","label":"Law (TLS)"},{"k":"tst","label":"Catholic Theology (TST)"},{"k":"other","label":"Other / more than one"}]},{"id":"A5","key":"origin","type":"single","required":false,"text":"Where did you complete most of your secondary education?","options":[{"k":"nl","label":"In the Netherlands"},{"k":"eu","label":"Elsewhere in Europe"},{"k":"noneu","label":"Outside Europe"},{"k":"na","label":"Prefer not to say"}]},{"id":"A6","key":"courses","type":"single","required":true,"text":"How many courses are you currently enrolled in or teaching?","options":[{"k":"1","label":"1","v":1},{"k":"2","label":"2","v":2},{"k":"3","label":"3","v":3},{"k":"4","label":"4","v":4},{"k":"5","label":"5","v":5},{"k":"6+","label":"6 or more","v":6}]},{"id":"A7","key":"hours","type":"single","required":false,"text":"Roughly how many hours per week do you spend on commitments outside your study or job (for example a paid side job, or caring for family)?","options":[{"k":"0","label":"None","v":0},{"k":"1-8","label":"1-8 hours","v":1},{"k":"9-16","label":"9-16 hours","v":2},{"k":"17-24","label":"17-24 hours","v":3},{"k":"25+","label":"More than 24 hours","v":4}]},{"id":"A8","key":"access","type":"multi","required":false,"text":"Do any of the following apply to you when you use digital tools? (select all that apply)","options":[{"k":"none","label":"None of these","exclusive":true},{"k":"screenreader","label":"I use a screen reader or screen magnification"},{"k":"captions","label":"I rely on captions or transcripts for audio and video"},{"k":"dyslexia","label":"I have dyslexia or another reading-related difference"},{"k":"motor","label":"Fine mouse or touch control is difficult for me"},{"k":"contrast","label":"I prefer high contrast or reduced motion"},{"k":"na","label":"Prefer not to say","exclusive":true}]},{"id":"A9","key":"tech","type":"scale","required":true,"min":1,"max":7,"text":"How comfortable are you learning a new piece of software on your own?","anchors":["Not at all comfortable","Extremely comfortable"]}]},{"id":"B","title":"How you use the current system today","help":"Think about Canvas as you actually use it in a normal teaching week, not how you think you should use it.","questions":[{"id":"B1","key":"freq","type":"single","required":true,"text":"In a typical teaching week, how often do you open Canvas?","options":[{"k":"lt1","label":"Less than once a week","v":1},{"k":"1","label":"About once a week","v":2},{"k":"2-3","label":"2-3 times a week","v":3},{"k":"4-6","label":"4-6 times a week","v":4},{"k":"daily","label":"About once a day","v":5},{"k":"several","label":"Several times a day","v":6}]},{"id":"B2","key":"devices","type":"multi","required":true,"text":"Which devices have you used to open Canvas in the last 7 days? (select all that apply)","options":[{"k":"laptop","label":"Laptop"},{"k":"desktop","label":"Desktop computer"},{"k":"phone_browser","label":"Smartphone, in the browser"},{"k":"phone_app","label":"Smartphone, in the Canvas app"},{"k":"tablet","label":"Tablet"}]},{"id":"B3","key":"primary","type":"single","required":true,"text":"Which one device do you use most often for Canvas?","options":[{"k":"laptop","label":"Laptop"},{"k":"desktop","label":"Desktop computer"},{"k":"phone","label":"Smartphone"},{"k":"tablet","label":"Tablet"}]},{"id":"B4","key":"session","type":"single","required":true,"text":"When you open Canvas, how long does a typical visit last?","options":[{"k":"lt2","label":"Under 2 minutes","v":1},{"k":"2-5","label":"2-5 minutes","v":2},{"k":"5-15","label":"5-15 minutes","v":3},{"k":"15-30","label":"15-30 minutes","v":4},{"k":"gt30","label":"More than 30 minutes","v":5}]},{"id":"B5","key":"features","type":"multi","required":true,"text":"Which parts of Canvas did you use in the last 7 days? (select all that apply)","options":[{"k":"announcements","label":"Announcements"},{"k":"assignments","label":"Assignments (submitting or grading)"},{"k":"grades","label":"Grades / feedback"},{"k":"modules","label":"Modules or Files (course materials)"},{"k":"calendar","label":"Calendar / To-do list"},{"k":"inbox","label":"Inbox (messages)"},{"k":"discussions","label":"Discussions"},{"k":"quizzes","label":"Quizzes"},{"k":"recordings","label":"Lecture recordings (video)"},{"k":"groups","label":"Groups / People"},{"k":"syllabus","label":"Syllabus page"},{"k":"none","label":"None of these","exclusive":true}]},{"id":"B6","key":"deadline","type":"multi","required":true,"text":"Think of the most recent deadline you dealt with. How did you first find out about it? (select all that apply)","options":[{"k":"canvas_cal","label":"Canvas calendar or To-do list"},{"k":"email","label":"Canvas e-mail notification"},{"k":"push","label":"Canvas push notification on my phone"},{"k":"in_class","label":"It was announced in class"},{"k":"peer","label":"A classmate or colleague told me (e.g. WhatsApp)"},{"k":"syllabus","label":"The syllabus or course guide"},{"k":"own_cal","label":"My own calendar or planner"},{"k":"late","label":"I found out late or missed it"}]},{"id":"B7","key":"notif","type":"single","required":true,"text":"Where do you usually notice Canvas notifications?","options":[{"k":"email","label":"In my e-mail inbox"},{"k":"push","label":"As push notifications on my phone"},{"k":"inapp","label":"Only when I open Canvas"},{"k":"off","label":"I have turned notifications off"},{"k":"dontknow","label":"I don't know"}]},{"id":"B8","key":"lost","type":"single","required":true,"text":"In the last 7 days, how many times did you fail to find something you were looking for in Canvas?","options":[{"k":"0","label":"Never","v":0},{"k":"1","label":"Once","v":1},{"k":"2-3","label":"2-3 times","v":2},{"k":"4-6","label":"4-6 times","v":3},{"k":"7+","label":"More than 6 times","v":4}]},{"id":"B9","key":"tools","type":"multi","required":true,"text":"Which other tools do you use to keep track of your courses? (select all that apply)","options":[{"k":"paper","label":"Paper planner or notebook"},{"k":"calendar","label":"Phone or computer calendar (Google, Outlook, Apple)"},{"k":"notes","label":"Notion, Obsidian or OneNote"},{"k":"chat","label":"WhatsApp, Signal or Discord group"},{"k":"email","label":"E-mail"},{"k":"none","label":"None, I rely on Canvas only","exclusive":true}]}]},{"id":"C","title":"Your experience","help":"How much do you agree or disagree with each statement about the current system?","questions":[{"id":"C1","key":"find_fast","type":"likert","required":true,"text":"I can quickly find the course material I need."},{"id":"C2","key":"find_slow","type":"likert","required":true,"text":"Finding what I need takes longer than it should.","reverse_of":"C1"},{"id":"C3","key":"notif_useful","type":"likert","required":true,"text":"Notifications help me stay on top of what is due."},{"id":"C4","key":"notif_noise","type":"likert","required":true,"text":"I receive notifications that are not relevant to me."},{"id":"C5","key":"mobile","type":"likert","required":true,"text":"Using the system on my phone works as well as on a computer."},{"id":"C6","key":"consistent","type":"likert","required":true,"text":"Course pages are organised in a similar way across my courses."},{"id":"C7","key":"uptodate","type":"likert","required":true,"text":"I trust that the grades and feedback I see are up to date."},{"id":"C8","key":"confident","type":"likert","required":true,"text":"I can complete my tasks in the system without asking anyone for help."},{"id":"C9","key":"accessible","type":"likert","required":true,"text":"Text, colours and videos in the system are easy for me to read, see and hear."},{"id":"C10","key":"group","type":"likert","required":true,"text":"Working with others (groups, peer feedback, messaging) is well supported."},{"id":"C11","key":"satisfaction","type":"scale","required":true,"min":1,"max":7,"text":"Overall, how satisfied or dissatisfied are you with the current system?","anchors":["Extremely dissatisfied","Extremely satisfied"],"labels":["Extremely dissatisfied","Very dissatisfied","Slightly dissatisfied","Neither","Slightly satisfied","Very satisfied","Extremely satisfied"]},{"id":"C12","key":"ease","type":"scale","required":true,"min":1,"max":5,"text":"How easy or difficult was the last thing you tried to do in Canvas (for example submitting or grading an assignment, or uploading a file)?","anchors":["Very difficult","Very easy"],"labels":["Very difficult","Difficult","Not difficult","Easy","Very easy"]}]},{"id":"D","title":"Your priorities","help":"Rank the following by how important they are to you in a typical week. 1 = most important, 6 = least important. Each number can be used once.","questions":[{"id":"D1","key":"rank","type":"rank","required":true,"text":"Rank these activities by importance to you in a typical week.","options":[{"k":"materials","label":"Finding course materials"},{"k":"deadlines","label":"Keeping track of deadlines"},{"k":"grades","label":"Seeing grades and feedback"},{"k":"communication","label":"Communicating with instructors or students"},{"k":"recordings","label":"Watching lecture recordings"},{"k":"groupwork","label":"Organising group work"}]}]},{"id":"E","title":"In your own words","help":"Stories are the most useful thing you can give us. A few sentences are plenty.","questions":[{"id":"E1","key":"frustrate","type":"text","required":true,"text":"Think about the last time Canvas frustrated you. What were you trying to do, and what happened?"},{"id":"E2","key":"helped","type":"text","required":false,"text":"Think about the last time Canvas really helped you. What were you trying to do, and what happened?"},{"id":"E3","key":"more","type":"text","required":false,"text":"Is there anything about how you manage your courses that we haven't asked about, but you think we should know?"}]}]};
+
+// ---------------------------------------------------------------- state
+let answers = {};
+let step = -1;                       // -1 intro, 0..N-1 one question each, N done
+const sections = Q.sections;
+const STEPS = []; sections.forEach(sec => sec.questions.forEach((q, i) => STEPS.push({sec, q, firstOfSection: i === 0})));
+const N = STEPS.length;
+// rough seconds a respondent needs per item, used for the "time left" estimate
+const SECONDS = {single: 9, multi: 14, likert: 7, scale: 8, rank: 40, text: 45};
+const est = q => SECONDS[q.type] || 10;
+const TOTAL_SEC = STEPS.reduce((s, x) => s + est(x.q), 0);
+try { const raw = localStorage.getItem(CONFIG.STORAGE_KEY + ":step"); const p = raw === null ? NaN : Number(raw); if (Number.isInteger(p) && p >= 0 && p < N) step = p; } catch (e) {}
+try { const d = localStorage.getItem(CONFIG.STORAGE_KEY); if (d) answers = JSON.parse(d) || {}; } catch (e) {}
+function persist(){ if (step >= N) return; try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(answers)); localStorage.setItem(CONFIG.STORAGE_KEY + ":step", String(step)); } catch (e) {} }
+
+// ---------------------------------------------------------------- render
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+$("#title").textContent = Q.title;
+$("#lead").textContent = Q.intro;
+$("#privacy").innerHTML = "<b>Privacy.</b> " + esc(Q.privacy);
+$("#courseTag").textContent = CONFIG.COURSE_TAG;
+$("#endpointNote").textContent = CONFIG.SUBMIT_ENDPOINT ? "answers are sent to the course sheet" : "answers stay on your device until you download them";
+document.title = Q.title;
+
+$("#metaCount").textContent = `${N} questions in ${sections.length} sections`;
+$("#metaTime").textContent = `about ${Math.round(TOTAL_SEC / 60)} minutes`;
+// section boundaries as thin marks on the progress bar
+(() => { let acc = 0; const marks = $("#progressMarks"); sections.slice(0, -1).forEach(sec => { acc += sec.questions.length; const m = document.createElement("span"); m.style.left = (acc / N * 100) + "%"; marks.appendChild(m); }); })();
+
+function renderStep(st, i){
+  const el = document.createElement("section");
+  el.className = "step"; el.id = "step-" + i;
+  const head = st.firstOfSection
+    ? `<div class="section-head"><div class="eyebrow">Section ${esc(st.sec.id)} of ${sections.length}</div><h2>${esc(st.sec.title)}</h2><p>${esc(st.sec.help)}</p></div>`
+    : `<div class="section-head"><div class="eyebrow">Section ${esc(st.sec.id)} · ${esc(st.sec.title)}</div></div>`;
+  el.innerHTML = head + `<div class="qno">Question ${i + 1} of ${N}</div>`;
+  el.appendChild(renderQuestion(st.q));
+  return el;
+}
+function renderQuestion(q){
+  const card = document.createElement("div");
+  card.className = "q"; card.id = "q-" + q.id; card.dataset.qid = q.id;
+  let body = "";
+  if (q.type === "single" || q.type === "multi") {
+    const t = q.type === "single" ? "radio" : "checkbox";
+    body = `<fieldset><legend>${esc(q.text)}</legend>${q.type==="multi" ? '<div class="hint">Select all that apply.</div>' : ""}<div class="opts">` +
+      q.options.map(o => `<label class="opt"><input type="${t}" name="${q.id}" value="${esc(o.k)}" id="${q.id}-${esc(o.k)}" ${o.exclusive ? 'data-exclusive="1"' : ""}><span>${esc(o.label)}</span></label>`).join("") +
+      `</div></fieldset>`;
+  } else if (q.type === "likert" || q.type === "scale") {
+    const min = q.min || 1, max = q.max || 7;
+    const labels = q.type === "likert" ? Q.likert7 : (q.labels || null);
+    const anchors = q.type === "likert" ? [Q.likert7[0], Q.likert7[6]] : q.anchors;
+    let pts = "";
+    for (let v = min; v <= max; v++) {
+      const lab = labels ? labels[v - min] : String(v);
+      pts += `<label><input type="radio" name="${q.id}" value="${v}" id="${q.id}-${v}" data-label="${esc(lab)}" aria-label="${v}: ${esc(lab)}"><span class="pt" aria-hidden="true">${v}</span></label>`;
+    }
+    body = `<fieldset><legend>${esc(q.text)}</legend><div class="scale" style="--n:${max-min+1}"><div class="row">${pts}</div><div class="anchors"><span>${esc(anchors[0])}</span><span>${esc(anchors[1])}</span></div><div class="chosen" id="${q.id}-chosen"></div></div></fieldset>`;
+  } else if (q.type === "rank") {
+    body = `<div class="qtext" id="${q.id}-label">${esc(q.text)}</div><div class="hint">Tap the items in order of importance: your first tap gets rank 1, the next rank 2, and so on. Tap an item again to remove it.</div>` +
+      `<div class="rank" role="group" aria-labelledby="${q.id}-label">` +
+      q.options.map(o => `<button type="button" data-k="${esc(o.k)}" aria-pressed="false"><span class="n" aria-hidden="true">·</span><span>${esc(o.label)}</span><span class="sr" data-sr></span></button>`).join("") +
+      `</div><div class="rank-tools"><span id="${q.id}-status">0 of ${q.options.length} ranked</span><button type="button" class="linkbtn" data-reset>Reset</button></div>`;
+  } else if (q.type === "text") {
+    body = `<label class="qtext" for="${q.id}-ta">${esc(q.text)}</label><textarea id="${q.id}-ta" name="${q.id}" rows="4" maxlength="2000" placeholder="A few sentences are plenty."></textarea>`;
+  }
+  card.innerHTML = `<div class="qid"><span>${esc(q.id)}</span></div>${body}`;
+  wire(card, q);
+  return card;
+}
+
+function wire(card, q){
+  const save = v => { answers[q.id] = v; persist(); };
+  if (q.type === "single") {
+    card.addEventListener("change", e => { if (e.target.name === q.id) save(e.target.value); });
+  } else if (q.type === "multi") {
+    card.addEventListener("change", e => {
+      if (e.target.name !== q.id) return;
+      const boxes = [...card.querySelectorAll("input")];
+      if (e.target.checked && e.target.dataset.exclusive) boxes.forEach(b => { if (b !== e.target) b.checked = false; });
+      else if (e.target.checked) boxes.forEach(b => { if (b.dataset.exclusive) b.checked = false; });
+      save(boxes.filter(b => b.checked).map(b => b.value));
+    });
+  } else if (q.type === "likert" || q.type === "scale") {
+    card.addEventListener("change", e => {
+      if (e.target.name !== q.id) return;
+      save(Number(e.target.value));
+      $(`#${q.id}-chosen`).textContent = e.target.value + " · " + e.target.dataset.label;
+    });
+  } else if (q.type === "rank") {
+    const btns = [...card.querySelectorAll(".rank button")];
+    const paint = () => {
+      const order = answers[q.id] || [];
+      btns.forEach(b => {
+        const i = order.indexOf(b.dataset.k);
+        b.classList.toggle("set", i >= 0); b.setAttribute("aria-pressed", i >= 0);
+        b.querySelector(".n").textContent = i >= 0 ? String(i + 1) : "·";
+        b.querySelector("[data-sr]").textContent = i >= 0 ? `, rank ${i + 1}` : ", not ranked";
+      });
+      $(`#${q.id}-status`).textContent = `${order.length} of ${btns.length} ranked`;
+    };
+    btns.forEach(b => b.addEventListener("click", () => {
+      let order = (answers[q.id] || []).slice();
+      const i = order.indexOf(b.dataset.k);
+      if (i >= 0) order.splice(i, 1); else order.push(b.dataset.k);
+      answers[q.id] = order; persist(); paint();
+    }));
+    card.querySelector("[data-reset]").addEventListener("click", () => { answers[q.id] = []; persist(); paint(); });
+    card._paint = paint;
+  } else if (q.type === "text") {
+    card.querySelector("textarea").addEventListener("input", e => save(e.target.value));
+  }
+}
+// restore a draft into the controls
+function restore(card, q){
+  const v = answers[q.id]; if (v === undefined || v === null) return;
+  if (q.type === "single") { const i = card.querySelector(`input[value="${v}"]`); if (i) i.checked = true; }
+  else if (q.type === "multi") (v || []).forEach(k => { const i = card.querySelector(`input[value="${k}"]`); if (i) i.checked = true; });
+  else if (q.type === "likert" || q.type === "scale") { const i = card.querySelector(`input[value="${v}"]`); if (i) { i.checked = true; $(`#${q.id}-chosen`).textContent = v + " · " + i.dataset.label; } }
+  else if (q.type === "rank") card._paint && card._paint();
+  else if (q.type === "text") card.querySelector("textarea").value = v;
+}
+const host = $("#questions");
+STEPS.forEach((st, i) => { host.appendChild(renderStep(st, i)); restore($("#q-" + st.q.id), st.q); });
+
+// ---------------------------------------------------------------- navigation
+const backBtn = $("#back"), nextBtn = $("#next"), countEl = $("#count");
+function answered(q){
+  const v = answers[q.id];
+  if (v === undefined || v === null) return false;
+  if (q.type === "multi") return Array.isArray(v) && v.length > 0;
+  if (q.type === "rank") return Array.isArray(v) && v.length === q.options.length;
+  if (q.type === "text") return String(v).trim().length > 0;
+  return true;
+}
+function timeLeft(){
+  const from = Math.max(0, step);
+  const sec = STEPS.slice(from).reduce((s, x) => s + est(x.q), 0);
+  if (step >= N) return "";
+  if (sec < 60) return "under a minute left";
+  const m = Math.round(sec / 60); return `≈ ${m} min left`;
+}
+function show(){
+  const inQ = step >= 0 && step < N, done = step >= N;
+  $("#intro").style.display = step === -1 ? "" : "none";
+  STEPS.forEach((st, i) => $("#step-" + i).classList.toggle("active", i === step));
+  $("#done").classList.toggle("active", done);
+  $("#bar").style.display = done ? "none" : "";
+  const pctDone = step <= -1 ? 0 : Math.min(100, Math.round(Math.max(0, step) / N * 100));
+  $("#progressFill").style.width = (done ? 100 : pctDone) + "%";
+  $("#progress").setAttribute("aria-valuenow", done ? 100 : pctDone); $("#progress").classList.toggle("done", done);
+  $("#stepword").textContent = inQ ? `${STEPS[step].sec.id} · ${step + 1}/${N}` : done ? `${N}/${N}` : "";
+  $("#timeleft").textContent = inQ ? timeLeft() : "";
+  backBtn.style.visibility = step <= -1 ? "hidden" : "visible";
+  backBtn.textContent = step === 0 ? "Intro" : "Previous";
+  refreshNext();
+  persist();
+  window.scrollTo(0, 0);
+  if (inQ) { const f = $("#step-" + step).querySelector("textarea"); if (f && matchMedia("(min-width: 720px)").matches) f.focus({preventScroll: true}); }
+}
+function refreshNext(){
+  if (step === -1) { nextBtn.textContent = "Start"; countEl.textContent = ""; return; }
+  if (step >= N) return;
+  const q = STEPS[step].q, ok = answered(q);
+  nextBtn.textContent = step === N - 1 ? "Submit" : ok ? "Next" : "Skip";
+  countEl.textContent = `${STEPS.filter(x => answered(x.q)).length}/${N} answered`;
+}
+document.addEventListener("change", refreshNext);
+document.addEventListener("click", e => { if (e.target.closest(".rank")) refreshNext(); });
+document.addEventListener("input", refreshNext);
+backBtn.addEventListener("click", () => { step = Math.max(-1, step - 1); show(); });
+nextBtn.addEventListener("click", async () => {
+  if (step === N - 1) { await submit(); step = N; answers = {}; show(); return; }
+  step += 1; show();
+});
+document.addEventListener("keydown", e => {
+  if (step >= N) return;
+  const inField = e.target.closest("textarea,input[type=text]");
+  if (e.key === "Enter" && !inField && !e.target.closest("button")) { e.preventDefault(); nextBtn.click(); }
+  if (e.key === "ArrowRight" && !inField && !e.target.closest("input")) nextBtn.click();
+  if (e.key === "ArrowLeft" && !inField && !e.target.closest("input") && step > -1) backBtn.click();
+});
+show();
+
+// ---------------------------------------------------------------- submit
+function flatten(){
+  const id = "W-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+  const now = new Date(); const pad = n => String(n).padStart(2, "0");
+  const out = { id, submitted: `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}` };
+  sections.forEach(sec => sec.questions.forEach(q => {
+    const col = `${q.id}_${q.key}`, v = answers[q.id];
+    if (q.type === "multi") q.options.forEach(o => out[`${col}__${o.k}`] = (v || []).includes(o.k) ? 1 : 0);
+    else if (q.type === "rank") q.options.forEach(o => { const i = (v || []).indexOf(o.k); out[`${col}__${o.k}`] = i >= 0 ? i + 1 : ""; });
+    else out[col] = v === undefined || v === null ? "" : v;
+  }));
+  return out;
+}
+let record = null;
+async function submit(){
+  record = flatten();
+  $("#code").textContent = record.id;
+  $("#raw").textContent = JSON.stringify(record, null, 2);
+  const st = $("#status"), txt = $("#doneText");
+  if (CONFIG.SUBMIT_ENDPOINT) {
+    st.textContent = "Sending…"; st.className = "status";
+    try {
+      await fetch(CONFIG.SUBMIT_ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(record) });
+      st.textContent = "Recorded in the course sheet";
+      txt.textContent = "Your response code is above. You can close this page. If the lecturer asks for it, download or copy your answers as a backup.";
+    } catch (e) {
+      st.textContent = "Could not reach the course sheet"; st.className = "status warn";
+      txt.textContent = "No connection right now. Please download or copy your answers and send them to the lecturer, or reopen this page later and submit again.";
+    }
+  } else {
+    st.textContent = "Saved on this device"; st.className = "status";
+    txt.textContent = "This copy of the survey runs offline. If the lecturer asks for your answers, download or copy them here.";
+  }
+  try { localStorage.removeItem(CONFIG.STORAGE_KEY); localStorage.removeItem(CONFIG.STORAGE_KEY + ":step"); } catch (e) {}
+}
+$("#dl").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(record, null, 2)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `icanvas-response-${record.id}.json`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast("Downloaded.");
+});
+$("#cp").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(JSON.stringify(record)); toast("Copied to clipboard."); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($("#raw")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Select and copy the text below."); }
+});
+$("#again").addEventListener("click", () => { answers = {}; step = -1; persist(); location.reload(); });
+let toastT; function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2400); }
+</script>
+</body>
+</html>

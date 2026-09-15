@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iCanvas Needfinding Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F3F5F4; --surface:#FFFFFF; --surface-2:#E9EEEB; --line:#D6DDD8; --line-strong:#B9C4BD;
+  --ink:#14231D; --ink-2:#4A5B53; --ink-3:#7A8A82;
+  --accent:#1B7F5E; --accent-ink:#FFFFFF; --accent-soft:#DDF0E7; --accent-line:#8CC9AF;
+  --lav:#6F6AC7; --lav-soft:#E7E6F8; --warn:#B45309; --warn-soft:#FDEBD3; --danger:#B42318;
+  --shadow:0 1px 2px rgba(20,35,29,.06),0 8px 24px -12px rgba(20,35,29,.18);
+  --radius:14px; --radius-s:9px;
+  --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1613; --surface:#172119; --surface-2:#1F2B24; --line:#2A3830; --line-strong:#3D4E45;
+    --ink:#E6ECE8; --ink-2:#AEBBB3; --ink-3:#7F8E86;
+    --accent:#5CC59A; --accent-ink:#0B1A13; --accent-soft:#17352A; --accent-line:#2E6E55;
+    --lav:#B7B3F2; --lav-soft:#26254A; --warn:#F2B25C; --warn-soft:#3A2A12; --danger:#F08A80;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1613; --surface:#172119; --surface-2:#1F2B24; --line:#2A3830; --line-strong:#3D4E45;
+  --ink:#E6ECE8; --ink-2:#AEBBB3; --ink-3:#7F8E86;
+  --accent:#5CC59A; --accent-ink:#0B1A13; --accent-soft:#17352A; --accent-line:#2E6E55;
+  --lav:#B7B3F2; --lav-soft:#26254A; --warn:#F2B25C; --warn-soft:#3A2A12; --danger:#F08A80;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);overflow-x:clip}
+body{font-family:var(--body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;padding-block:0 calc(96px + env(safe-area-inset-bottom,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:700;letter-spacing:-.01em;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;color:inherit}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px}
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:12px;min-height:56px}
+.brand{font-family:var(--display);font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.steps{display:flex;gap:4px;margin-left:auto;flex:1 1 60px;min-width:0;justify-content:flex-end}
+.steps span{display:block;height:6px;flex:1 1 10px;max-width:28px;border-radius:3px;background:var(--line-strong);transition:background .25s}
+.steps span.is-done{background:var(--accent)}
+.steps span.is-cur{background:var(--lav)}
+.stepword{font-family:var(--mono);font-size:12px;color:var(--ink-3);white-space:nowrap}
+/* intro */
+.intro{padding-block:28px 8px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.intro h1{font-size:clamp(28px,7vw,38px);line-height:1.08;margin-top:8px}
+.intro .lead{margin-top:14px;color:var(--ink-2);font-size:17px}
+.privacy{margin-top:18px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--lav);border-radius:var(--radius-s);padding:12px 14px;font-size:14px;color:var(--ink-2)}
+.privacy b{color:var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+/* sections */
+.section{display:none;padding-block:20px 8px}
+.section.active{display:block}
+.section-head{margin-bottom:14px}
+.section-head .eyebrow{color:var(--lav)}
+.section-head h2{font-size:26px;margin-top:4px}
+.section-head p{color:var(--ink-2);margin-top:6px;font-size:15px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);scroll-margin-top:80px}
+.q .qid{font-family:var(--mono);font-size:12px;color:var(--ink-3);display:flex;justify-content:space-between;align-items:baseline}
+.q legend,.q .qtext{font-weight:600;font-size:17px;line-height:1.35;margin:6px 0 0;padding:0;text-wrap:pretty}
+.q .hint{color:var(--ink-3);font-size:13px;margin-top:4px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+.opts{display:grid;gap:8px;margin-top:12px}
+.opt{position:relative;display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}
+.opt:hover{border-color:var(--line-strong)}
+.opt input{appearance:none;-webkit-appearance:none;width:20px;height:20px;margin:0;border:2px solid var(--line-strong);border-radius:50%;background:var(--surface);flex:none;display:grid;place-items:center;transition:border-color .15s}
+.opt input[type=checkbox]{border-radius:5px}
+.opt input::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--accent-ink);transform:scale(0);transition:transform .12s}
+.opt input[type=checkbox]::after{border-radius:2px;width:10px;height:10px}
+.opt input:checked{border-color:var(--accent);background:var(--accent)}
+.opt input:checked::after{transform:scale(1)}
+.opt:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opt input:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.opt span{font-size:15px}
+/* scale */
+.scale{margin-top:12px}
+.scale .row{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:6px}
+.scale label{position:relative;display:block}
+.scale input{position:absolute;inset:0;opacity:0;margin:0}
+.scale .pt{display:grid;place-items:center;height:44px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);font-family:var(--mono);font-weight:500;font-size:15px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.scale input:checked + .pt{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.scale input:focus-visible + .pt{outline:3px solid var(--lav);outline-offset:2px}
+.scale .anchors{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--ink-3)}
+.scale .anchors span:last-child{text-align:right}
+.scale .chosen{margin-top:6px;min-height:18px;font-size:13px;color:var(--accent);font-weight:500}
+/* rank */
+.rank{margin-top:12px;display:grid;gap:8px}
+.rank button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);cursor:pointer;transition:border-color .15s,background .15s}
+.rank button .n{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-weight:500;background:var(--surface);border:1px solid var(--line-strong);flex:none;color:var(--ink-3)}
+.rank button.set{border-color:var(--lav);background:var(--lav-soft)}
+.rank button.set .n{background:var(--lav);border-color:var(--lav);color:#fff}
+.rank button:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.rank-tools{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--ink-3)}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);font-weight:500;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+textarea{width:100%;margin-top:12px;min-height:110px;resize:vertical;padding:12px;border:1px solid var(--line);border-radius:var(--radius-s);background:var(--bg);color:var(--ink);font:inherit;font-size:15px}
+textarea:focus-visible{outline:3px solid var(--lav);outline-offset:1px;border-color:var(--lav)}
+/* bottom bar */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--surface);border-top:1px solid var(--line);padding:10px 0 calc(10px + env(safe-area-inset-bottom,0px))}
+.bar .wrap{display:flex;gap:10px;align-items:center}
+.btn{appearance:none;border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:12px 18px;font-weight:600;font-size:15px;cursor:pointer;transition:transform .08s,background .15s}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:3px solid var(--lav);outline-offset:2px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);margin-left:auto;min-width:130px}
+.btn.ghost{border-color:transparent;color:var(--ink-2)}
+.btn[disabled]{opacity:.5;cursor:default}
+.bar .count{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+/* done */
+.finish{display:none;padding-block:32px}
+.finish.active{display:block}
+.finish .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.finish h2{font-size:28px}
+.finish .status{margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;font-size:14px;font-weight:500;background:var(--accent-soft);color:var(--accent)}
+.finish .status.warn{background:var(--warn-soft);color:var(--warn)}
+.finish .code{font-family:var(--mono);font-size:22px;letter-spacing:.06em;margin-top:16px;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:var(--radius-s);background:var(--bg);display:inline-block}
+.finish p{color:var(--ink-2);margin-top:12px;font-size:15px}
+.finish .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.finish details{margin-top:18px;font-size:13px;color:var(--ink-3)}
+.finish pre{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-s);padding:12px;max-height:240px;overflow:auto}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:9}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+@media (min-width:720px){.q{padding:20px 22px}.intro h1{font-size:40px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="dot" aria-hidden="true"></span>iCanvas survey</div>
+    <span class="stepword" id="stepword"></span>
+    <div class="steps" id="steps" aria-hidden="true"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro" id="intro">
+    <div class="eyebrow" id="courseTag">HCI · Week 02 · Needfinding</div>
+    <h1 id="title"></h1>
+    <p class="lead" id="lead"></p>
+    <div class="privacy" id="privacy"></div>
+    <div class="meta"><span>5 sections</span><span>~7 minutes</span><span>anonymous</span><span>every question can be skipped</span><span id="endpointNote"></span></div>
+  </section>
+
+  <div id="sections"></div>
+
+  <section class="finish" id="done">
+    <div class="card">
+      <div class="eyebrow">Thank you</div>
+      <h2>Your experience is now part of the data.</h2>
+      <div class="status" id="status"></div>
+      <div class="code" id="code"></div>
+      <p id="doneText"></p>
+      <div class="actions">
+        <button class="btn" id="dl">Download my answers (JSON)</button>
+        <button class="btn" id="cp">Copy answers</button>
+        <button class="btn ghost" id="again">Start over</button>
+      </div>
+      <details><summary>What was recorded</summary><pre id="raw"></pre></details>
+    </div>
+  </section>
+</main>
+
+<div class="bar" id="bar">
+  <div class="wrap">
+    <button class="btn ghost" id="back">Back</button>
+    <span class="count" id="count"></span>
+    <button class="btn primary" id="next">Start</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ---------------------------------------------------------------- configuration
+// Paste the URL of your Google Apps Script web app (see README) or any endpoint that accepts a POST
+// with a JSON body. Leave empty to run offline: students then download or copy their answers.
+const CONFIG = {
+  SUBMIT_ENDPOINT: "",
+  COURSE_TAG: "HCI · Week 02 · Needfinding",
+  STORAGE_KEY: "icanvas-survey-draft-v1"
+};
+const params = new URLSearchParams(location.search);
+if (params.get("endpoint")) CONFIG.SUBMIT_ENDPOINT = params.get("endpoint");
+if (params.get("tag")) CONFIG.COURSE_TAG = params.get("tag");
+
+const Q = /*__QUESTIONS__*/;
+
+// ---------------------------------------------------------------- state
+let answers = {};
+let step = -1;                       // -1 intro, 0..4 sections, 5 done
+const sections = Q.sections;
+try { const d = localStorage.getItem(CONFIG.STORAGE_KEY); if (d) answers = JSON.parse(d) || {}; } catch (e) {}
+function persist(){ try { localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(answers)); } catch (e) {} }
+
+// ---------------------------------------------------------------- render
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+$("#title").textContent = Q.title;
+$("#lead").textContent = Q.intro;
+$("#privacy").innerHTML = "<b>Privacy.</b> " + esc(Q.privacy);
+$("#courseTag").textContent = CONFIG.COURSE_TAG;
+$("#endpointNote").textContent = CONFIG.SUBMIT_ENDPOINT ? "answers are sent to the course sheet" : "answers stay on your device until you download them";
+document.title = Q.title;
+
+const stepsEl = $("#steps");
+sections.forEach(() => { const s = document.createElement("span"); stepsEl.appendChild(s); });
+
+function renderSection(sec){
+  const el = document.createElement("section");
+  el.className = "section"; el.id = "sec-" + sec.id;
+  el.innerHTML = `<div class="section-head"><div class="eyebrow">Section ${esc(sec.id)} of ${sections.length}</div><h2>${esc(sec.title)}</h2><p>${esc(sec.help)}</p></div>`;
+  sec.questions.forEach(q => el.appendChild(renderQuestion(q)));
+  return el;
+}
+function renderQuestion(q){
+  const card = document.createElement("div");
+  card.className = "q"; card.id = "q-" + q.id; card.dataset.qid = q.id;
+  let body = "";
+  if (q.type === "single" || q.type === "multi") {
+    const t = q.type === "single" ? "radio" : "checkbox";
+    body = `<fieldset><legend>${esc(q.text)}</legend>${q.type==="multi" ? '<div class="hint">Select all that apply.</div>' : ""}<div class="opts">` +
+      q.options.map(o => `<label class="opt"><input type="${t}" name="${q.id}" value="${esc(o.k)}" id="${q.id}-${esc(o.k)}" ${o.exclusive ? 'data-exclusive="1"' : ""}><span>${esc(o.label)}</span></label>`).join("") +
+      `</div></fieldset>`;
+  } else if (q.type === "likert" || q.type === "scale") {
+    const min = q.min || 1, max = q.max || 7;
+    const labels = q.type === "likert" ? Q.likert7 : (q.labels || null);
+    const anchors = q.type === "likert" ? [Q.likert7[0], Q.likert7[6]] : q.anchors;
+    let pts = "";
+    for (let v = min; v <= max; v++) {
+      const lab = labels ? labels[v - min] : String(v);
+      pts += `<label><input type="radio" name="${q.id}" value="${v}" id="${q.id}-${v}" data-label="${esc(lab)}" aria-label="${v}: ${esc(lab)}"><span class="pt" aria-hidden="true">${v}</span></label>`;
+    }
+    body = `<fieldset><legend>${esc(q.text)}</legend><div class="scale" style="--n:${max-min+1}"><div class="row">${pts}</div><div class="anchors"><span>${esc(anchors[0])}</span><span>${esc(anchors[1])}</span></div><div class="chosen" id="${q.id}-chosen"></div></div></fieldset>`;
+  } else if (q.type === "rank") {
+    body = `<div class="qtext" id="${q.id}-label">${esc(q.text)}</div><div class="hint">Tap the items in order of importance: your first tap gets rank 1, the next rank 2, and so on. Tap an item again to remove it.</div>` +
+      `<div class="rank" role="group" aria-labelledby="${q.id}-label">` +
+      q.options.map(o => `<button type="button" data-k="${esc(o.k)}" aria-pressed="false"><span class="n" aria-hidden="true">·</span><span>${esc(o.label)}</span><span class="sr" data-sr></span></button>`).join("") +
+      `</div><div class="rank-tools"><span id="${q.id}-status">0 of ${q.options.length} ranked</span><button type="button" class="linkbtn" data-reset>Reset</button></div>`;
+  } else if (q.type === "text") {
+    body = `<label class="qtext" for="${q.id}-ta">${esc(q.text)}</label><textarea id="${q.id}-ta" name="${q.id}" rows="4" maxlength="2000" placeholder="A few sentences are plenty."></textarea>`;
+  }
+  card.innerHTML = `<div class="qid"><span>${esc(q.id)}</span></div>${body}`;
+  wire(card, q);
+  return card;
+}
+
+function wire(card, q){
+  const save = v => { answers[q.id] = v; persist(); };
+  if (q.type === "single") {
+    card.addEventListener("change", e => { if (e.target.name === q.id) save(e.target.value); });
+  } else if (q.type === "multi") {
+    card.addEventListener("change", e => {
+      if (e.target.name !== q.id) return;
+      const boxes = [...card.querySelectorAll("input")];
+      if (e.target.checked && e.target.dataset.exclusive) boxes.forEach(b => { if (b !== e.target) b.checked = false; });
+      else if (e.target.checked) boxes.forEach(b => { if (b.dataset.exclusive) b.checked = false; });
+      save(boxes.filter(b => b.checked).map(b => b.value));
+    });
+  } else if (q.type === "likert" || q.type === "scale") {
+    card.addEventListener("change", e => {
+      if (e.target.name !== q.id) return;
+      save(Number(e.target.value));
+      $(`#${q.id}-chosen`).textContent = e.target.value + " · " + e.target.dataset.label;
+    });
+  } else if (q.type === "rank") {
+    const btns = [...card.querySelectorAll(".rank button")];
+    const paint = () => {
+      const order = answers[q.id] || [];
+      btns.forEach(b => {
+        const i = order.indexOf(b.dataset.k);
+        b.classList.toggle("set", i >= 0); b.setAttribute("aria-pressed", i >= 0);
+        b.querySelector(".n").textContent = i >= 0 ? String(i + 1) : "·";
+        b.querySelector("[data-sr]").textContent = i >= 0 ? `, rank ${i + 1}` : ", not ranked";
+      });
+      $(`#${q.id}-status`).textContent = `${order.length} of ${btns.length} ranked`;
+    };
+    btns.forEach(b => b.addEventListener("click", () => {
+      let order = (answers[q.id] || []).slice();
+      const i = order.indexOf(b.dataset.k);
+      if (i >= 0) order.splice(i, 1); else order.push(b.dataset.k);
+      answers[q.id] = order; persist(); paint();
+    }));
+    card.querySelector("[data-reset]").addEventListener("click", () => { answers[q.id] = []; persist(); paint(); });
+    card._paint = paint;
+  } else if (q.type === "text") {
+    card.querySelector("textarea").addEventListener("input", e => save(e.target.value));
+  }
+}
+// restore a draft into the controls
+function restore(card, q){
+  const v = answers[q.id]; if (v === undefined || v === null) return;
+  if (q.type === "single") { const i = card.querySelector(`input[value="${v}"]`); if (i) i.checked = true; }
+  else if (q.type === "multi") (v || []).forEach(k => { const i = card.querySelector(`input[value="${k}"]`); if (i) i.checked = true; });
+  else if (q.type === "likert" || q.type === "scale") { const i = card.querySelector(`input[value="${v}"]`); if (i) { i.checked = true; $(`#${q.id}-chosen`).textContent = v + " · " + i.dataset.label; } }
+  else if (q.type === "rank") card._paint && card._paint();
+  else if (q.type === "text") card.querySelector("textarea").value = v;
+}
+const host = $("#sections");
+sections.forEach(sec => { const el = renderSection(sec); host.appendChild(el); sec.questions.forEach(q => restore($("#q-" + q.id), q)); });
+
+// ---------------------------------------------------------------- navigation
+const backBtn = $("#back"), nextBtn = $("#next"), countEl = $("#count");
+function answered(q){
+  const v = answers[q.id];
+  if (v === undefined || v === null) return false;
+  if (q.type === "multi") return Array.isArray(v) && v.length > 0;
+  if (q.type === "rank") return Array.isArray(v) && v.length === q.options.length;
+  if (q.type === "text") return String(v).trim().length > 0;
+  return true;
+}
+function show(){
+  $("#intro").style.display = step === -1 ? "" : "none";
+  sections.forEach((s, i) => $("#sec-" + s.id).classList.toggle("active", i === step));
+  $("#done").classList.toggle("active", step === sections.length);
+  $("#bar").style.display = step === sections.length ? "none" : "";
+  [...stepsEl.children].forEach((s, i) => { s.className = i < step ? "is-done" : i === step ? "is-cur" : ""; });
+  $("#stepword").textContent = step >= 0 && step < sections.length ? `${sections[step].id} · ${step + 1}/${sections.length}` : "";
+  backBtn.style.visibility = step <= 0 ? "hidden" : "visible";
+  nextBtn.textContent = step === -1 ? "Start" : step === sections.length - 1 ? "Submit" : "Next";
+  if (step >= 0 && step < sections.length) {
+    const qs = sections[step].questions; countEl.textContent = `${qs.filter(answered).length}/${qs.length} answered`;
+  } else countEl.textContent = "";
+  window.scrollTo(0, 0);
+}
+document.addEventListener("change", refreshCount);
+document.addEventListener("click", e => { if (e.target.closest(".rank")) refreshCount(); });
+document.addEventListener("input", refreshCount);
+function refreshCount(){ if (step >= 0 && step < sections.length) { const qs = sections[step].questions; countEl.textContent = `${qs.filter(answered).length}/${qs.length} answered`; } }
+backBtn.addEventListener("click", () => { step = Math.max(-1, step - 1); show(); });
+nextBtn.addEventListener("click", async () => {
+  if (step === sections.length - 1) { await submit(); step = sections.length; show(); return; }
+  step += 1; show();
+});
+show();
+
+// ---------------------------------------------------------------- submit
+function flatten(){
+  const id = "W-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+  const now = new Date(); const pad = n => String(n).padStart(2, "0");
+  const out = { id, submitted: `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}` };
+  sections.forEach(sec => sec.questions.forEach(q => {
+    const col = `${q.id}_${q.key}`, v = answers[q.id];
+    if (q.type === "multi") q.options.forEach(o => out[`${col}__${o.k}`] = (v || []).includes(o.k) ? 1 : 0);
+    else if (q.type === "rank") q.options.forEach(o => { const i = (v || []).indexOf(o.k); out[`${col}__${o.k}`] = i >= 0 ? i + 1 : ""; });
+    else out[col] = v === undefined || v === null ? "" : v;
+  }));
+  return out;
+}
+let record = null;
+async function submit(){
+  record = flatten();
+  $("#code").textContent = record.id;
+  $("#raw").textContent = JSON.stringify(record, null, 2);
+  const st = $("#status"), txt = $("#doneText");
+  if (CONFIG.SUBMIT_ENDPOINT) {
+    st.textContent = "Sending…"; st.className = "status";
+    try {
+      await fetch(CONFIG.SUBMIT_ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(record) });
+      st.textContent = "Recorded in the course sheet";
+      txt.textContent = "Your response code is above. You can close this page. If the lecturer asks for it, download or copy your answers as a backup.";
+    } catch (e) {
+      st.textContent = "Could not reach the course sheet"; st.className = "status warn";
+      txt.textContent = "No connection right now. Please download or copy your answers and send them to the lecturer, or reopen this page later and submit again.";
+    }
+  } else {
+    st.textContent = "Saved on this device"; st.className = "status";
+    txt.textContent = "This copy of the survey runs offline. If the lecturer asks for your answers, download or copy them here.";
+  }
+  try { localStorage.removeItem(CONFIG.STORAGE_KEY); } catch (e) {}
+}
+$("#dl").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(record, null, 2)], { type: "application/json" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `icanvas-response-${record.id}.json`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast("Downloaded.");
+});
+$("#cp").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(JSON.stringify(record)); toast("Copied to clipboard."); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($("#raw")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast("Select and copy the text below."); }
+});
+$("#again").addEventListener("click", () => { answers = {}; persist(); location.reload(); });
+let toastT; function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2400); }
+</script>
+</body>
+</html>
