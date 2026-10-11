@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulated web analytics dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- =========================================================
+     CSS: look and feel
+     ========================================================= -->
+<style>
+  :root {
+    --bg: #F2F4F3;
+    --surface: #FFFFFF;
+    --ink: #1A2530;
+    --muted: #5B6B78;
+    --line: #D9E0E4;
+    --soft: #EAF0F3;
+    --accent: #1F5F8B;
+    --good: #2E7D4F;
+    --bad: #B3413B;
+    --c-organic: #1F5F8B;
+    --c-social: #3E8E5E;
+    --c-direct: #D49A2A;
+    --c-referral: #B04A5A;
+    --c-users: #8AA6B8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121A21; --surface: #1A242D; --ink: #E6ECF0; --muted: #93A3AF;
+      --line: #2B3842; --soft: #22303B; --accent: #6FA8D6;
+      --good: #6CC291; --bad: #E7837C;
+      --c-organic: #6FA8D6; --c-social: #6CC291; --c-direct: #E9B95A; --c-referral: #E07D8C; --c-users: #5D7584;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+  }
+  button, input { font: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- Header ---------- */
+  .top {
+    max-width: 1280px; margin: 0 auto; padding: 28px 24px 8px;
+    display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: space-between;
+  }
+  .site { margin: 0; color: var(--muted); font-weight: 500; }
+  h1 { margin: 2px 0 6px; font-size: 32px; line-height: 1.1; letter-spacing: -0.02em; }
+  .lede { margin: 0; color: var(--muted); max-width: 60ch; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); }
+  .seg button { border: 0; background: none; color: var(--ink); padding: 7px 12px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); font-weight: 600; }
+
+  .btn { border: 1px solid var(--accent); background: var(--accent); color: var(--surface); padding: 7px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; }
+  .btn.ghost { background: var(--surface); color: var(--accent); }
+  .btn.live { background: var(--bad); border-color: var(--bad); }
+  .switch { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); cursor: pointer; }
+
+  /* ---------- Layout ---------- */
+  main { max-width: 1280px; margin: 0 auto; padding: 16px 24px 48px; display: grid; gap: 16px; }
+  .row { display: grid; gap: 16px; }
+  .row.two { grid-template-columns: 3fr 2fr; }
+  .row.even { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 900px) { .row.two, .row.even { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; min-width: 0; }
+  .panel h2, .group h2 { margin: 0 0 12px; font-size: 16px; font-weight: 700; }
+  .panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .note { color: var(--muted); margin: -6px 0 12px; font-size: 14px; }
+
+  /* Teaching notes, shown when "Explain metrics" is on */
+  .explain { display: none; font-size: 13px; color: var(--muted); margin: 6px 0 0; max-width: 46ch; }
+  body.explaining .explain { display: block; }
+  body.explaining .panel > .explain { max-width: 70ch; margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); }
+
+  /* ---------- KPI groups (match the slide's metric categories) ---------- */
+  .kpis { display: grid; grid-template-columns: 3fr 2fr 2fr; gap: 16px; }
+  @media (max-width: 1100px) { .kpis { grid-template-columns: 1fr 1fr; } .kpis .group:first-child { grid-column: 1 / -1; } }
+  @media (max-width: 620px) { .kpis { grid-template-columns: 1fr; } }
+  .group { background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 6px; padding: 16px 20px; }
+  .metrics { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+  @media (max-width: 620px) { .metrics { grid-auto-flow: row; } .metric + .metric { border-left: 0 !important; padding-left: 0 !important; border-top: 1px solid var(--line); padding-top: 12px; margin-top: 12px; } }
+  .metric { padding-right: 14px; }
+  .metric + .metric { border-left: 1px solid var(--line); padding-left: 14px; }
+  .metric .label { color: var(--muted); font-size: 14px; }
+  .metric .value { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+  .delta { font-size: 13px; font-weight: 600; }
+  .delta.up { color: var(--good); } .delta.down { color: var(--bad); }
+  .delta span { color: var(--muted); font-weight: 400; }
+
+  /* ---------- Trend chart ---------- */
+  .legend { display: flex; gap: 14px; font-size: 13px; color: var(--muted); }
+  .key { display: inline-block; width: 12px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
+  .chart-wrap { position: relative; }
+  #trend { width: 100%; height: auto; display: block; }
+  #trend text { fill: var(--muted); font-size: 11px; }
+  #trend .grid { stroke: var(--line); }
+  .tip {
+    position: absolute; pointer-events: none; background: var(--ink); color: var(--surface);
+    padding: 8px 10px; border-radius: 6px; font-size: 13px; line-height: 1.4; white-space: nowrap;
+    transform: translate(-50%, -100%);
+  }
+
+  /* ---------- Donut ---------- */
+  .donut-wrap { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  #donut { width: 160px; height: 160px; flex: none; }
+  .clist { list-style: none; margin: 0; padding: 0; flex: 1; min-width: 160px; }
+  .clist li { display: grid; grid-template-columns: 14px 1fr auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  /* ---------- Tables ---------- */
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-weight: 600; color: var(--muted); font-size: 13px; padding: 8px 10px; border-bottom: 2px solid var(--line); white-space: nowrap; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td.n, th.n { text-align: right; }
+  tr.total td { font-weight: 700; background: var(--soft); }
+  .barcell { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+  .bar { height: 10px; background: var(--accent); border-radius: 2px; }
+  .bartrack { width: 90px; background: var(--soft); border-radius: 2px; }
+  .url { color: var(--muted); font-size: 12px; display: block; }
+
+  /* ---------- Clickstream ---------- */
+  .funnel { display: grid; gap: 10px; }
+  .step { display: grid; grid-template-columns: 150px 1fr 110px; gap: 12px; align-items: center; }
+  @media (max-width: 520px) { .step { grid-template-columns: 1fr; gap: 4px; } }
+  .step .track { background: var(--soft); border-radius: 3px; height: 26px; }
+  .step .fill { background: var(--accent); height: 100%; border-radius: 3px; transition: width .4s ease; }
+  .step .count { text-align: right; font-size: 14px; }
+  .step .count small { display: block; color: var(--muted); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .chip { font-size: 12px; padding: 2px 7px; border-radius: 4px; background: var(--soft); border: 1px solid var(--line); }
+  .chip.goal { background: var(--good); color: var(--surface); border-color: var(--good); }
+  .chip.exit { background: none; border-style: dashed; color: var(--muted); }
+  .arrow { color: var(--muted); font-size: 12px; }
+  .paths { margin: 0; padding-left: 22px; display: grid; gap: 10px; }
+  .paths li::marker { color: var(--muted); font-weight: 600; }
+  .paths .meta { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+  /* ---------- Live feed ---------- */
+  .active { font-size: 14px; color: var(--muted); }
+  .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); margin-right: 6px; }
+  body.is-live .pulse { background: var(--bad); animation: pulse 1.2s infinite; }
+  @keyframes pulse { 50% { opacity: .3; } }
+  .feed { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: 420px; overflow: auto; }
+  .feed li { padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; }
+  .feed li.fresh { animation: flash 1.4s ease-out; }
+  @keyframes flash { from { background: var(--soft); border-color: var(--accent); } }
+  .feed .who { font-size: 13px; color: var(--muted); margin-bottom: 4px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .empty { color: var(--muted); font-size: 14px; padding: 12px 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+
+<body class="explaining">
+
+<!-- =========================================================
+     HTML: page structure
+     ========================================================= -->
+<header class="top">
+  <div>
+    <p class="site">Paper Lantern Books, an online bookshop</p>
+    <h1>Website analytics</h1>
+    <p class="lede">Simulated data for teaching. Every number on this page is calculated from a generated log of visits and page views, shown at the bottom.</p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Date range">
+      <button data-range="7">7 days</button>
+      <button data-range="14">14 days</button>
+      <button data-range="30" aria-pressed="true">30 days</button>
+    </div>
+    <button id="liveBtn" class="btn">Start live traffic</button>
+    <button id="newBtn" class="btn ghost">Generate new data</button>
+    <label class="switch"><input type="checkbox" id="explainToggle" checked> Explain metrics</label>
+  </div>
+</header>
+
+<main>
+  <!-- Metric groups taken from the slide: visit count, visit duration -->
+  <section class="kpis">
+    <div class="group"><h2>Visit count</h2><div class="metrics" id="kpi-count"></div></div>
+    <div class="group"><h2>Visit duration</h2><div class="metrics" id="kpi-duration"></div></div>
+    <div class="group"><h2>Engagement and goals</h2><div class="metrics" id="kpi-outcome"></div></div>
+  </section>
+
+  <section class="row two">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Visits over time</h2>
+        <div class="legend">
+          <span><i class="key" style="background:var(--accent)"></i>Visits</span>
+          <span><i class="key" style="background:var(--c-users)"></i>Unique visitors</span>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <svg id="trend" viewBox="0 0 800 260" role="img" aria-label="Line chart of daily visits and unique visitors"></svg>
+        <div id="tip" class="tip" hidden></div>
+      </div>
+      <p class="explain">Hover over the chart to see each day. Weekends are quieter, which is a typical pattern for a shop. The gap between the two lines is caused by people who visit more than once. Today is still in progress, so the last point is lower.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Top channels</h2>
+      <div class="donut-wrap">
+        <svg id="donut" viewBox="0 0 160 160" role="img" aria-label="Share of visits by channel"></svg>
+        <ul class="clist" id="channelList"></ul>
+      </div>
+      <p class="explain">A channel is how a visit arrived: from a search engine (organic search), a social network, by typing the address (direct), or from a link on another site (referral).</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Acquisition by channel</h2>
+    <div class="scroll"><table id="acqTable"></table></div>
+    <p class="explain">This table is how marketers measure a campaign: which channel brings visitors, whether they stay (bounce rate, pages per visit) and whether they buy (conversion rate).</p>
+  </section>
+
+  <section class="row even">
+    <div class="panel">
+      <h2>Clickstream: purchase funnel</h2>
+      <div class="funnel" id="funnel"></div>
+      <p class="explain">Clickstream analysis follows the sequence of pages each visitor clicks through. A funnel counts how many visits reach each step towards a goal, so you can see where people drop out.</p>
+    </div>
+    <div class="panel">
+      <h2>Most common paths</h2>
+      <ol class="paths" id="paths"></ol>
+      <p class="explain">The exact route of each visit, grouped together. Paths longer than four pages are shortened.</p>
+    </div>
+  </section>
+
+  <section class="row two">
+    <div class="panel">
+      <h2>Pages</h2>
+      <div class="scroll"><table id="pageTable"></table></div>
+      <p class="explain">Entrances are visits that started on the page. Exit rate is the share of the page's views that were the last page of a visit. A high exit rate on the cart or checkout points to a problem worth fixing.</p>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Live visits</h2>
+        <span class="active"><i class="pulse"></i><span id="activeNow">0</span> active now</span>
+      </div>
+      <ul class="feed" id="feed"><li class="empty" style="border:0">Start live traffic to watch new visits arrive one by one. Every report on the page updates as they come in.</li></ul>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Raw event log</h2>
+    <p class="note">The most recent page views. Each row is one hit recorded by the tracking script; every report above is built by counting these rows.</p>
+    <div class="scroll"><table id="logTable"></table></div>
+  </section>
+</main>
+
+<!-- =========================================================
+     JavaScript: simulate visitors, then calculate the metrics
+     ========================================================= -->
+<script>
+/* ---------- 1. Settings for the simulation ---------- */
+
+const DAYS_TO_SIMULATE = 60;   // 30 shown + 30 for "previous period" comparison
+
+const PAGES = {
+  home:     { name: 'Home',          url: '/',                     secs: 25  },
+  category: { name: 'Category',      url: '/books/fiction',        secs: 35  },
+  search:   { name: 'Search',        url: '/search?q=…',           secs: 20  },
+  product:  { name: 'Book page',     url: '/book/the-quiet-harbor', secs: 70 },
+  blog:     { name: 'Blog post',     url: '/blog/autumn-reads',    secs: 120 },
+  cart:     { name: 'Cart',          url: '/cart',                 secs: 40  },
+  checkout: { name: 'Checkout',      url: '/checkout',             secs: 90  },
+  purchase: { name: 'Order placed',  url: '/thank-you',            secs: 15  }
+};
+
+// Where visits come from, and which page they land on first
+const CHANNELS = {
+  'Organic search': { share: .48, color: 'var(--c-organic)',  entry: { home: .25, category: .10, product: .35, blog: .30 } },
+  'Social':         { share: .20, color: 'var(--c-social)',   entry: { blog: .55, product: .30, home: .15 } },
+  'Direct':         { share: .22, color: 'var(--c-direct)',   entry: { home: .80, category: .10, cart: .10 } },
+  'Referral':       { share: .10, color: 'var(--c-referral)', entry: { product: .50, home: .30, blog: .20 } }
+};
+
+// After each page, the chance of clicking to another page or leaving ("exit")
+const NEXT_PAGE = {
+  home:     { category: .33, search: .17, product: .10, blog: .10, exit: .30 },
+  category: { product: .55, category: .08, home: .05, exit: .32 },
+  search:   { product: .50, search: .10, exit: .40 },
+  product:  { cart: .18, product: .22, category: .14, exit: .46 },
+  blog:     { blog: .15, product: .20, home: .12, exit: .53 },
+  cart:     { checkout: .55, product: .12, exit: .33 },
+  checkout: { purchase: .62, cart: .08, exit: .30 },
+  purchase: { exit: 1 }
+};
+
+const RETURNING_CHANCE = 0.32;  // chance a visit is from someone who came before
+
+/* ---------- 2. Random helpers (seeded, so the same seed gives the same data) ---------- */
+
+let rand;
+function seededRandom(seed) {
+  return function () {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function pickWeighted(weights) {
+  const r = rand(); let sum = 0; const keys = Object.keys(weights);
+  for (const k of keys) { sum += weights[k]; if (r < sum) return k; }
+  return keys[keys.length - 1];
+}
+const channelShares = Object.fromEntries(Object.entries(CHANNELS).map(([k, c]) => [k, c.share]));
+
+/* ---------- 3. Generate the raw data: visitors, visits and page views ---------- */
+
+let sessions = [];       // every visit
+let visitorIds = [];     // every visitor seen so far
+let visitCounter = 0;
+let liveVisits = [];     // visits created in live mode
+
+function makeVisit(startTime) {
+  const channel = pickWeighted(channelShares);
+
+  let visitorId, isNew;
+  if (visitorIds.length > 50 && rand() < RETURNING_CHANCE) {
+    visitorId = visitorIds[Math.floor(rand() * visitorIds.length)];
+    isNew = false;
+  } else {
+    visitorId = 'v-' + (10001 + visitorIds.length);
+    visitorIds.push(visitorId);
+    isNew = true;
+  }
+
+  // Walk through the site page by page until the visitor leaves
+  const hits = [];
+  let page = pickWeighted(CHANNELS[channel].entry);
+  let t = startTime;
+  while (page !== 'exit' && hits.length < 14) {
+    const secs = Math.max(3, Math.round(PAGES[page].secs * (0.35 + rand() * 1.3)));
+    hits.push({ page, time: t, secs });
+    t += secs * 1000;
+    page = pickWeighted(NEXT_PAGE[page]);
+  }
+
+  return {
+    id: 's-' + (++visitCounter),
+    visitorId, isNew, channel,
+    start: startTime, end: t, hits,
+    converted: hits.some(h => h.page === 'purchase')
+  };
+}
+
+function dayStart(offsetDays) {
+  const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + offsetDays);
+  return d.getTime();
+}
+
+function generateData(seed) {
+  rand = seededRandom(seed);
+  sessions = []; visitorIds = []; visitCounter = 0; liveVisits = [];
+  const now = Date.now();
+
+  for (let d = DAYS_TO_SIMULATE - 1; d >= 0; d--) {
+    const start = dayStart(-d);
+    const weekday = new Date(start).getDay();
+    let count = 120 * (1 + (DAYS_TO_SIMULATE - d) * 0.006)        // slow growth
+                    * (weekday === 0 || weekday === 6 ? 0.72 : 1)  // quieter weekends
+                    * (0.85 + rand() * 0.3);                        // daily noise
+    let span = dayStart(-d + 1) - start;
+    if (d === 0) { span = now - start; count *= span / 86400000; }  // today: only up to now
+
+    const times = Array.from({ length: Math.round(count) }, () => start + rand() * span).sort((a, b) => a - b);
+    times.forEach(t => sessions.push(makeVisit(t)));
+  }
+}
+
+/* ---------- 4. Calculate metrics from a list of visits ---------- */
+
+function calculate(list) {
+  const visits = list.length;
+  const pageViews = list.reduce((sum, s) => sum + s.hits.length, 0);
+  const uniqueVisitors = new Set(list.map(s => s.visitorId)).size;
+  const totalSeconds = list.reduce((sum, s) => sum + s.hits.reduce((a, h) => a + h.secs, 0), 0);
+  const bounces = list.filter(s => s.hits.length === 1).length;
+  const conversions = list.filter(s => s.converted).length;
+  const newVisits = list.filter(s => s.isNew).length;
+  return {
+    pageViews, visits, uniqueVisitors, conversions,
+    timeOnPage:    pageViews ? totalSeconds / pageViews : 0,
+    timeOnSite:    visits ? totalSeconds / visits : 0,
+    bounceRate:    visits ? bounces / visits : 0,
+    conversionRate: visits ? conversions / visits : 0,
+    newRate:       visits ? newVisits / visits : 0,
+    pagesPerVisit: visits ? pageViews / visits : 0
+  };
+}
+
+/* ---------- 5. Formatting ---------- */
+
+const fmtNum = n => Math.round(n).toLocaleString('en-US');
+const fmtDur = s => { const t = Math.round(s); return `${Math.floor(t / 60)}m ${String(t % 60).padStart(2, '0')}s`; };
+const fmtPct = (x, d = 1) => (x * 100).toFixed(d) + '%';
+const fmtDate = t => new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const fmtTime = t => new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+/* ---------- 6. Rendering ---------- */
+
+let rangeDays = 30;
+
+const KPIS = [
+  { box: 'kpi-count', key: 'pageViews', label: 'Page views', fmt: fmtNum,
+    explain: 'One is counted every time a page loads, including reloads.' },
+  { box: 'kpi-count', key: 'visits', label: 'Visits', fmt: fmtNum,
+    explain: 'One sitting on the site: a series of page views by the same visitor, ended by 30 minutes of inactivity.' },
+  { box: 'kpi-count', key: 'uniqueVisitors', label: 'Unique visitors', fmt: fmtNum,
+    explain: 'Different people (in practice, browsers). Someone who visits three times counts once.' },
+  { box: 'kpi-duration', key: 'timeOnPage', label: 'Avg. time on page', fmt: fmtDur,
+    explain: 'Average time spent on one page. Real tools cannot time the last page of a visit unless something else is clicked.' },
+  { box: 'kpi-duration', key: 'timeOnSite', label: 'Avg. time on site', fmt: fmtDur,
+    explain: 'Average length of a whole visit, from the first page to leaving.' },
+  { box: 'kpi-outcome', key: 'bounceRate', label: 'Bounce rate', fmt: fmtPct, lowerIsBetter: true,
+    explain: 'Share of visits that saw only one page and left.' },
+  { box: 'kpi-outcome', key: 'conversionRate', label: 'Conversion rate', fmt: x => fmtPct(x, 2),
+    explain: 'Share of visits that placed an order, the goal this shop tracks.' }
+];
+
+function render() {
+  const now = Date.now();
+  const rangeStart = dayStart(-(rangeDays - 1));
+  const rangeEnd = dayStart(1);
+  const prevStart = dayStart(-(2 * rangeDays - 1));
+
+  const current = sessions.filter(s => s.start >= rangeStart && s.start < rangeEnd);
+  const previous = sessions.filter(s => s.start >= prevStart && s.start < rangeStart);
+  const m = calculate(current);
+  const p = calculate(previous);
+
+  renderKpis(m, p);
+  renderTrend(current, rangeStart);
+  renderChannels(current);
+  renderAcquisition(current, m);
+  renderFunnel(current);
+  renderPaths(current);
+  renderPages(current);
+  renderLog(current, now);
+  document.getElementById('activeNow').textContent =
+    sessions.filter(s => s.start <= now && s.end + 60000 >= now).length;
+}
+
+function renderKpis(m, p) {
+  ['kpi-count', 'kpi-duration', 'kpi-outcome'].forEach(id => document.getElementById(id).innerHTML = '');
+  KPIS.forEach(k => {
+    const change = p[k.key] ? (m[k.key] - p[k.key]) / p[k.key] : 0;
+    const good = k.lowerIsBetter ? change < 0 : change > 0;
+    const arrow = change >= 0 ? '▲' : '▼';
+    document.getElementById(k.box).insertAdjacentHTML('beforeend', `
+      <div class="metric">
+        <div class="label">${k.label}</div>
+        <div class="value">${k.fmt(m[k.key])}</div>
+        <div class="delta ${good ? 'up' : 'down'}">${arrow} ${Math.abs(change * 100).toFixed(1)}% <span>vs previous ${rangeDays} days</span></div>
+        <p class="explain">${k.explain}</p>
+      </div>`);
+  });
+}
+
+let trendData = [];
+function renderTrend(list, rangeStart) {
+  const days = [];
+  for (let i = 0; i < rangeDays; i++) days.push({ start: dayStart(-(rangeDays - 1) + i), visits: 0, pageViews: 0, users: new Set() });
+  list.forEach(s => {
+    for (let i = days.length - 1; i >= 0; i--) {
+      if (s.start >= days[i].start) { days[i].visits++; days[i].pageViews += s.hits.length; days[i].users.add(s.visitorId); break; }
+    }
+  });
+  trendData = days.map(d => ({ ...d, users: d.users.size }));
+
+  const W = 800, H = 260, L = 44, R = 14, T = 14, B = 30;
+  const maxRaw = Math.max(...trendData.map(d => d.visits), 10);
+  const step = Math.pow(10, Math.floor(Math.log10(maxRaw))) / 2;
+  const max = Math.ceil(maxRaw * 1.1 / step) * step;
+  const x = i => L + i * (W - L - R) / (trendData.length - 1);
+  const y = v => H - B - v / max * (H - T - B);
+
+  let svg = '';
+  for (let g = 0; g <= 4; g++) {
+    const v = max * g / 4;
+    svg += `<line class="grid" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/>`;
+    svg += `<text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${fmtNum(v)}</text>`;
+  }
+  const every = Math.ceil(trendData.length / 7);
+  trendData.forEach((d, i) => {
+    if (i % every === 0 || i === trendData.length - 1)
+      svg += `<text x="${x(i)}" y="${H - 8}" text-anchor="${i === trendData.length - 1 ? 'end' : i === 0 ? 'start' : 'middle'}">${fmtDate(d.start)}</text>`;
+  });
+  const line = key => trendData.map((d, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(d[key]).toFixed(1)}`).join('');
+  svg += `<path d="${line('visits')}L${x(trendData.length - 1)},${y(0)}L${x(0)},${y(0)}Z" style="fill:var(--accent);opacity:.1"/>`;
+  svg += `<path d="${line('users')}" fill="none" style="stroke:var(--c-users)" stroke-width="2"/>`;
+  svg += `<path d="${line('visits')}" fill="none" style="stroke:var(--accent)" stroke-width="2.5"/>`;
+  svg += `<line id="guide" y1="${T}" y2="${H - B}" style="stroke:var(--muted)" stroke-dasharray="3 3" visibility="hidden"/>`;
+  svg += `<circle id="guideDot" r="4.5" style="fill:var(--accent);stroke:var(--surface)" stroke-width="2" visibility="hidden"/>`;
+  svg += `<rect x="${L}" y="${T}" width="${W - L - R}" height="${H - T - B}" fill="transparent" id="hoverArea"/>`;
+
+  const el = document.getElementById('trend');
+  el.innerHTML = svg;
+  el.dataset.geom = JSON.stringify({ W, L, R, max, T, B, H });
+}
+
+function onTrendHover(e) {
+  const el = document.getElementById('trend');
+  const g = JSON.parse(el.dataset.geom || '{}');
+  const box = el.getBoundingClientRect();
+  const scale = box.width / g.W;
+  const px = (e.clientX - box.left) / scale;
+  const n = trendData.length;
+  const i = Math.max(0, Math.min(n - 1, Math.round((px - g.L) / ((g.W - g.L - g.R) / (n - 1)))));
+  const d = trendData[i];
+  const gx = g.L + i * (g.W - g.L - g.R) / (n - 1);
+  const gy = g.H - g.B - d.visits / g.max * (g.H - g.T - g.B);
+  const guide = document.getElementById('guide'), dot = document.getElementById('guideDot');
+  guide.setAttribute('x1', gx); guide.setAttribute('x2', gx); guide.setAttribute('visibility', 'visible');
+  dot.setAttribute('cx', gx); dot.setAttribute('cy', gy); dot.setAttribute('visibility', 'visible');
+  const tip = document.getElementById('tip');
+  tip.hidden = false;
+  tip.innerHTML = `<strong>${new Date(d.start).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</strong><br>
+    Visits: ${fmtNum(d.visits)}<br>Unique visitors: ${fmtNum(d.users)}<br>Page views: ${fmtNum(d.pageViews)}`;
+  tip.style.left = Math.min(Math.max(gx * scale, 80), box.width - 80) + 'px';
+  tip.style.top = (gy * scale - 10) + 'px';
+}
+function hideTrendHover() {
+  document.getElementById('tip').hidden = true;
+  ['guide', 'guideDot'].forEach(id => document.getElementById(id)?.setAttribute('visibility', 'hidden'));
+}
+
+function byChannel(list) {
+  return Object.keys(CHANNELS).map(name => ({ name, list: list.filter(s => s.channel === name) }));
+}
+
+function renderChannels(list) {
+  const groups = byChannel(list);
+  const total = list.length || 1;
+  const r = 58, C = 2 * Math.PI * r;
+  let offset = 0, svg = '';
+  groups.forEach(g => {
+    const len = g.list.length / total * C;
+    svg += `<circle cx="80" cy="80" r="${r}" fill="none" stroke-width="26"
+      style="stroke:${CHANNELS[g.name].color}" stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-offset}"
+      transform="rotate(-90 80 80)"><title>${g.name}: ${fmtPct(g.list.length / total)}</title></circle>`;
+    offset += len;
+  });
+  svg += `<text x="80" y="78" text-anchor="middle" style="fill:var(--ink);font-weight:700;font-size:20px">${fmtNum(list.length)}</text>
+          <text x="80" y="96" text-anchor="middle" style="fill:var(--muted);font-size:11px">visits</text>`;
+  document.getElementById('donut').innerHTML = svg;
+  document.getElementById('channelList').innerHTML = groups.map(g => `
+    <li><i class="dot" style="background:${CHANNELS[g.name].color}"></i><span>${g.name}</span><strong>${fmtPct(g.list.length / total)}</strong></li>`).join('');
+}
+
+function barCell(value, max, text, color = 'var(--accent)') {
+  const w = max ? Math.round(value / max * 90) : 0;
+  return `<div class="barcell"><span>${text}</span><div class="bartrack"><div class="bar" style="width:${w}px;background:${color}"></div></div></div>`;
+}
+
+function renderAcquisition(list, totals) {
+  const groups = byChannel(list).map(g => ({ ...g, m: calculate(g.list) })).sort((a, b) => b.m.visits - a.m.visits);
+  const maxVisits = Math.max(...groups.map(g => g.m.visits), 1);
+  const maxConv = Math.max(...groups.map(g => g.m.conversionRate), 0.0001);
+  let html = `<thead><tr><th>Channel</th><th class="n">Visits</th><th class="n">% new visits</th><th class="n">Bounce rate</th>
+    <th class="n">Pages / visit</th><th class="n">Avg. time on site</th><th class="n">Orders</th><th class="n">Conversion rate</th></tr></thead><tbody>`;
+  html += `<tr class="total"><td>All channels</td><td class="n">${fmtNum(totals.visits)}</td><td class="n">${fmtPct(totals.newRate)}</td>
+    <td class="n">${fmtPct(totals.bounceRate)}</td><td class="n">${totals.pagesPerVisit.toFixed(2)}</td><td class="n">${fmtDur(totals.timeOnSite)}</td>
+    <td class="n">${fmtNum(totals.conversions)}</td><td class="n">${fmtPct(totals.conversionRate, 2)}</td></tr>`;
+  groups.forEach(g => {
+    const c = CHANNELS[g.name].color;
+    html += `<tr><td><i class="dot" style="background:${c};margin-right:8px"></i>${g.name}</td>
+      <td class="n">${barCell(g.m.visits, maxVisits, fmtNum(g.m.visits), c)}</td>
+      <td class="n">${fmtPct(g.m.newRate)}</td><td class="n">${fmtPct(g.m.bounceRate)}</td>
+      <td class="n">${g.m.pagesPerVisit.toFixed(2)}</td><td class="n">${fmtDur(g.m.timeOnSite)}</td>
+      <td class="n">${fmtNum(g.m.conversions)}</td>
+      <td class="n">${barCell(g.m.conversionRate, maxConv, fmtPct(g.m.conversionRate, 2), c)}</td></tr>`;
+  });
+  document.getElementById('acqTable').innerHTML = html + '</tbody>';
+}
+
+function renderFunnel(list) {
+  const has = (s, page) => s.hits.some(h => h.page === page);
+  const steps = [
+    ['All visits', list.length],
+    ['Viewed a book', list.filter(s => has(s, 'product')).length],
+    ['Added to cart', list.filter(s => has(s, 'cart')).length],
+    ['Reached checkout', list.filter(s => has(s, 'checkout')).length],
+    ['Placed an order', list.filter(s => s.converted).length]
+  ];
+  const top = steps[0][1] || 1;
+  document.getElementById('funnel').innerHTML = steps.map(([label, n], i) => {
+    const kept = i ? (steps[i - 1][1] ? n / steps[i - 1][1] : 0) : 1;
+    return `<div class="step"><span>${label}</span>
+      <div class="track"><div class="fill" style="width:${(n / top * 100).toFixed(1)}%"></div></div>
+      <div class="count">${fmtNum(n)}<small>${i ? fmtPct(kept, 0) + ' of previous step' : '100%'}</small></div></div>`;
+  }).join('');
+}
+
+function pathChips(hits, maxPages = Infinity) {
+  const shown = hits.slice(0, maxPages);
+  let html = shown.map(h => `<span class="chip ${h.page === 'purchase' ? 'goal' : ''}">${PAGES[h.page].name}</span>`).join('<span class="arrow">›</span>');
+  if (hits.length > maxPages) html += `<span class="arrow">›</span><span class="chip exit">+${hits.length - maxPages} more</span>`;
+  else if (hits[hits.length - 1].page !== 'purchase') html += `<span class="arrow">›</span><span class="chip exit">Left</span>`;
+  return `<div class="chips">${html}</div>`;
+}
+
+function renderPaths(list) {
+  const counts = {};
+  list.forEach(s => {
+    const key = s.hits.slice(0, 4).map(h => h.page).join('>') + (s.hits.length > 4 ? '>…' : '');
+    (counts[key] ||= { n: 0, sample: s }).n++;
+  });
+  const top = Object.values(counts).sort((a, b) => b.n - a.n).slice(0, 6);
+  document.getElementById('paths').innerHTML = top.map(p => `
+    <li>${pathChips(p.sample.hits, 4)}<div class="meta">${fmtNum(p.n)} visits, ${fmtPct(p.n / (list.length || 1))} of all</div></li>`).join('');
+}
+
+function renderPages(list) {
+  const stats = {};
+  Object.keys(PAGES).forEach(k => stats[k] = { views: 0, secs: 0, entrances: 0, exits: 0 });
+  list.forEach(s => s.hits.forEach((h, i) => {
+    const st = stats[h.page];
+    st.views++; st.secs += h.secs;
+    if (i === 0) st.entrances++;
+    if (i === s.hits.length - 1) st.exits++;
+  }));
+  const rows = Object.entries(stats).sort((a, b) => b[1].views - a[1].views);
+  const maxViews = Math.max(...rows.map(r => r[1].views), 1);
+  document.getElementById('pageTable').innerHTML =
+    `<thead><tr><th>Page</th><th class="n">Page views</th><th class="n">Avg. time on page</th><th class="n">Entrances</th><th class="n">Exit rate</th></tr></thead><tbody>` +
+    rows.map(([k, s]) => `<tr><td>${PAGES[k].name}<span class="url">${PAGES[k].url}</span></td>
+      <td class="n">${barCell(s.views, maxViews, fmtNum(s.views))}</td>
+      <td class="n">${fmtDur(s.views ? s.secs / s.views : 0)}</td>
+      <td class="n">${fmtNum(s.entrances)}</td>
+      <td class="n">${fmtPct(s.views ? s.exits / s.views : 0)}</td></tr>`).join('') + '</tbody>';
+}
+
+function renderLog(list, now) {
+  const recent = list.slice(-30).flatMap(s => s.hits.map(h => ({ ...h, s })))
+    .filter(e => e.time <= now).sort((a, b) => b.time - a.time).slice(0, 12);
+  document.getElementById('logTable').innerHTML =
+    `<thead><tr><th>Time</th><th>Visitor ID</th><th>Visit ID</th><th>Page</th><th>URL</th><th>Channel</th><th>New visitor</th><th class="n">Seconds on page</th></tr></thead><tbody>` +
+    recent.map(e => `<tr><td>${fmtDate(e.time)} ${fmtTime(e.time)}</td><td>${e.s.visitorId}</td><td>${e.s.id}</td>
+      <td>${PAGES[e.page].name}</td><td><span class="url">${PAGES[e.page].url}</span></td><td>${e.s.channel}</td>
+      <td>${e.s.isNew ? 'Yes' : 'No'}</td><td class="n">${e.secs}</td></tr>`).join('') + '</tbody>';
+}
+
+function renderFeed(freshId) {
+  const feed = document.getElementById('feed');
+  if (!liveVisits.length) return;
+  feed.innerHTML = liveVisits.slice(-15).reverse().map(s => `
+    <li class="${s.id === freshId ? 'fresh' : ''}">
+      <div class="who"><i class="dot" style="background:${CHANNELS[s.channel].color}"></i>
+        <span>${fmtTime(s.start)}</span><span>${s.visitorId}</span><span>${s.channel}</span><span>${s.isNew ? 'New visitor' : 'Returning visitor'}</span></div>
+      ${pathChips(s.hits)}
+    </li>`).join('');
+}
+
+/* ---------- 7. Live traffic ---------- */
+
+let liveTimer = null;
+function liveTick() {
+  const visit = makeVisit(Date.now());
+  sessions.push(visit);
+  liveVisits.push(visit);
+  render();
+  renderFeed(visit.id);
+  liveTimer = setTimeout(liveTick, 700 + Math.random() * 1500);
+}
+function toggleLive() {
+  const btn = document.getElementById('liveBtn');
+  if (liveTimer) {
+    clearTimeout(liveTimer); liveTimer = null;
+    btn.textContent = 'Start live traffic'; btn.classList.remove('live');
+    document.body.classList.remove('is-live');
+  } else {
+    btn.textContent = 'Pause live traffic'; btn.classList.add('live');
+    document.body.classList.add('is-live');
+    liveTick();
+  }
+}
+
+/* ---------- 8. Wire up the controls ---------- */
+
+document.querySelectorAll('[data-range]').forEach(b => b.addEventListener('click', () => {
+  rangeDays = Number(b.dataset.range);
+  document.querySelectorAll('[data-range]').forEach(x => x.setAttribute('aria-pressed', x === b));
+  render();
+}));
+document.getElementById('liveBtn').addEventListener('click', toggleLive);
+document.getElementById('newBtn').addEventListener('click', () => {
+  generateData(Math.floor(Math.random() * 1e9));
+  document.getElementById('feed').innerHTML = '<li class="empty" style="border:0">New data generated. Start live traffic to watch visits arrive.</li>';
+  render();
+});
+document.getElementById('explainToggle').addEventListener('change', e => document.body.classList.toggle('explaining', e.target.checked));
+const trendEl = document.getElementById('trend');
+trendEl.addEventListener('mousemove', onTrendHover);
+trendEl.addEventListener('mouseleave', hideTrendHover);
+
+generateData(20261011);
+render();
+</script>
+</body>
+</html>
