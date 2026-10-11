@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Simulated web analytics dashboard</title>
+<title>RoboLab website analytics (simulated)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -19,21 +19,21 @@
     --muted: #5B6B78;
     --line: #D9E0E4;
     --soft: #EAF0F3;
-    --accent: #1F5F8B;
+    --accent: #0E6E74;
     --good: #2E7D4F;
     --bad: #B3413B;
-    --c-organic: #1F5F8B;
+    --c-organic: #0E6E74;
     --c-social: #3E8E5E;
-    --c-direct: #D49A2A;
+    --c-direct: #E07B2A;
     --c-referral: #B04A5A;
     --c-users: #8AA6B8;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #121A21; --surface: #1A242D; --ink: #E6ECF0; --muted: #93A3AF;
-      --line: #2B3842; --soft: #22303B; --accent: #6FA8D6;
+      --line: #2B3842; --soft: #22303B; --accent: #5CC4C9;
       --good: #6CC291; --bad: #E7837C;
-      --c-organic: #6FA8D6; --c-social: #6CC291; --c-direct: #E9B95A; --c-referral: #E07D8C; --c-users: #5D7584;
+      --c-organic: #5CC4C9; --c-social: #6CC291; --c-direct: #E9B95A; --c-referral: #E07D8C; --c-users: #5D7584;
     }
   }
 
@@ -177,7 +177,7 @@
      ========================================================= -->
 <header class="top">
   <div>
-    <p class="site">Paper Lantern Books, an online bookshop</p>
+    <p class="site">RoboLab, the school robotics lab</p>
     <h1>Website analytics</h1>
     <p class="lede">Simulated data for teaching. Every number on this page is calculated from a generated log of visits and page views, shown at the bottom.</p>
   </div>
@@ -214,7 +214,7 @@
         <svg id="trend" viewBox="0 0 800 260" role="img" aria-label="Line chart of daily visits and unique visitors"></svg>
         <div id="tip" class="tip" hidden></div>
       </div>
-      <p class="explain">Hover over the chart to see each day. Weekends are quieter, which is a typical pattern for a shop. The gap between the two lines is caused by people who visit more than once. Today is still in progress, so the last point is lower.</p>
+      <p class="explain">Hover over the chart to see each day. Weekends are quieter because most visitors are students using the site during the school week. The gap between the two lines is caused by people who visit more than once. Today is still in progress, so the last point is lower.</p>
     </div>
 
     <div class="panel">
@@ -223,19 +223,19 @@
         <svg id="donut" viewBox="0 0 160 160" role="img" aria-label="Share of visits by channel"></svg>
         <ul class="clist" id="channelList"></ul>
       </div>
-      <p class="explain">A channel is how a visit arrived: from a search engine (organic search), a social network, by typing the address (direct), or from a link on another site (referral).</p>
+      <p class="explain">A channel is how a visit arrived: from a search engine (organic search), a social network such as the lab's YouTube videos, by typing the address (direct), or from a link on another site such as the school portal (referral).</p>
     </div>
   </section>
 
   <section class="panel">
     <h2>Acquisition by channel</h2>
     <div class="scroll"><table id="acqTable"></table></div>
-    <p class="explain">This table is how marketers measure a campaign: which channel brings visitors, whether they stay (bounce rate, pages per visit) and whether they buy (conversion rate).</p>
+    <p class="explain">This table is how marketers measure a campaign: which channel brings visitors, whether they stay (bounce rate, pages per visit) and whether they sign up for a workshop (conversion rate).</p>
   </section>
 
   <section class="row even">
     <div class="panel">
-      <h2>Clickstream: purchase funnel</h2>
+      <h2>Clickstream: workshop sign-up funnel</h2>
       <div class="funnel" id="funnel"></div>
       <p class="explain">Clickstream analysis follows the sequence of pages each visitor clicks through. A funnel counts how many visits reach each step towards a goal, so you can see where people drop out.</p>
     </div>
@@ -250,7 +250,7 @@
     <div class="panel">
       <h2>Pages</h2>
       <div class="scroll"><table id="pageTable"></table></div>
-      <p class="explain">Entrances are visits that started on the page. Exit rate is the share of the page's views that were the last page of a visit. A high exit rate on the cart or checkout points to a problem worth fixing.</p>
+      <p class="explain">Entrances are visits that started on the page. Exit rate is the share of the page's views that were the last page of a visit. A high exit rate on the workshops page or sign-up form points to a problem worth fixing.</p>
     </div>
     <div class="panel">
       <div class="panel-head">
@@ -277,34 +277,34 @@
 const DAYS_TO_SIMULATE = 60;   // 30 shown + 30 for "previous period" comparison
 
 const PAGES = {
-  home:     { name: 'Home',          url: '/',                     secs: 25  },
-  category: { name: 'Category',      url: '/books/fiction',        secs: 35  },
-  search:   { name: 'Search',        url: '/search?q=…',           secs: 20  },
-  product:  { name: 'Book page',     url: '/book/the-quiet-harbor', secs: 70 },
-  blog:     { name: 'Blog post',     url: '/blog/autumn-reads',    secs: 120 },
-  cart:     { name: 'Cart',          url: '/cart',                 secs: 40  },
-  checkout: { name: 'Checkout',      url: '/checkout',             secs: 90  },
-  purchase: { name: 'Order placed',  url: '/thank-you',            secs: 15  }
+  home:       { name: 'Home',            url: '/',                               secs: 25  },
+  projects:   { name: 'Projects',        url: '/projects',                       secs: 40  },
+  robot:      { name: 'Robot page',      url: '/robots/line-follower-v2',        secs: 80  },
+  tutorial:   { name: 'Tutorial',        url: '/tutorials/arduino-servo-basics', secs: 150 },
+  simulator:  { name: 'Simulator',       url: '/simulator',                      secs: 180 },
+  workshops:  { name: 'Workshops',       url: '/workshops',                      secs: 45  },
+  signup:     { name: 'Sign-up form',    url: '/workshops/register',             secs: 75  },
+  registered: { name: 'Signed up',       url: '/workshops/thank-you',            secs: 12  }
 };
 
 // Where visits come from, and which page they land on first
 const CHANNELS = {
-  'Organic search': { share: .48, color: 'var(--c-organic)',  entry: { home: .25, category: .10, product: .35, blog: .30 } },
-  'Social':         { share: .20, color: 'var(--c-social)',   entry: { blog: .55, product: .30, home: .15 } },
-  'Direct':         { share: .22, color: 'var(--c-direct)',   entry: { home: .80, category: .10, cart: .10 } },
-  'Referral':       { share: .10, color: 'var(--c-referral)', entry: { product: .50, home: .30, blog: .20 } }
+  'Organic search': { share: .45, color: 'var(--c-organic)',  entry: { tutorial: .40, robot: .25, home: .20, projects: .15 } },
+  'Social':         { share: .22, color: 'var(--c-social)',   entry: { robot: .45, simulator: .25, home: .15, projects: .15 } },
+  'Direct':         { share: .21, color: 'var(--c-direct)',   entry: { home: .70, workshops: .15, simulator: .15 } },
+  'Referral':       { share: .12, color: 'var(--c-referral)', entry: { workshops: .45, home: .35, projects: .20 } }
 };
 
 // After each page, the chance of clicking to another page or leaving ("exit")
 const NEXT_PAGE = {
-  home:     { category: .33, search: .17, product: .10, blog: .10, exit: .30 },
-  category: { product: .55, category: .08, home: .05, exit: .32 },
-  search:   { product: .50, search: .10, exit: .40 },
-  product:  { cart: .18, product: .22, category: .14, exit: .46 },
-  blog:     { blog: .15, product: .20, home: .12, exit: .53 },
-  cart:     { checkout: .55, product: .12, exit: .33 },
-  checkout: { purchase: .62, cart: .08, exit: .30 },
-  purchase: { exit: 1 }
+  home:       { projects: .30, workshops: .15, tutorial: .12, simulator: .10, exit: .33 },
+  projects:   { robot: .55, projects: .08, home: .05, exit: .32 },
+  robot:      { robot: .20, simulator: .12, tutorial: .12, workshops: .14, exit: .42 },
+  tutorial:   { tutorial: .20, simulator: .15, workshops: .10, exit: .55 },
+  simulator:  { tutorial: .15, workshops: .12, robot: .08, exit: .65 },
+  workshops:  { signup: .50, projects: .08, exit: .42 },
+  signup:     { registered: .60, workshops: .08, exit: .32 },
+  registered: { exit: 1 }
 };
 
 const RETURNING_CHANCE = 0.32;  // chance a visit is from someone who came before
@@ -362,7 +362,7 @@ function makeVisit(startTime) {
     id: 's-' + (++visitCounter),
     visitorId, isNew, channel,
     start: startTime, end: t, hits,
-    converted: hits.some(h => h.page === 'purchase')
+    converted: hits.some(h => h.page === 'registered')
   };
 }
 
@@ -380,7 +380,7 @@ function generateData(seed) {
     const start = dayStart(-d);
     const weekday = new Date(start).getDay();
     let count = 120 * (1 + (DAYS_TO_SIMULATE - d) * 0.006)        // slow growth
-                    * (weekday === 0 || weekday === 6 ? 0.72 : 1)  // quieter weekends
+                    * (weekday === 0 || weekday === 6 ? 0.6 : 1)  // quieter weekends
                     * (0.85 + rand() * 0.3);                        // daily noise
     let span = dayStart(-d + 1) - start;
     if (d === 0) { span = now - start; count *= span / 86400000; }  // today: only up to now
@@ -437,7 +437,7 @@ const KPIS = [
   { box: 'kpi-outcome', key: 'bounceRate', label: 'Bounce rate', fmt: fmtPct, lowerIsBetter: true,
     explain: 'Share of visits that saw only one page and left.' },
   { box: 'kpi-outcome', key: 'conversionRate', label: 'Conversion rate', fmt: x => fmtPct(x, 2),
-    explain: 'Share of visits that placed an order, the goal this shop tracks.' }
+    explain: 'Share of visits that signed up for a workshop, the goal this lab tracks.' }
 ];
 
 function render() {
@@ -580,7 +580,7 @@ function renderAcquisition(list, totals) {
   const maxVisits = Math.max(...groups.map(g => g.m.visits), 1);
   const maxConv = Math.max(...groups.map(g => g.m.conversionRate), 0.0001);
   let html = `<thead><tr><th>Channel</th><th class="n">Visits</th><th class="n">% new visits</th><th class="n">Bounce rate</th>
-    <th class="n">Pages / visit</th><th class="n">Avg. time on site</th><th class="n">Orders</th><th class="n">Conversion rate</th></tr></thead><tbody>`;
+    <th class="n">Pages / visit</th><th class="n">Avg. time on site</th><th class="n">Sign-ups</th><th class="n">Conversion rate</th></tr></thead><tbody>`;
   html += `<tr class="total"><td>All channels</td><td class="n">${fmtNum(totals.visits)}</td><td class="n">${fmtPct(totals.newRate)}</td>
     <td class="n">${fmtPct(totals.bounceRate)}</td><td class="n">${totals.pagesPerVisit.toFixed(2)}</td><td class="n">${fmtDur(totals.timeOnSite)}</td>
     <td class="n">${fmtNum(totals.conversions)}</td><td class="n">${fmtPct(totals.conversionRate, 2)}</td></tr>`;
@@ -600,10 +600,9 @@ function renderFunnel(list) {
   const has = (s, page) => s.hits.some(h => h.page === page);
   const steps = [
     ['All visits', list.length],
-    ['Viewed a book', list.filter(s => has(s, 'product')).length],
-    ['Added to cart', list.filter(s => has(s, 'cart')).length],
-    ['Reached checkout', list.filter(s => has(s, 'checkout')).length],
-    ['Placed an order', list.filter(s => s.converted).length]
+    ['Viewed workshops', list.filter(s => has(s, 'workshops')).length],
+    ['Opened sign-up form', list.filter(s => has(s, 'signup')).length],
+    ['Signed up', list.filter(s => s.converted).length]
   ];
   const top = steps[0][1] || 1;
   document.getElementById('funnel').innerHTML = steps.map(([label, n], i) => {
@@ -616,9 +615,9 @@ function renderFunnel(list) {
 
 function pathChips(hits, maxPages = Infinity) {
   const shown = hits.slice(0, maxPages);
-  let html = shown.map(h => `<span class="chip ${h.page === 'purchase' ? 'goal' : ''}">${PAGES[h.page].name}</span>`).join('<span class="arrow">›</span>');
+  let html = shown.map(h => `<span class="chip ${h.page === 'registered' ? 'goal' : ''}">${PAGES[h.page].name}</span>`).join('<span class="arrow">›</span>');
   if (hits.length > maxPages) html += `<span class="arrow">›</span><span class="chip exit">+${hits.length - maxPages} more</span>`;
-  else if (hits[hits.length - 1].page !== 'purchase') html += `<span class="arrow">›</span><span class="chip exit">Left</span>`;
+  else if (hits[hits.length - 1].page !== 'registered') html += `<span class="arrow">›</span><span class="chip exit">Left</span>`;
   return `<div class="chips">${html}</div>`;
 }
 
